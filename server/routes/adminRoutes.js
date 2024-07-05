@@ -31,29 +31,33 @@ router.get('/products', isAdminLoggedIn, productController.getProducts);
 router.get('/products/editProducts', isAdminLoggedIn, productController.getEditProducts);
 router.get('/products/deleteProduct/:id', isAdminLoggedIn, productController.deleteProduct);
 router.get("/products/stocks",isAdminLoggedIn, productController.getStocks)
-router.get('/products/addProduct',isAdminLoggedIn, productController.getAddProducts)
-router.get("/products/editProduct/:id",isAdminLoggedIn, productController.getEditProducts)
+router
+  .route("/add-product")
+  .get(isAdminLoggedIn, productController.getAddProducts)
+  .post(
+    isAdminLoggedIn,
+    productUpload.fields([
+      { name: "images", maxCount: 3 },
+      { name: "primaryImage", maxCount: 1 }
+    ]),
+    productController.addProducts
+  );
+  
+  router
+  .route("/edit-product/:id")
+  .get(isAdminLoggedIn, productController.getEditProducts)
+  .post(
+    isAdminLoggedIn,
+    productUpload.fields([
+      { name: 'primaryImage', maxCount: 1 },
+      { name: 'image2', maxCount: 1 },
+      { name: 'image3', maxCount: 1 }
+    ]),
+    productController.editProduct
+  );
 
-router.post("/products/updateStock", isAdminLoggedIn, productController.updateStocks)
-router.post('/products/addProduct',isAdminLoggedIn,
-   productUpload.fields([,
-    {name:"primaryImage",maxCount:1},
-    { name: 'image1', maxCount: 1 },
-    { name: 'image2', maxCount: 1 },
-    { name: 'image3', maxCount: 1 },,]),
-    productController.addProducts)
-router.post("/products/editProduct/:id",isAdminLoggedIn,
-  productUpload.fields([
-  { name: 'primaryImage', maxCount: 1 },
-  { name: 'image2', maxCount: 1 },
-  { name: 'image3', maxCount: 1 },
-  { name: 'image4', maxCount: 1 }]), 
-  productController.editProduct)
 router.post("/product/action",productController.listOrUnlistProduct)
 router.delete("/product/deleteProduct",productController.deleteProduct)
-
-
-
 
 
 
