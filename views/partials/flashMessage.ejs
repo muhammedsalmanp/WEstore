@@ -1,0 +1,52 @@
+<style>
+  .custom-alert {
+    max-width: 500px; /* Set the maximum width for the alert box */
+    margin: 0 auto;   /* Center the alert box horizontally */
+    padding: 10px 20px; /* Add some padding for better appearance */
+  }
+  .custom-alert .progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 5px; /* Increase the height of the progress bar */
+  }
+</style>
+
+<div class="container">
+  <% if (success.length > 0) { %>
+  <div class="alert alert-success alert-dismissible fade show my-3 custom-alert" role="alert">
+    <strong class="text-capitalize"><%- success %>!</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="progress-bar" style="background-color: #198754;"></div>
+  </div>
+  <% } %>
+  <% if (error.length > 0) { %>
+  <div class="alert alert-warning alert-dismissible fade show my-3 custom-alert" role="alert">
+    <strong class="text-capitalize"><%- error %></strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="progress-bar" style="background-color: #dc3545;"></div>
+  </div>
+  <% } %>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Set the timeout for the flash messages to auto-close after 5 seconds
+    const alertDisplayTime = 5000; // 5000 milliseconds = 5 seconds
+    const alerts = document.querySelectorAll('.alert');
+
+    alerts.forEach(function(alert) {
+      // Progress bar animation
+      const progressBar = alert.querySelector('.progress-bar');
+      progressBar.style.transition = `width ${alertDisplayTime}ms linear`;
+      progressBar.style.width = '100%';
+
+      // Close the alert after the display time
+      setTimeout(function() {
+        var bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+      }, alertDisplayTime);
+    });
+  });
+</script>

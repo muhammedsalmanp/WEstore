@@ -1,0 +1,102 @@
+<% if (users && users.length > 0) { %>
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title"><%= locals.title ? locals.title : 'Dashboard' %></h2>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Joined Date</th>
+                                <th>Verified</th>
+                                <th class="text-center">Block/Unblock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.forEach((user, index) => { %>
+                                <tr>
+                                    <td><%= index + 1 %></td>
+                                    <td><%= user.firstName + " " + user.lastName %> </td>
+                                    <td><%= user.email %></td>
+                                    <td><%= user.createdAt ? user.createdAt.toLocaleDateString('en-GB') : 'N/A' %></td>
+                                    <td>
+                                        <% if (user.isVerified) { %>
+                                            <span class="badge rounded-pill alert-success">Verified</span>
+                                        <% } else { %>
+                                            <span class="badge rounded-pill alert-danger">Not Verified</span>
+                                        <% } %>
+                                    </td>
+                                    <td class="text-center">
+                                                <% if (!user.isBlocked) { %>
+                                                    <button  class="btn btn-warning btn-sm rounded" onclick="blockOrUnblock('<%= user._id %>','<%= user.isBlocked %>','<%= user.email %>')">Block</button>  
+                                                <% } else { %>
+                                                    <button class="btn btn-danger btn-sm rounded" onclick="blockOrUnblock('<%= user._id %>','<%= user.isBlocked %>','<%= user.email %>')">Unblock</button>
+                                                <% } %>                          
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>              
+        </div>
+    </section>
+<% } else { %>
+    <p>No users found.</p>
+<% } %>
+
+<script>
+    const blockOrUnblock = async (userId, isBlocked, email) => {
+        isBlocked = isBlocked === 'true';
+
+        const confirmed = await Swal.fire({
+            title: 'Are you sure?',
+            text: isBlocked ? `You want to unblock the user ${email}` : `You want to block the user ${email}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: isBlocked ? 'Yes, Unblock' : 'Yes, Block!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        });
+
+        if (confirmed.isConfirmed) {
+            try {
+                const response = await fetch(`/admin/users/toggle-block/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ isBlocked: !isBlocked })
+                });
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: isBlocked ? 'User has been unblocked.' : 'User has been blocked.',
+                        icon: 'success',
+                        timer: 1500
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    throw new Error('Network response was not ok.');
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Something went wrong or You cant block admin.',
+                    icon: 'error',
+                    timer: 1500
+                });
+            }
+        }
+    };
+</script>

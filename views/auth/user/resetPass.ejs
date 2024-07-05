@@ -1,0 +1,166 @@
+<section>
+  <div
+    class="px-4 py-5 px-md-5 text-center text-lg-start"
+    style="background-color: hsl(0, 0%, 96%)"
+  >
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <h3 class="ltext-103 cl5 text-center mb-5">Reset Password</h3>
+        </div>
+      </div>
+      <div class="row gx-lg-5 justify-content-center">
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <div class="card">
+            <div class="card-body py-5 px-md-5">
+              <form id="resetForm" action="/resetPass" method="POST" novalidate>
+                <!-- Password input -->
+                <div class="form-outline mb-4">
+                  <label for="password" class="form-label text-left"
+                    >New Password</label
+                  >
+                  <div class="input-group">
+                    <input
+                      name="password"
+                      type="password"
+                      class="form-control"
+                      id="password"
+                      required
+                      minlength="8"
+                    />
+                    <button
+                      class="btn btn-outline-secondary"
+                      type="button"
+                      id="togglePassword"
+                    >
+                      <button class="bi bi-eye-slash-fill"></button>
+                    </button>
+                  </div>
+                  <div class="invalid-feedback" id="passwordError">
+                    Password must be at least 8 characters long, include 1
+                    lowercase, 1 uppercase, 1 number, and 1 special character.
+                  </div>
+                </div>
+                <div class="form-outline mb-4">
+                  <label for="confirmPassword" class="form-label text-left"
+                    >Confirm Password</label
+                  >
+                  <input
+                    name="confirmPassword"
+                    type="password"
+                    class="form-control"
+                    id="confirmPassword"
+                    required
+                  />
+                  <div class="invalid-feedback" id="confirmPasswordError">
+                    Passwords do not match.
+                  </div>
+                </div>
+
+                <!-- Verify button -->
+                <div class="flex-c-m">
+                  <button
+                    type="submit"
+                    class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04"
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("resetForm");
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
+    const passwordError = document.getElementById("passwordError");
+    const confirmPasswordError = document.getElementById(
+      "confirmPasswordError"
+    );
+    const togglePasswordBtn = document.getElementById("togglePassword");
+
+    const showError = (element, message) => {
+      element.classList.add("is-invalid");
+      element.nextElementSibling.textContent = message;
+    };
+
+    const clearError = (element) => {
+      element.classList.remove("is-invalid");
+      element.nextElementSibling.textContent = "";
+    };
+
+    const togglePasswordVisibility = () => {
+      const type =
+        password.getAttribute("type") === "password" ? "text" : "password";
+      password.setAttribute("type", type);
+      togglePasswordBtn.innerHTML =
+        type === "password"
+          ? '<i class="bi bi-eye-slash-fill"></i>'
+          : '<i class="bi bi-eye-fill"></i>';
+    };
+
+    togglePasswordBtn.addEventListener("click", togglePasswordVisibility);
+
+    form.addEventListener("submit", function (event) {
+      // Prevent form submission
+      event.preventDefault();
+      event.stopPropagation();
+
+      let isValid = true;
+
+      // Password validation rules
+      const passwordValue = password.value;
+      const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+      if (!passwordRegex.test(passwordValue)) {
+        showError(
+          password,
+          "Password must be at least 8 characters, include 1 lowercase, 1 uppercase, 1 number, and 1 special character."
+        );
+        isValid = false;
+      } else {
+        clearError(password);
+      }
+
+      // Check if passwords match
+      if (passwordValue !== confirmPassword.value) {
+        showError(confirmPassword, "Passwords do not match.");
+        isValid = false;
+      } else {
+        clearError(confirmPassword);
+      }
+
+      // If the form is valid, submit it
+      if (isValid) {
+        form.submit();
+      }
+    });
+
+    // Add input event listeners to reset custom validity messages when the user corrects them
+    document
+      .querySelectorAll('input[type="password"]')
+      .forEach(function (input) {
+        input.addEventListener("input", function () {
+          clearError(input);
+        });
+      });
+
+    form.addEventListener("input", function (event) {
+      if (event.target.checkValidity()) {
+        event.target.classList.add("is-valid");
+        event.target.classList.remove("is-invalid");
+      } else {
+        event.target.classList.add("is-invalid");
+        event.target.classList.remove("is-valid");
+      }
+    });
+  });
+</script>

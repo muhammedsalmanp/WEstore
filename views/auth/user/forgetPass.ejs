@@ -1,0 +1,45 @@
+<section>
+  <div
+    class="px-4 py-5 px-md-5 text-center text-lg-start"
+    style="background-color: hsl(0, 0%, 96%)"
+  >
+    <div class="container">
+      <div class="row gx-lg-5 justify-content-center">
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <div class="card">
+            <div class="row">
+              <div class="col-lg-12">
+                <h3 class="ltext-103 cl5 text-center mb-5">Forgot Password</h3>
+              </div>
+            </div>
+            <div class="card-body py-5 px-md-5">
+              <form action="/forgetPass" method="POST">
+                <!-- Email input -->
+                <div class="form-outline mb-4">
+                  <label for="email" class="form-label text-left">Email</label>
+                  <input
+                    name="email"
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="example@gmail.com"
+                    required
+                  />
+                </div>
+                <!-- Verify button -->
+                <div class="flex-c-m">
+                  <button
+                    type="submit"
+                    class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04"
+                  >
+                    Sent OTP
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

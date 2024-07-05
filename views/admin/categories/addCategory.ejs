@@ -1,0 +1,25 @@
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title"><%= locals.title ? locals.title : 'Add Category' %> </h2>    
+        </div>
+    </div>
+    <div class="card col-md-9">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <form  action="/admin/category/addCategory" method="post">
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Name</label>
+                            <input type="text" placeholder="Type here" name="category_name" class="form-control" id="category_name" />
+                        </div>
+                        <div class="mb-4">                                        
+                        <div class="d-grid gap-2 d-flex justify-content-start">
+                            <button class="btn btn-sm font-sm rounded btn-brand" style=" width: 150px;" type="submit">Add New Category</button>
+                            <button type="button" class="btn btn-sm font-sm rounded btn-brand custom-btn" style=" width: 150px;"  onclick="window.location.href='/admin/category';">Cancel</button>
+                        </div>
+                    </form>
+                </div> 
+            </div> 
+        </div> 
+</section> 

@@ -1,0 +1,127 @@
+<section>
+  <div
+    class="px-4 py-5 px-md-5 text-center text-lg-start"
+    style="background-color: hsl(0, 0%, 96%)"
+  >
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <h3 class="ltext-103 cl5 mt-25 text-center mb-5">Login</h3>
+        </div>
+      </div>
+      <div class="row gx-lg-5 justify-content-center">
+        <div class="col-lg-6 mb-5 mt-25 mb-lg-0">
+          <div class="card">
+            <div class="card-body py-5 px-md-5">
+              <form action="/login" method="POST">
+                <!-- Email input -->
+                <div class="form-outline mb-4" data-mdb-input-init>
+                  <label class="form-label" for="form2Example1"
+                    >Email address</label
+                  >
+                  <input
+                    type="email"
+                    id="form2Example1"
+                    class="form-control"
+                    name="email"
+                    required
+                  />
+                </div>
+
+                <!-- Password input -->
+                <div class="form-outline mb-4" data-mdb-input-init>
+                  <label class="form-label" for="form2Example2">Password</label>
+                  <input
+                    type="password"
+                    id="form2Example2"
+                    class="form-control"
+                    name="password"
+                    required
+                  />
+                </div>
+
+                <!-- 2 column grid layout for inline styling -->
+                <div class="row mb-4">
+                  <div class="col">
+                    <!-- Simple link -->
+                    <a href="/forgetPass">Forgot password?</a>
+                  </div>
+                </div>
+                <!-- Submit button -->
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-block mb-4"
+                  data-mdb-button-init
+                  data-mdb-ripple-init
+                >
+                  login
+                </button>
+
+                <!-- Register buttons -->
+                <div class="text-center">
+                  <p>Not a member? <a href="/register">Register</a></p>
+                  <p>or sign up with:</p>
+                  <button
+                    type="button"
+                    class="btn btn-link btn-floating mx-1"
+                    data-mdb-button-init
+                    data-mdb-ripple-init
+                  >
+                    <i class="fab fa-facebook-f"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-link btn-floating mx-1"
+                    data-mdb-button-init
+                    data-mdb-ripple-init
+                  >
+                    <a href="/"><i class="fab fa-google"></i</a>>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("form");
+
+    form.addEventListener("submit", function (event) {
+      //prevent form submission
+      event.preventDefault();
+
+      //check if the form is valid
+      if (!form.checkValidity()) {
+        return;
+      }
+      //custom validation for password length
+      const password = document.getElementById("form2Example2");
+      if (password.value.length < 6) {
+        password.setCustomValidity(
+          "Password must be at least 6 characters long."
+        );
+        password.reportValidity();
+        return;
+      } else {
+        password.setCustomValidity(""); //clear custom validity message
+      }
+
+      //form is valid,
+      form.submit();
+    });
+
+    // Add input event listeners to reset custom validity messages when the user corrects them
+    document
+      .querySelectorAll('input[type="password"]')
+      .forEach(function (input) {
+        input.addEventListener("input", function () {
+          input.setCustomValidity("");
+        });
+      });
+  });
+</script>
