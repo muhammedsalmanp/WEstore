@@ -10,7 +10,7 @@ module.exports = {
     };
 
     try {
-      const userList = await User.find();
+      const userList = await User.find().sort({createdAt:-1});
       console.log("Fetched users:", userList); // Check data is fetched
 
       res.render("./admin/users/users", {

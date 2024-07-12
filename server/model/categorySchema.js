@@ -17,12 +17,7 @@ const catogorySchema = new Schema({
         required: true,
         default: true,
     },
-    
-      description: {
-        type: String,
-      },
    
-
     primaryImages:[
         {
             name:{

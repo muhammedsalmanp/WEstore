@@ -32,11 +32,16 @@ const userSchema = new Schema({
         type: Date,
         default: Date.now,
         immutable: true,
-      },
+    },
       isVerified: {
         type: Boolean,
         default: false,
-      },
+    },
+    wishlist: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "WishList",
+    },
+
 },
     {
         timestamps: true,

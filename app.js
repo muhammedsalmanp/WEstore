@@ -16,8 +16,10 @@ const { v4: uuidv4 } = require("uuid");
 const connectDB = require("./server/config/db");
 
 const authRouter = require("./server/routes/authRoutes");
-const userRouter = require("./server/routes/shopRoutes");
+const shopRouter = require("./server/routes/shopRoutes");
 const adminRouter = require("./server/routes/adminRoutes");
+const userRouter = require("./server/routes/userRoutes");
+const cartRouter = require("./server/routes/cartRoutes")
 
 const { checkBlockedUser } = require("./server/middleware/authMiddleware");
 
@@ -67,10 +69,11 @@ app.use((req, res, next) => {
 // nocache for disabling browser caching
 app.use(nocache());
 
-app.use("/admin", adminRouter);
-app.use("/", authRouter);
-app.use("/",userRouter)
-
+app.use("/admin",adminRouter);
+app.use("/",authRouter);
+app.use('/',shopRouter);
+app.use('/',userRouter);
+app.use('/',cartRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -90,7 +93,7 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-app.listen(3000,() => {
-  console.log("http://localhost:3000");
+app.listen(8080,() => {
+  console.log("http://localhost:8080");
 });
 

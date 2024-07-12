@@ -123,8 +123,23 @@ module.exports = {
         description: req.body.productDespt,
         stock: req.body.productStock,
         price: req.body.price,
+        oldPrice:req.body.oldPrice,
+        Colour:req.body.colour,
+        displaySize:req.body.displaySize,
+        resolution:req.body.resolution,
+        Processor:req.body.processor,
+        ramSize:req.body.ramSize,
+        hardDriveSize:req.body.hdSize,
+        hardDiskDescription:req.body.hdDescription,
+        graphicsChipsetBrand:req.body.graphics,
+        operatingSystem:req.body.os,
+        audioDetails:req.body.audioDetails,
+        numberofUSB:req.body.usbPort,
+        countryofOrigin:req.body.countryofOrigin,
+        itemWeight:req.body.weight,
         primaryImages: primaryImage,
         secondaryImages: secondaryImages,
+
       });
 
 
@@ -208,6 +223,17 @@ module.exports = {
         } else if (product.secondaryImages[1]) {
             secondaryImages.push(product.secondaryImages[1]);
         }
+        if (req.files.image4) {
+          await sharp(req.files.image4[0].path)
+              .resize(500, 500)
+              .toFile(path.join(__dirname, '../../public/uploads/products-images/crp/', req.files.image3[0].filename));
+          secondaryImages.push({
+              name: req.files.image4[0].filename,
+              path: req.files.image4[0].path
+          });
+      } else if (product.secondaryImages[1]) {
+          secondaryImages.push(product.secondaryImages[1]);
+      }
 
         // Update the product
         const updateProduct = {

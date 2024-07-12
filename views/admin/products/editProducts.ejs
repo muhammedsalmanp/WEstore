@@ -1,3 +1,4 @@
+
 <section class="content-main">
     <div class="row">
         <div class="col-9">
@@ -53,6 +54,16 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="mb-4">
+                                    <label class="form-label">Stock</label>
+                                    <div class="row gx-2">
+                                        <input placeholder="Enter stock" name="productStock"
+                                            value="<%= product.stock %>" type="number" class="form-control">
+                                        <small></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
                                     <label class="form-label">Price</label>
                                     <div class="row gx-2">
                                         <input placeholder="Enter price" value="<%= product.price %>" name="price"
@@ -63,12 +74,87 @@
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
-                                    <label class="form-label">Stock</label>
-                                    <div class="row gx-2">
-                                        <input placeholder="Enter stock" name="productStock"
-                                            value="<%= product.stock %>" type="number" class="form-control">
-                                        <small></small>
-                                    </div>
+                                    <label class="form-label">Old Price</label>
+                                    <input placeholder="₹" value="<%= product.oldPrice %>" class="form-control"  name="oldPrice" min="0">
+                                    
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Colour</label>
+                                    <input placeholder="" value="<%= product.Colour %>" class="form-control" name="colour">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Display size</label>
+                                    <input placeholder="" value="<%= product.displaySize %>" class="form-control" name="displaySize" min="0">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Resolution</label>
+                                    <input placeholder="" value="<%= product.resolution %>" class="form-control" name="resolution">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Processor</label>
+                                    <input placeholder="i5" value="<%= product.Processor %>" class="form-control" name="processor">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">RAM Size</label>
+                                    <input placeholder="4" value="<%= product.ramSize %>" class="form-control" name="ramSize" min="0">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Hard Drive Size</label>
+                                    <input placeholder="128" value="<%= product.hardDriveSize %>" class="form-control" name="hdSize" min="0">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Hard Disk Description</label>
+                                    <input placeholder="SSD" value="<%= product.hardDiskDescription %>" class="form-control" name="hdDescription">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Graphics Chipset Brand</label>
+                                    <input placeholder="NVIDIA" value="<%= product.graphicsChipsetBrand %>" class="form-control" name="graphics">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Operating System</label>
+                                    <input placeholder="Windows" value="<%= product.operatingSystem %>" class="form-control" name="os">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Number of USB 3.0 Ports</label>
+                                    <input placeholder="1" value="<%= product.numberofUSB %>" class="form-control" name="usbPort" min="0">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Audio Details</label>
+                                    <input placeholder="Speaker" value="<%= product.audioDetails %>" class="form-control" name="audioDetails">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Country of Origin</label>
+                                    <input placeholder="IND" value="<%= product.countryofOrigin %>" class="form-control" name="countryofOrigin">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Item Weight</label>
+                                    <input placeholder="1.5 KG" value="<%= product.itemWeight %>" class="form-control" name="weight" min="0">
                                 </div>
                             </div>
                         </div>
@@ -152,6 +238,30 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-4"> 
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Secondary Image 3</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="input-upload">
+                            <label for="image4" class="form-label">
+                                <% if (product.secondaryImages[0]) { %>
+                                    <img id="preview4"
+                                        src="/uploads/products-images/crp/<%-product.secondaryImages[2].name %>" alt=""
+                                        width="150px">
+                                    <% } else {%>
+                                        <img id="preview4" src="../../assets/imgs/theme/upload.svg" alt=""
+                                            width="150px">
+                                        <% } %>
+                            </label>
+                            <input type="file" class="form-control" id="image4" name="image4">
+                        </div>
+                        <button type="button" class="btn btn-md rounded font-sm"
+                            onclick="document.getElementById('image4').click();">Upload Image</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col">
@@ -198,6 +308,7 @@
         document.getElementById('image1').addEventListener('change', function () { prepareImageForCropping('image1', 'preview1'); });
         document.getElementById('image2').addEventListener('change', function () { prepareImageForCropping('image2', 'preview2'); });
         document.getElementById('image3').addEventListener('change', function () { prepareImageForCropping('image3', 'preview3'); });
+        document.getElementById('image4').addEventListener('change', function () { prepareImageForCropping('image4', 'preview4'); });
 
 
 

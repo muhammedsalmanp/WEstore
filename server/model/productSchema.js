@@ -6,12 +6,20 @@ const productSchema = new mongoose.Schema({
         type:String,
         require:true,
     },
+    oldPrice:{
+        type:Number,
+        require:true,
+    },
     price:{
-        type:Number
+        type:Number,
+        require:true,
     },
     description:{
         type:String,
         required:true,
+    },
+    deepdescription:{
+        type:String,
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
@@ -20,7 +28,7 @@ const productSchema = new mongoose.Schema({
     },
     isActive:{
         type:Boolean,
-        default:false
+        default:true
     },
     stock:{
         type:Number,
@@ -28,7 +36,63 @@ const productSchema = new mongoose.Schema({
         requires:true,
         default:0
     },
-
+    Colour:{
+        type:String,   
+    },
+    displaySize:{
+        type: Number,
+        require:true,
+    },
+    resolution:{
+        type: String,
+        require:true,
+    },
+    Processor:{
+        type: String,
+        require:true,
+    },
+    ramSize:{
+        type:  Number,
+        require:true,
+    },
+    hardDriveSize:{
+        type: Number,
+        require:true,
+    },
+    hardDiskDescription:{
+        type: String,
+        require:true,
+    },
+    graphicsChipsetBrand:{
+        type: String,
+        require:true,
+    }, 
+    operatingSystem:{
+        type: String,
+        require:true,
+    },
+    numberofUSB:{
+        type:  Number,
+        require:true,
+    },
+    audioDetails:{
+        type: String,
+        require:true,
+    },
+    countryofOrigin:{
+        type: String,
+        require:true,
+    },
+    itemWeight:{
+        type:  String,
+        require:true,
+    },
+    reviews: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Review',
+        },
+    ],
     primaryImages:[
         {
             name:{

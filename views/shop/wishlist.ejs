@@ -1,0 +1,83 @@
+<section class="mt-50 mb-50">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table shopping-summery text-center">
+                        <thead>
+                            <tr class="main-heading">
+                                <th scope="col" colspan="2">Product</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Stock Status</th>
+                                <th scope="col">Action</th>
+                                <th scope="col">Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% products.forEach(product => { %>
+                                <tr>
+                                    <td class="image product-thumbnail">
+                                        <img src="/uploads/products-images/crp/<%= product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>" alt="#">
+                                    </td>
+                                    <td class="product-des product-name">
+                                        <h5 class="product-name"><a href="/shop/productDetails/<%= product._id %>"><%= product.product_name %></a></h5>
+                                        <p class="font-xs"><%= product.description %></p>
+                                    </td>
+                                    <td class="price" data-title="Price"><span>$<%= product.price %>.00</span></td>
+                                    <td class="text-center" data-title="Stock">
+                                        <span class="<%= product.stock > 0 ? 'color3 font-weight-bold' : 'text-danger font-weight-bold' %>">
+                                            <%= product.stock > 0 ? 'In Stock' : 'Out of Stock' %>
+                                        </span>
+                                    </td>
+                                    <td class="text-right" data-title="Cart">
+                                        <% if(product.stock===0||product.stock <0 ){ %>
+                                        <button class="btn btn-sm"><i class="fi-rs-shopping-bag "></i>Add to cart</button>                                        
+                                        <% }else{ %>
+                                        <button class="btn btn-sm btn-secondary"><i class="fi-rs-headset mr-5"></i>Contact Us</button>
+                                        <% } %>
+                                    </td>
+                                    <td class="action" data-title="Remove">
+                                        <a href="#" class="remove-from-wishlist-btn" data-product-id="<%= product._id %>"><i class="fi-rs-trash"></i></a>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('.remove-from-wishlist-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+
+            // Show confirmation message
+            if (confirm('Do you want to remove this product from your wishlist?')) {
+                // Send a request to remove the product from the wishlist
+                fetch('/wishlist/remove', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ productId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Reload the page to reflect the changes
+                        window.location.reload();
+                    } else {
+                        alert('Failed to remove product from wishlist.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    });
+});
+</script>

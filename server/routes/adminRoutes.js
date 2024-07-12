@@ -6,14 +6,14 @@ const adminController = require('../controller/adminController')
 const categoryController = require("../controller/categoryController");
 const productController = require("../controller/productController")
 const userMangementController = require('../controller/userManagementController')
-const {productUpload, upload } = require("../middleware/multer");
+const {productUpload, upload } = require("../config/multer");
 
 
 const { isAdminLoggedIn } = require("../middleware/authMiddleware");
 
 
 router.get('/', isAdminLoggedIn, adminController.getDashboard)
-
+                                                   
 
 //category management
 router.get('/category', isAdminLoggedIn, categoryController.getCategory);
@@ -37,7 +37,7 @@ router
   .post(
     isAdminLoggedIn,
     productUpload.fields([
-      { name: "images", maxCount: 3 },
+      { name: "images", maxCount: 4 },
       { name: "primaryImage", maxCount: 1 }
     ]),
     productController.addProducts
@@ -51,7 +51,8 @@ router
     productUpload.fields([
       { name: 'primaryImage', maxCount: 1 },
       { name: 'image2', maxCount: 1 },
-      { name: 'image3', maxCount: 1 }
+      { name: 'image3', maxCount: 1 },
+      { name: 'image4', maxCount: 1 }
     ]),
     productController.editProduct
   );
