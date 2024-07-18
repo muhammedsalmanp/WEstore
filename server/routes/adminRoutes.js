@@ -60,6 +60,8 @@ router
 router.post("/product/action",productController.listOrUnlistProduct)
 router.delete("/product/deleteProduct",productController.deleteProduct)
 
+router.post("/product/updateStock",productController.updateStocks)
+
 
 
 

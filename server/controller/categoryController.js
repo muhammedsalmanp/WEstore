@@ -6,25 +6,50 @@ module.exports = {
   /*---category view and add---*/
 
   getCategory: async (req, res) => {
-    console.log(124);
+    
     const locals = {
       title: "Category",
     };
-    const categories = await Category.find();
+    const perPage = 3
+    const page = req.query.page||1
+    const categories = await Category.find()
+    .skip(perPage*page-perPage)   
+    .limit(perPage)
+    .exec();
+    const count = await Category.find().countDocuments({});
+    const nextPage = parseInt(page)+1;
+    const hasNextPage = nextPage <= Math.ceil(count / perPage);
+
+    const breadcrumbs = [
+      { name: 'Home', url: '/admin' },
+      { name: 'Category', url: '/admin/category' },
+      { name: `Page ${page}`, url: `/admin/category?page=${page}` }
+    ];             
     console.log(categories);
     res.render("admin/categories/category", {
       locals,
       layout: adminLayout,
       categories,
+      current: page,
+      perPage: perPage,
+      pages: Math.ceil(count / perPage),
+      nextPage: hasNextPage ? nextPage : null,
+      breadcrumbs,
     });
   },
   getAddCategory: async (req, res) => {
     const locals = {
       titel: "Add Category",
     };
+    const breadcrumbs = [
+      { name: 'Home', url: '/admin' },
+      { name: 'Category', url: '/admin/category' },
+      { name: `Add Category`, url: `/category/addCategory` }
+    ];   
     res.render("admin/categories/addCategory", {
       locals,
       layout: adminLayout,
+      breadcrumbs
     });
   },
   addCategory: async (req, res) => {
@@ -52,9 +77,15 @@ module.exports = {
   },
   getEditCategory: async (req, res) => {
     const category = await Category.findById(req.params.id);
+    const breadcrumbs = [
+      { name: 'Home', url: '/admin' },
+      { name: 'Category', url: '/admin/category' },
+      { name: `Edit Category`, url: `/category/editCategory/:id` }
+    ];  
     res.render("admin/categories/editCategory", {
       category,
       layout: adminLayout,
+      breadcrumbs,
     });
   },
   editCategory: async (req, res) => {

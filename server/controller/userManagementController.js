@@ -10,14 +10,33 @@ module.exports = {
     };
 
     try {
-      const userList = await User.find().sort({createdAt:-1});
-      console.log("Fetched users:", userList); // Check data is fetched
+      let perPage = 7;
+      let page=req.query.page||1
+      const userList = await User.find().sort({createdAt:-1})
+      .skip(perPage*page-perPage)
+      .limit(perPage)
+      .exec();
+      const count = await User.find().countDocuments({});
+      const nextPage = parseInt(page)+1;
+      const hasNextPage = nextPage <= Math.ceil(count / perPage);
 
+      const breadcrumbs = [
+        { name: 'Home', url: '/admin' },
+        { name: 'Users', url: '/admin/users' },
+        { name: `Page ${page}`, url: `/admin/users?page=${page}` }
+    ];
+     
+      console.log("Fetched users:", userList); 
       res.render("./admin/users/users", {
         locals,
         layout: adminLayout,
-        users: userList, // Pass the fetched user data
-      });;
+        users: userList,
+        current: page,
+        perPage: perPage,
+        pages: Math.ceil(count / perPage),
+        nextPage: hasNextPage ? nextPage : null,
+        breadcrumbs,
+      });
     } catch (error) {
       console.error("Unexpected error in fetching users:", error);
       res.status(500).send("Internal Server Error");
@@ -25,18 +44,12 @@ module.exports = {
   },
   toggleBlock: async (req, res) => {
     try {
-      // Find user by ID and ensure the user is not an admin
       let user = await User.findOne({ _id: req.params.id, isAdmin: false });
-
       if (!user) {
         return res.status(404).json({ message: "User not found or is an admin" });
       }
-
-      // Toggle the isBlocked status
       user.isBlocked = !user.isBlocked;
       await user.save();
-
-      // Send the appropriate response
       res.status(200).json({
         message: user.isBlocked
           ? "User blocked successfully"

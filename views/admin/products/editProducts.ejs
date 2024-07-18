@@ -1,5 +1,14 @@
 
 <section class="content-main">
+    <ol class="breadcrumb">
+        <% breadcrumbs.forEach(function(crumb, index) { %>
+            <% if (index === breadcrumbs.length - 1) { %>
+                <li class="breadcrumb-item active"><%= crumb.name %></li>
+            <% } else { %>
+                <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.name %></a></li>
+            <% } %>
+        <% }); %>
+    </ol>
     <div class="row">
         <div class="col-9">
             <div class="content-header">

@@ -9,7 +9,7 @@ module.exports = {
             const image = req.file ? req.file.path : null;
 
             // Fetch user to get the username
-            const user = await User.findById(userId);
+            const user = await User.findOne(req.session.user)
             if (!user) {
                 return res.status(400).json({ error: 'User not found' });
             }

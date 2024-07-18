@@ -1,14 +1,17 @@
 <!-- Breadcrumb navigation -->
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/admin">Home</a></li>
-        <li class="breadcrumb-item"><a href="/admin/product">Products</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Add Products</li>
-    </ol>
-</nav>
+
 
 <!-- Main content section -->
 <section class="content-main">
+    <ol class="breadcrumb">
+        <% breadcrumbs.forEach(function(crumb, index) { %>
+            <% if (index === breadcrumbs.length - 1) { %>
+                <li class="breadcrumb-item active"><%= crumb.name %></li>
+            <% } else { %>
+                <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.name %></a></li>
+            <% } %>
+        <% }); %>
+    </ol>
     <form id="addProductForm" action="/admin/add-product" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-9">

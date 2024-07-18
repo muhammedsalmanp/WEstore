@@ -41,6 +41,10 @@ const userSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "WishList",
     },
+    cart:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"Cart"
+    }
 
 },
     {

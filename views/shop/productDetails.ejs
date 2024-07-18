@@ -1,5 +1,6 @@
 
     <main class="main">
+       
         <section class="mt-50 mb-50">
             <div class="container">
                 <div class="row">
@@ -13,18 +14,19 @@
                                             <!-- MAIN SLIDES -->
                                             <div class="product-image-slider">
                                                 <figure class="border-radius-10">
-                                                    <img src="/uploads/products-images/crp/<%-product.primaryImages[0].name%>" alt="IMG-PRODUCT"/>
+                                                    <img id="zoom1" src="/uploads/products-images/crp/<%-product.primaryImages[0].name%>" alt="IMG-PRODUCT" data-zoom-image="/uploads/products-images/crp/<%-product.primaryImages[0].name%>"/>
                                                 </figure>
                                                 <figure class="border-radius-10">
-                                                    <img src="/uploads/products-images/crp/<%-product.secondaryImages[0].name %>" alt="IMG-PRODUCT"/>
+                                                    <img id="zoom2" src="/uploads/products-images/crp/<%-product.secondaryImages[0].name %>" alt="IMG-PRODUCT" data-zoom-image="/uploads/products-images/crp/<%-product.secondaryImages[0].name %>"/>
                                                 </figure>
                                                 <figure class="border-radius-10">
-                                                    <img src="/uploads/products-images/crp/<%-product.secondaryImages[1].name %>" alt="IMG-PRODUCT"/>
+                                                    <img id="zoom3" src="/uploads/products-images/crp/<%-product.secondaryImages[1].name %>" alt="IMG-PRODUCT" data-zoom-image="/uploads/products-images/crp/<%-product.secondaryImages[1].name %>"/>
                                                 </figure>
                                                 <figure class="border-radius-10">
-                                                    <img src="/uploads/products-images/crp/<%-product.secondaryImages[2].name %>" alt="IMG-PRODUCT"/>
+                                                    <img id="zoom4" src="/uploads/products-images/crp/<%-product.secondaryImages[2].name %>" alt="IMG-PRODUCT" data-zoom-image="/uploads/products-images/crp/<%-product.secondaryImages[2].name %>"/>
                                                 </figure>
                                             </div>
+                                            
                                             <!-- THUMBNAILS -->
                                             <div class="slider-nav-thumbnails pl-15 pr-15">
                                                 <div><img src="/uploads/products-images/crp/<%-product.primaryImages[0].name%>" alt="product image"></div>
@@ -86,8 +88,7 @@
                                                 </div>
                                                 <div class="product-extra-link2">
                                                     <button type="submit" class="button button-add-to-cart">Add to cart</button>
-                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                                    <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up wishlist-btn"><i class="fi-rs-heart"></i></a>
                                                 </div>
                                             </div>
                                             <ul class="product-meta font-xs color-grey mt-50">
@@ -531,3 +532,97 @@
             </div>
         </section>
     </main>
+<script>
+    document.addEventListener("DOMContentLoaded", (event) => {
+        document.querySelectorAll(".wishlist-btn").forEach((button) => {
+          button.addEventListener("click", function (e) {
+            e.preventDefault();
+            const productId = this.getAttribute("data-product-id");
+            const isWished = this.classList.contains("wished");
+            const url = isWished ? "/wishlist/remove" : "/wishlist/add";
+            const confirmMessage = isWished
+              ? "Do you want to remove this product from your wishlist?"
+              : "Do you want to add this product to your wishlist?";
+    
+            // Show confirmation message with SweetAlert2
+            Swal.fire({
+              title: confirmMessage,
+              icon: "question",
+              showCancelButton: true,
+              confirmButtonText: "Yes",
+              cancelButtonText: "No",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Send a request to add or remove the product to/from the wishlist
+                fetch(url, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ productId }),
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    if (data.success) {
+                      // Change heart icon color and state
+                      const heartIcon = this.querySelector("i.fi-rs-heart");
+                      if (isWished) {
+                        this.classList.remove("wished");
+                        heartIcon.style.color = ""; // Remove heart icon color
+                      } else {
+                        this.classList.add("wished");
+                        heartIcon.style.color = "red"; // Set heart icon color to red
+                      }
+                      // Show success message
+                      Swal.fire({
+                        title: "Success!",
+                        text: data.message,
+                        icon: "success",
+                        confirmButtonText: "OK",
+                      });
+                    } else {
+                      // Show error message
+                      Swal.fire({
+                        title: "Error!",
+                        text: "Please log in to perform this action.",
+                        icon: "error",
+                        showCancelButton: true,
+                        confirmButtonText: "Login",
+                        cancelButtonText: "Cancel",
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                          // Redirect to login page
+                          window.location.href = "/login";
+                        }
+                      });
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error:", error);
+                    // Show error message
+                    Swal.fire({
+                      title: "Error!",
+                      text: "An error occurred",
+                      icon: "error",
+                      confirmButtonText: "OK",
+                    });
+                  });
+              }
+            });
+          });
+        });
+      });
+    </script>
+    
+    <script>
+    $(document).ready(function() {
+        $('#zoom1, #zoom2, #zoom3, #zoom4').elevateZoom({
+            zoomType: "lens",
+            lensShape: "round",
+            lensSize: 900,
+            scrollZoom: true
+        });
+    });
+</script>
+
+    

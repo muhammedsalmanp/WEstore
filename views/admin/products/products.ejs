@@ -9,13 +9,22 @@
 </style>
 
 <section class="content-main">
+<ol class="breadcrumb">
+    <% breadcrumbs.forEach(function(crumb, index) { %>
+        <% if (index === breadcrumbs.length - 1) { %>
+            <li class="breadcrumb-item active"><%= crumb.name %></li>
+        <% } else { %>
+            <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.name %></a></li>
+        <% } %>
+    <% }); %>
+</ol>
 <div class="content-header">
     <div>
         <h2 class="content-title card-title">Products List</h2>
       
     </div>
     <div>
-        
+        <a href="/admin/products/stocks" class="btn btn-primary btn-sm rounded">Manage Stocks</a>
         <a href="/admin/add-product" class="btn btn-primary btn-sm rounded">Add products</a>
     </div>
 </div>
@@ -27,95 +36,111 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>image</th>
+                        <th>Image</th>
                         <th>Name</th>
                         <th>Category</th>
                         <th>Price</th>
                         <th>Stocks</th>
-                        <th>Status</th>  
+                        <th>Status</th>
                         <th>Edit Product</th>
                         <th class="text-center">Actions</th>
-                      </tr> 
+                    </tr>
                 </thead>
                 <tbody>
-                    <tbody>
-                        <% if (product && product.length> 0) { %>
-                          <% product.forEach((product,index)=> { %>
+                    <% if (product && product.length > 0) { %>
+                        <% product.forEach((product, index) => { %>
                             <tr>
-                              <td>
-                                <%= index +1 %>
-                              </td>
-                              <td>
-                                <img class="img-fluid img-thumbnail"
-                                src="/uploads/products-images/crp/<%- product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>"
-                                   width="70rem" alt="">
-                              </td>
-                              <td>
-                                <%= product.product_name %>
-                              </td>
-                              <td>
-                                <%= product.category.name %>
-                              </td>
-                              <td>
-                                <%= product.price %>
-                              </td>
-                              <td>
-                                <%if(product.stock === 0 || product.stock < 0  ){%>
-                                    <span class=" text text-danger"> Out Of Stock</span>
-                                <% }else{ %>
-                                    <%=product.stock %>
-                                <% } %>
-                              </td>
-                              <td>
-                                <% if (product.isActive) { %>
-                                  <span class="badge rounded-pill alert-success">listed</span>
-                                  <% } else { %>
-                                    <span class="badge rounded-pill alert-danger">Unlisted</span>
+                                <td>
+                                    <%= (current - 1) * perPage + index + 1 %>
+                                </td>
+                                <td>
+                                    <img class="img-fluid img-thumbnail" src="/uploads/products-images/crp/<%= product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>" width="70rem" alt="">
+                                </td>
+                                <td>
+                                    <%= product.product_name %>
+                                </td>
+                                <td>
+                                    <%= product.category.name %>
+                                </td>
+                                <td>
+                                    <%= product.price %>
+                                </td>
+                                <td>
+                                    <% if (product.stock === 0 || product.stock < 0) { %>
+                                        <span class="text text-danger">Out Of Stock</span>
+                                    <% } else { %>
+                                        <%= product.stock %>
                                     <% } %>
-                              </td>                                
-                              <td>
-                                <a href="/admin/edit-product/<%= product._id %>" class="btn btn-sm font-sm rounded btn-brand">
-                                    <i class="material-icons md-edit"></i> Edit
-                                </a>
-                              </td> 
-                              <td class="text-center">
-                              <% if (product.isActive) { %>
-                                  <button class="btn btn-danger btn-sm rounded" onclick="confirmAction('<%= product._id %>', 'unlist', '<%= product.name %>')">
-                                      <i class="material-icons"></i> Unlist
-                                  </button>
-                              <% } else { %>
-                                  <button class="btn btn-warning btn-sm rounded" onclick="confirmAction('<%= product._id %>', 'list', '<%= product.name %>')">
-                                      <i class="material-icons"></i> List
-                                  </button>
-                              <% } %>
-                              <button class="btn btn-danger" onclick="confirmAction('<%= product._id %>', 'delete', '<%= product.name %>')">
-                                  <i class="material-icons md-delete_forever"></i> Delete
-                              </button>
-                              </td>              
+                                </td>
+                                <td>
+                                    <% if (product.isActive) { %>
+                                        <span class="badge rounded-pill alert-success">Listed</span>
+                                    <% } else { %>
+                                        <span class="badge rounded-pill alert-danger">Unlisted</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <a href="/admin/edit-product/<%= product._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                                        <i class="material-icons md-edit"></i> Edit
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <% if (product.isActive) { %>
+                                        <button class="btn btn-danger btn-sm rounded" onclick="confirmAction('<%= product._id %>', 'unlist', '<%= product.name %>')">
+                                            <i class="material-icons"></i> Unlist
+                                        </button>
+                                    <% } else { %>
+                                        <button class="btn btn-warning btn-sm rounded" onclick="confirmAction('<%= product._id %>', 'list', '<%= product.name %>')">
+                                            <i class="material-icons"></i> List
+                                        </button>
+                                    <% } %>
+                                    <button class="btn btn-danger" onclick="confirmAction('<%= product._id %>', 'delete', '<%= product.name %>')">
+                                        <i class="material-icons md-delete_forever"></i> Delete
+                                    </button>
+                                </td>
                             </tr>
-                            <% }) %>
-                              <% } else { %>
-                                <tr>
-                                  <td colspan="6" class="text-center">No products found</td>
-                                </tr>
-                                
-                    
-                                <% } %>
-                    
-                      </tbody>
-                
-                  </tbody>
-    
-               
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="9" class="text-center">No products found</td>
+                        </tr>
+                    <% } %>
+                </tbody>
             </table>
         </div>
-       
     </div>
-    
+</div>
+<% if (product.length > 0 && (nextPage || current == pages)) { %>
+    <nav aria-label="Dashboard pagination">
+        <ul class="pagination justify-content-center mt-5">
+            <% if (current == 1) { %>
+                <li class="page-item disabled"><a href="#" class="page-link">First</a></li>
+            <% } else { %>
+                <li class="page-item"><a href="/admin/products/?page=1" class="page-link">First</a></li>
+            <% } %>
+            <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+            <% if (i !== 1) { %>
+                <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
+            <% } %>
+            <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+                <% if (i == current) { %>
+                    <li class="page-item disabled"><a href="#" class="page-link"><%= i %></a></li>
+                <% } else { %>
+                    <li class="page-item"><a href="/admin/products?page=<%= i %>" class="page-link"><%= i %></a></li>
+                <% } %>
+            <% if (i == Number(current) + 4 && i < pages) { %>
+                <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
+            <% } %>
+            <% } %>
+            <% if (current == pages) { %>
+                <li class="page-item disabled"><a href="#" class="page-link">Last</a></li>
+            <% } else { %>
+                <li class="page-item"><a href="/admin/products/?page=<%= pages %>" class="page-link">Last</a></li>
+            <% } %>
+        </ul>
+    </nav>
+<% } %>
 
-
-</div>    
-   
 </section> <!-- content-main end// -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>

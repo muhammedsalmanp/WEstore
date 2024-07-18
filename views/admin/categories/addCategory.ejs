@@ -1,4 +1,13 @@
 <section class="content-main">
+    <ol class="breadcrumb">
+        <% breadcrumbs.forEach(function(crumb, index) { %>
+            <% if (index === breadcrumbs.length - 1) { %>
+                <li class="breadcrumb-item active"><%= crumb.name %></li>
+            <% } else { %>
+                <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.name %></a></li>
+            <% } %>
+        <% }); %>
+    </ol>
     <div class="content-header">
         <div>
             <h2 class="content-title card-title"><%= locals.title ? locals.title : 'Add Category' %> </h2>    
@@ -22,4 +31,4 @@
                 </div> 
             </div> 
         </div> 
-</section> 
+</section>                    

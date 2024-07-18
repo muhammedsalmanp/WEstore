@@ -19,7 +19,6 @@ const authRouter = require("./server/routes/authRoutes");
 const shopRouter = require("./server/routes/shopRoutes");
 const adminRouter = require("./server/routes/adminRoutes");
 const userRouter = require("./server/routes/userRoutes");
-const cartRouter = require("./server/routes/cartRoutes")
 
 const { checkBlockedUser } = require("./server/middleware/authMiddleware");
 
@@ -73,7 +72,6 @@ app.use("/admin",adminRouter);
 app.use("/",authRouter);
 app.use('/',shopRouter);
 app.use('/',userRouter);
-app.use('/',cartRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
