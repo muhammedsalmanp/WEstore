@@ -160,9 +160,9 @@
                         </a>
                       </div>
                       <div class="product-action-1">
-                        <a aria-label="Quick view" class="action-btn hover-up" href="/shop/quickView/<%- product._id %>" data-bs-toggle="modal" data-bs-target="#quickViewModal">
+                        <!-- <a aria-label="Quick view" class="action-btn hover-up" href="/shop/quickView/<%- product._id %>" data-bs-toggle="modal" data-bs-target="#quickViewModal">
                           <i class="fi-rs-eye"></i>
-                        </a>
+                        </a> -->
                         <% if (user && user.wishlist) { %>
                           <% let isInWishlist = user.wishlist.some(item => item.toString() === product._id.toString()); %>
                           <% if (isInWishlist) { %>
@@ -781,6 +781,8 @@
     </div>
   </section>
    <!--end new Arrivals -->
+<!-- Quick view -->
+
 
 </main>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -985,5 +987,24 @@
         });
       });
     }
+  });
+</script>
+<!-- In your main view or layout file -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const quickViewButtons = document.querySelectorAll('[data-bs-target="#quickViewModal"]');
+    
+    quickViewButtons.forEach(button => {
+      button.addEventListener('click', async (event) => {
+        event.preventDefault();
+        
+        const productId = button.getAttribute('href').split('/').pop();
+        const response = await fetch(`/shop/quickView/${productId}`);
+        const modalContent = await response.text();
+        
+        document.querySelector('#quickViewModal .modal-content').innerHTML = modalContent;
+        new bootstrap.Modal(document.getElementById('quickViewModal')).show();
+      });
+    });
   });
 </script>

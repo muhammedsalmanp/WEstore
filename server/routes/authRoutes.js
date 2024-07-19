@@ -5,7 +5,7 @@ const router = express.Router();
 const authController = require('../controller/authController');
 
 const { isLoggedOut } = require('../middleware/logoutMiddileware');
-const { checkBlockedUser, checkUserBlock } = require('../middleware/authMiddleware');
+const { checkBlockedUser, isAuthenticated } = require('../middleware/authMiddleware');
 
 //user
 

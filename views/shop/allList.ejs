@@ -1,4 +1,13 @@
 <section class="mt-50 mb-50">
+    <div class="page-header breadcrumb-wrap mb-15">
+        <div class="container">
+          <div class="breadcrumb">
+            <a href="/" rel="nofollow">Home</a>
+            <span></span>
+            <a href="/allProducts" rel="nofollow">Shop</a>
+          </div>
+        </div>
+      </div>
     <div class="container">
         <div class="row flex-row-reverse">
             <div class="col-lg-9">
@@ -35,14 +44,11 @@
                             <div class="product-cart-wrap mb-30">
                                 <div class="product-img-action-wrap">
                                     <div class="product-img product-img-zoom">
-                                        <a>
-                                        <img src="/uploads/products-images/crp/<%- product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>" alt="IMG-PRODUCT" />
+                                        <a href="/shop/productDetails/<%- product._id %>">
+                                          <img src="/uploads/products-images/crp/<%- product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>" alt="IMG-PRODUCT" />
                                         </a>
-                                    </div>
+                                      </div>
                                     <div class="product-action-1">
-                                        <a aria-label="Quick view" class="action-btn hover-up" href="/shop/quickView/<%- product._id %>" data-bs-toggle="modal" data-bs-target="#quickViewModal">
-                                          <i class="fi-rs-eye"></i>
-                                        </a>
                                         <% if (user && user.wishlist) { %> 
                                           <% let isInWishlist = user.wishlist.some(item => item.toString() === product._id.toString()); %>
                                           <% if (isInWishlist) { %>
@@ -80,9 +86,17 @@
                                         <span>$<%= product.price %>.00</span>
                                         <span class="old-price">$<%= product.oldPrice %>.00</span>
                                       </div>
-                                    <div class="product-action-1 show">
-                                        <a aria-label="Add To Cart" class="action-btn hover-up" href="/cart/add"><i class="fi-rs-shopping-bag-add"></i></a>
-                                    </div>
+                                      <div class="product-action-1 show">
+                                        <% if (product.stock > 0) { %>
+                                          <a aria-label="Add To Cart" class="action-btn hover-up add-to-cart-btn" data-product-id="<%- product._id %>">
+                                            <i class="fi-rs-shopping-bag-add"></i>
+                                          </a>
+                                        <% } else { %>
+                                          <a aria-label="Out of Stock" class="action-btn hover-up out-of-stock-btn" data-product-id="<%- product._id %>">
+                                            <i class="fi-rs-shopping-bag-add"></i>
+                                          </a>
+                                        <% } %>
+                                      </div>
                                 </div>
                             </div>
                         </div>
@@ -330,3 +344,125 @@
         });
       });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+        const outOfStockButtons = document.querySelectorAll('.out-of-stock-btn');
+        const quantityInputs = document.querySelectorAll('.qty-val');
+        const subtotalElements = document.querySelectorAll('.subtotal');
+    
+        addToCartButtons.forEach(button => {
+          button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+    
+            Swal.fire({
+              title: 'Add this item to your cart?',
+              showCancelButton: true,
+              confirmButtonText: 'Add to Cart',
+              cancelButtonText: 'Cancel',
+              icon: 'question'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                addToCart(productId, 1).then(() => {
+                  Swal.fire({
+                    title: 'Success!',
+                    text: 'Item added to your cart.',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonText: 'Go to Cart',
+                    cancelButtonText: 'Continue Shopping'
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      window.location.href = '/cart';
+                    }
+                  });
+                }).catch((error) => {
+                  let errorMessage = 'There was an issue adding the item to your cart.';
+                  if (error === "Product already in cart.") {
+                    errorMessage = 'This product is already in your cart.';
+                  }
+                  Swal.fire({
+                    title: 'Error!',
+                    text: errorMessage,
+                    icon: 'error'
+                  });
+                });
+              }
+            });
+          });
+        });
+    
+        outOfStockButtons.forEach(button => {
+          button.addEventListener('click', function(event) {
+            event.preventDefault();
+            Swal.fire({
+              title: 'Out of Stock',
+              text: 'This product is currently out of stock.',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          });
+        });
+    
+        quantityInputs.forEach(input => {
+          input.addEventListener('change', function() {
+            const productId = this.getAttribute('data-product-id');
+            const newQuantity = parseInt(this.innerText); // Assuming it's an editable span
+    
+            updateCart(productId, newQuantity);
+          });
+        });
+    
+        function updateCart(productId, newQuantity) {
+          fetch('/cart/update', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId, quantity: newQuantity })
+          }).then(response => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error('Failed to update cart.');
+            }
+          }).then(data => {
+            // Update subtotal for the specific product in the UI
+            const subtotalElement = document.querySelector(`#subtotal-${productId}`);
+            subtotalElement.innerText = `$${(data.subtotal).toFixed(2)}`;
+          }).catch(error => {
+            console.error('Error updating cart:', error);
+            Swal.fire({
+              title: 'Error!',
+              text: 'Failed to update cart.',
+              icon: 'error'
+            });
+          });
+        }
+    
+        function addToCart(productId, quantity) {
+          return new Promise((resolve, reject) => {
+            fetch('/cart/addToCart', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ productId, quantity })
+            }).then(response => {
+              if (response.ok) {
+                resolve();
+              } else {
+                response.json().then(data => {
+                  reject(data.error);
+                });
+              }
+            }).catch(error => {
+              reject(error);
+            });
+          });
+        }
+      });
+    </script>
+    <!-- In your main view or layout file -->

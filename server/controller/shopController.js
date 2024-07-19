@@ -49,7 +49,7 @@ module.exports = {
     const locals = {
       title: "Product Details",
     };
-
+    let cart= await Cart.findOne({userId:req.session.user})
     const product = await Product.findById(req.params.id).populate("category");
     console.log(product);
     try {
@@ -57,6 +57,7 @@ module.exports = {
         locals,
         product,
         user: req.session.user,
+        catr,
       });
     } catch (error) {
       console.log(error);
