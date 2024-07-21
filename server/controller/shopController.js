@@ -23,17 +23,13 @@ module.exports = {
       const count = await Product.countDocuments({});
       const nextPage = page + 1;
       const hasNextPage = nextPage <= Math.ceil(count / perPage);
-      let wishlist = await Wishlist.findOne({ userId: req.session.user}).populate('products');
-      let cart= await Cart.findOne({userId:req.session.user}).countDocuments({});
       // console.log(products);
       res.render("index", {
+        user:req.session.user,
         locals,
         success: req.flash("success"),
         error: req.flash("error"),
-        user: req.session.user,
         products,
-        wishlist,
-        cart,
         current: page,
         perPage: perPage,
         pages: Math.ceil(count / perPage),
@@ -67,26 +63,18 @@ module.exports = {
     const locals = {
       title: "Product Details",
     };
-    let wishlist = await Wishlist.findOne({ userId: req.session.user}).populate('products');
-    let cart= await Cart.findOne({userId:req.session.user})
-    const user = await User.findOne(req.session.user)
     const product = await Product.findById(req.params.id).populate("category");
     try {
       res.render("shop/productDetails",{
         product,
         locals,
-        wishlist,
-        cart,
-        user: user
+        user: req.session.user,
       })
     } catch (error) {
       console.log(error)
     }
   },
   getAllProduct:async (req,res) =>{
-    const user = await User.findOne(req.session.user);
-    let wishlist = await Wishlist.findOne({ userId: req.session.user}).populate('products');
-    let cart= await Cart.findOne({userId:req.session.user})
     const categories = await Category.find()
     const perPage = 12;
       const page = parseInt(req.query.page) || 1;
@@ -102,9 +90,7 @@ module.exports = {
       const productCount = products.length;
 
     res.render("shop/allList",{
-      user,
-      cart,
-      wishlist,
+      user: req.session.user,
       categories,
       products,
       productCount,

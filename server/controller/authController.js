@@ -286,12 +286,24 @@ module.exports={
   /*--user Logout--*/
 
   getUserLogout: (req, res) => {
-    req.flash("success", "You have been Logged out.");
-    req.session.destroy();
-    res.redirect("/");
+    try {
+      // Destroy the session and handle potential errors
+      req.session.destroy((err) => {
+        if (err) {
+          req.flash('error', 'There was an issue logging you out. Please try again.');
+          return res.redirect('/');
+        }
+        res.redirect('/login');
+      });
+    } catch (error) {
+      console.error(error);
+      req.flash('error', 'An unexpected error occurred. Please try again.');
+      res.redirect('/');
+    }
   },
+  
 
-  //admin
+  //admin   
   getAdminLogin: (req, res) => {
     const locals = {
       title: "Admin Login",
@@ -375,12 +387,6 @@ module.exports={
     req.session.admin = adminExist;
     req.flash("success", "admin successfully logged in");
     return res.redirect("/admin");
-  },
-
-  getUserLogout:(req,res)=>{
-    req.flash("success","You have been Logged out.")
-    req.session.destroy();
-    res.redirect("/");
   },
   AdminLogout:(req,res)=>{    
       

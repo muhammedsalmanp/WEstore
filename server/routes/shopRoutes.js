@@ -21,4 +21,5 @@ router.get("/allProducts",shopController.getAllProduct)
 router.get("/submitReview",reviewController.getAllReviews)
 router.post("/submitReview",reviewController.submitReview);
 
+
 module.exports = router                                    

@@ -17,18 +17,50 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
-                    <form  action="/admin/category/addCategory" method="post">
+                    <form action="/admin/category/addCategory" method="post" onsubmit="return validateForm()">
                         <div class="mb-4">
-                            <label for="product_name" class="form-label">Name</label>
-                            <input type="text" placeholder="Type here" name="category_name" class="form-control" id="category_name" />
+                            <label for="category_name" class="form-label">Name</label>
+                            <input type="text" placeholder="Type here" name="category_name" class="form-control" id="category_name" oninput="checkInput()"/>
+                            <div id="error_message" style="color: red; display: none;">Category name cannot be empty.</div>
                         </div>
-                        <div class="mb-4">                                        
-                        <div class="d-grid gap-2 d-flex justify-content-start">
-                            <button class="btn btn-sm font-sm rounded btn-brand" style=" width: 150px;" type="submit">Add New Category</button>
-                            <button type="button" class="btn btn-sm font-sm rounded btn-brand custom-btn" style=" width: 150px;"  onclick="window.location.href='/admin/category';">Cancel</button>
+                        <div class="mb-4">
+                            <div class="d-grid gap-2 d-flex justify-content-start">
+                                <button class="btn btn-sm font-sm rounded btn-brand" style="width: 150px;" type="submit">Add New Category</button>
+                                <button type="button" class="btn btn-sm font-sm rounded btn-brand custom-btn" style="width: 150px;" onclick="window.location.href='/admin/category';">Cancel</button>
+                            </div>
                         </div>
-                    </form>
+                    </form>               
                 </div> 
             </div> 
         </div> 
 </section>                    
+
+
+
+
+
+<script>
+    function validateForm() {
+        var categoryName = document.getElementById('category_name').value;
+        var errorMessage = document.getElementById('error_message');
+        if (categoryName.trim() === "") {
+            errorMessage.style.display = "block";
+            document.getElementById('category_name').style.borderColor = "red";
+            return false;
+        } else {
+            errorMessage.style.display = "none";
+            document.getElementById('category_name').style.borderColor = "green";
+        }
+        return true;
+    }
+
+    function checkInput() {
+        var categoryName = document.getElementById('category_name').value;
+        if (categoryName.trim() === "") {
+            document.getElementById('category_name').style.borderColor = "red";
+        } else {
+            document.getElementById('category_name').style.borderColor = "green";
+        }
+    }
+</script>
+

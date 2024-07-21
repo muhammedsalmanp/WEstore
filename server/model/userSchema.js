@@ -1,24 +1,41 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true,
+    },
+    facebookId: {
+        type: String,
+        unique: true,
+        sparse: true,
+    },
     firstName: {
         type: String,
-        required: true,
+        required: function() {
+            return !this.googleId && !this.facebookId; // Required if not a Google or Facebook user
+        },
     },
     lastName: {
         type: String,
-        required: true,
+        required: function() {
+            return !this.googleId && !this.facebookId; // Required if not a Google or Facebook user
+        },
     },
     email: {
         type: String,
         unique: true,
+        required: true,
     },
     password: {
         type: String,
-        required: true,
+        required: function() {
+            return !this.googleId && !this.facebookId; // Required if not a Google or Facebook user
+        },
     },
     isAdmin: {
         type: Boolean,
@@ -33,7 +50,7 @@ const userSchema = new Schema({
         default: Date.now,
         immutable: true,
     },
-      isVerified: {
+    isVerified: {
         type: Boolean,
         default: false,
     },
@@ -41,14 +58,20 @@ const userSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "WishList",
     },
-    cart:{
+    cart: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:"Cart"
+        ref: "Cart",
     }
+}, {
+    timestamps: true,
+});
 
-},
-    {
-        timestamps: true,
+userSchema.pre('save', async function (next) {
+    if (this.isModified('password') && this.password) {
+        const saltRounds = 10;
+        this.password = await bcrypt.hash(this.password, saltRounds);
     }
-);
+    next();
+});
+
 module.exports = mongoose.model('User', userSchema);

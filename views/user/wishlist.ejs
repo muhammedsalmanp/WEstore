@@ -17,11 +17,10 @@
                           <% products.forEach(product => { %>
                               <tr>
                                   <td class="image product-thumbnail">
-                                      <img src="/uploads/products-images/crp/<%= product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>" alt="#">
+                                    <a href="/shop/productDetails/<%= product._id %>"><img src="/uploads/products-images/crp/<%= product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>" alt="#"></a> 
                                   </td>
                                   <td class="product-des product-name">
                                       <h5 class="product-name"><a href="/shop/productDetails/<%= product._id %>"><%= product.product_name %></a></h5>
-                                      <p class="font-xs"><%= product.description %></p>
                                   </td>
                                   <td class="price" data-title="Price"><span>$<%= product.price %>.00</span></td>
                                   <td class="text-center" data-title="Stock">
@@ -31,7 +30,18 @@
                                   </td>
                                   <td class="t" data-title="Cart">
                                   <% if(product.stock===0||product.stock >0 ){ %>
-                                  <button class="btn btn-sm"><i class="fi-rs-shopping-bag "></i>Add to cart</button>                                        
+                                    <div class="product-action-1 show">
+                                        <% if (product.stock > 0) { %>
+                                            <button class="btn btn-sm add-to-cart-btn" data-product-id="<%- product._id %>">
+                                                <i class="fi-rs-shopping-bag-add"></i> Add to cart
+                                            </button>
+                                        <% } else { %>
+                                            <button class="btn btn-sm out-of-stock-btn" data-product-id="<%- product._id %>">
+                                                <i class="fi-rs-shopping-bag-add"></i> Out of Stock
+                                            </button>
+                                        <% } %>
+                                    </div>
+                                                                          
                                   <% }else{ %>
                                   <button class="btn btn-sm btn-secondary"><i class="fi-rs-headset"></i>Contact Us</button>
                                   <% } %>
@@ -48,36 +58,140 @@
       </div>
   </div>
 </section>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-document.addEventListener('DOMContentLoaded', (event) => {
-  document.querySelectorAll('.remove-from-wishlist-btn').forEach(button => {
-      button.addEventListener('click', function(e) {
-          e.preventDefault();
-          const productId = this.getAttribute('data-product-id');
+document.addEventListener('DOMContentLoaded', () => {
+    // Handle Add to Cart button clicks
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
 
-          // Show confirmation message
-          if (confirm('Do you want to remove this product from your wishlist?')) {
-              // Send a request to remove the product from the wishlist
-              fetch('/wishlist/remove', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({ productId })
-              })
-              .then(response => response.json())
-              .then(data => {
-                  if (data.success) {
-                      // Reload the page to reflect the changes
-                      window.location.reload();
-                  } else {
-                      alert('Failed to remove product from wishlist.');
-                  }
-              })
-              .catch(error => console.error('Error:', error));
-          }
-      });
-  });
+            // Show confirmation message with SweetAlert2
+            Swal.fire({
+                title: 'Add to Cart?',
+                text: 'Do you want to add this product to your cart?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, add it!',
+                cancelButtonText: 'No, cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Send a request to add the product to the cart
+                    fetch('/cart/addToCart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ productId, quantity: 1 }) // Ensure quantity is set to 1
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: 'Added!',
+                                text: 'The product has been added to your cart.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Failed to add product to cart.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while adding the product.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+                }
+            });
+        });
+    });
+
+    // Handle Out of Stock button clicks
+    document.querySelectorAll('.out-of-stock-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Out of Stock',
+                text: 'This product is currently out of stock.',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            });
+        });
+    });
+
+    // Handle Remove from Wishlist button clicks
+    document.querySelectorAll('.remove-from-wishlist-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+
+            // Show confirmation message with SweetAlert2
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to remove this product from your wishlist?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, remove it!',
+                cancelButtonText: 'No, keep it',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Send a request to remove the product from the wishlist
+                    fetch('/wishlist/remove', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ productId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: 'Removed!',
+                                text: 'The product has been removed from your wishlist.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                // Reload the page or remove the item from the DOM
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Failed to remove product from wishlist. Please log in.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                // Redirect to login page
+                                window.location.href = '/login';
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while removing the product.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+                }
+            });
+        });
+    });
 });
 </script>

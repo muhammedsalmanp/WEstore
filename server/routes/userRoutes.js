@@ -20,7 +20,7 @@ router.post("/cart/clearCart",userController.clearCart)
 //account Details
 
 router.get("/user/dashboard",userController.getAccountDetails)
-router.post("/user/changePassword",userController.changePassword)
+router.post("/user/updateUser",userController.updateUser)
 
                                             
 

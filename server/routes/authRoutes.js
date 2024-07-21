@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const passport = require("../config/passport-config")
 //authcontroller
 const authController = require('../controller/authController');
 
@@ -14,8 +14,19 @@ router.get('/register', isLoggedOut, authController.getUserRegister);
 
 router.post('/login', authController.userLogin);
 router.post('/register', authController.uerRegister);
+// Google Authentication Routes
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+    req.session.user = req.user;
+    res.redirect('/');
+});
 
-
+// Facebook Authentication Routes
+router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
+router.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), (req, res) => {
+    req.session.user = req.user;
+    res.redirect('/');
+});
 /*GET verifyotp */
 router
   .route("/verifyOtp")
@@ -44,7 +55,8 @@ router
   .post(authController.resetPassword);
 
 router.get('/resendOtp',authController.resendOtp)
-router.get("/logout", authController.getUserLogout);
+
+router.get('/logout',authController.getUserLogout)
   
 
 

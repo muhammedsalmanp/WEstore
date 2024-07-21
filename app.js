@@ -11,7 +11,7 @@ const nocache = require("nocache");
 const methodOverride = require("method-override");
 const MongoStore = require("connect-mongo");
 const { v4: uuidv4 } = require("uuid");
-
+const passportSetUp = require("./server/config/passport-config")
 // Database connection
 const connectDB = require("./server/config/db");
 
@@ -42,13 +42,13 @@ app.use(expressLayouts);
 
 // Sessions
 app.use(session({
-  secret: 'secret',
+  secret: process.env.SESSION_SECRET || uuidv4(),
   resave: false,
-  saveUninitialized: true,
-  cookie: {
-      maxAge: 72 * 60 * 60 * 1000, // 72 hours
-      httpOnly: true
-  }
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+  }),
+
 }));
 //flsh messasge 
 app.use(flash());

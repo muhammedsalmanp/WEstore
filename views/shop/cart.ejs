@@ -27,52 +27,56 @@
                 </tr>
               </thead>
               <tbody>
-                <% cart.products.forEach(productItem => { let product = productItem._id; %>
-                <tr>
-                  <td class="image product-thumbnail">
-                    <img src="/uploads/products-images/<%= product.primaryImages && product.primaryImages.length > 0 ? product.primaryImages[0].name : 'default-image.jpg' %>" alt="#" />
-                  </td>
-                  <td class="product-des product-name">
-                    <h5 class="product-name">
-                      <a href="/shop/productDetails/<%= product._id %>"><%= product.name %></a>
-                    </h5>
-                    <p class="font-xs"><%= product.description %></p>
-                  </td>
-                  <td class="price" data-title="Price">
-                    <span>$<%= productItem.price.toFixed(2) %></span>
-                  </td>
-                  <td class="text-center" data-title="Quantity">
-                    <div class="detail-qty border radius m-auto">
-                      <a href="#" class="qty-down" data-product-id="<%= product._id %>"><i class="fi-rs-angle-small-down"></i></a>
-                      <span class="qty-val" data-quantity="<%= productItem.quantity %>" data-product-id="<%= product._id %>"><%= productItem.quantity %></span>
-                      <a href="#" class="qty-up" data-product-id="<%= product._id %>"><i class="fi-rs-angle-small-up"></i></a>
-                    </div>
-                  </td>
-                  <td class="text-right" data-title="Subtotal">
-                    <span class="subtotal" data-product-id="<%= product._id %>">$<%= (productItem.price * productItem.quantity).toFixed(2) %></span>
-                  </td>
-                  <td class="action" data-title="Remove">
-                    <form action="/cart/remove" method="POST" class="remove-item-form">
-                      <input type="hidden" name="productId" value="<%= product._id %>" />
-                      <button type="submit" class="text-muted remove-item-btn">
-                        <i class="fi-rs-trash"></i>
+                <% if (cart && cart.products && cart.products.length > 0) { %>
+                  <% cart.products.forEach(productItem => { let product = productItem._id; %>
+                    <tr>
+                      <td class="image product-thumbnail">
+                        <img src="/uploads/products-images/<%= product.primaryImages && product.primaryImages.length > 0 ? product.primaryImages[0].name : 'default-image.jpg' %>" alt="#" />
+                      </td>
+                      <td class="product-des product-name">
+                        <h5 class="product-name"><a href="/shop/productDetails/<%= product._id %>"><%= product.product_name %></a></h5>
+                      </td>
+                      <td class="price" data-title="Price">
+                        <span>$<%= productItem.price.toFixed(2) %></span>
+                      </td>
+                      <td class="text-center" data-title="Quantity">
+                        <div class="detail-qty border radius m-auto">
+                          <a href="#" class="qty-down" data-product-id="<%= product._id %>"><i class="fi-rs-angle-small-down"></i></a>
+                          <span class="qty-val" data-quantity="<%= productItem.quantity %>" data-product-id="<%= product._id %>"><%= productItem.quantity %></span>
+                          <a href="#" class="qty-up" data-product-id="<%= product._id %>"><i class="fi-rs-angle-small-up"></i></a>
+                        </div>
+                      </td>
+                      <td class="text-right" data-title="Subtotal">
+                        <span class="subtotal" data-product-id="<%= product._id %>">$<%= (productItem.price * productItem.quantity).toFixed(2) %></span>
+                      </td>
+                      <td class="action" data-title="Remove">
+                        <form action="/cart/remove" method="POST" class="remove-item-form">
+                          <input type="hidden" name="productId" value="<%= product._id %>" />
+                          <button type="submit" class="text-muted remove-item-btn">
+                            <i class="fi-rs-trash"></i>
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  <% }) %>
+                  <tr>
+                    <td colspan="6" class="text-end">
+                      <button id="clear-cart-btn" class="text-muted clear-cart-btn">
+                        <i class="fi-rs-cross-small"></i> Clear Cart
                       </button>
-                    </form>
-                  </td>
-                </tr>
-                <% }) %>
-                <tr>
-                  <td colspan="6" class="text-end">
-                    <button id="clear-cart-btn" class="text-muted clear-cart-btn">
-                      <i class="fi-rs-cross-small"></i> Clear Cart
-                    </button>
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
+                <% } else { %>
+                  <tr>
+                    <td colspan="6" class="text-center">No products in the cart.</td>
+                  </tr>
+                <% } %>
               </tbody>
+              
             </table>
           </div>
           <div class="cart-action text-end">
-            <a href="/shop" class="btn"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+            <a href="/allProducts" class="btn"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
             <a href="/cart" class="btn"><i class="fi-rs-shopping-bag mr-10"></i>Go to Cart</a>
           </div>
   
@@ -87,33 +91,6 @@
               <p class="mt-15 mb-30">
                 Flat rate: <span class="font-xl text-brand fw-900">5%</span>
               </p>
-              <form class="field_form shipping_calculator">
-                <div class="form-row">
-                  <div class="form-group col-lg-12">
-                    <div class="custom_select">
-                      <select class="form-control select-active">
-                        <option value="">Choose a option...</option>
-                        <!-- Add your options here -->
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-row row">
-                  <div class="form-group col-lg-6">
-                    <input required="required" placeholder="State / Country" name="state_country" type="text" />
-                  </div>
-                  <div class="form-group col-lg-6">
-                    <input required="required" placeholder="PostCode / ZIP" name="postcode_zip" type="text" />
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group col-lg-12">
-                    <button class="btn btn-sm">
-                      <i class="fi-rs-shuffle mr-10"></i>Update
-                    </button>
-                  </div>
-                </div>
-              </form>
               <div class="mb-30 mt-50">
                 <div class="heading_s1 mb-3">
                   <h4>Apply Coupon</h4>
