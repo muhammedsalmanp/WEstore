@@ -7,7 +7,7 @@ const categoryController = require("../controller/categoryController");
 const productController = require("../controller/productController")
 const userMangementController = require('../controller/userManagementController')
 const {productUpload, upload } = require("../config/multer");
-
+const couponController = require("../controller/CouponCondroller");
 
 const { isAdminLoggedIn } = require("../middleware/authMiddleware");
 
@@ -70,6 +70,13 @@ router.post("/product/updateStock",productController.updateStocks)
 router.get('/users',userMangementController.getAllUsers)
 router.post('/users/toggle-block/:id',userMangementController.toggleBlock)
 
+/* promocodes */
 
+router.get("/coupon",couponController.getCoupon)
+router.get("/coupon/addCoupon",couponController.getAddCoupon)
+router.post("/coupon/addCoupon",couponController.addCoupon);
+router.get('/coupon/edit/:id',couponController.getEditCoupon);
+router.post("/coupon/edit/:id",couponController.editCoupon);
+router.delete("/coupon/delete/:id",couponController.deleteCoupon)
 
 module.exports = router

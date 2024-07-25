@@ -30,6 +30,11 @@
                     <span class="text">Category</span>
                 </a>
             </li>
+            <li class="<%= currentRoute === '/admin/coupon' ? 'menu-item active' : 'menu-item' %>">
+                <a class="menu-link" href="/admin/coupon"> <i class="icon material-icons md-local_offer"></i>
+                    <span class="text">Coupon</span>
+                </a>
+            </li>
             <li class="<%= currentRoute === '/admin/orders' ? 'menu-item active' : 'menu-item' %>">
                 <a class="menu-link" href="#"> <i class="icon material-icons md-featured_play_list"></i>
                     <span class="text">Orders</span>
@@ -41,11 +46,7 @@
                     <span class="text">Banners</span>
                 </a>
             </li>
-            <li class="<%= currentRoute === '/admin/promocodes' ? 'menu-item active' : 'menu-item' %>">
-                <a class="menu-link" href="#"> <i class="icon material-icons md-local_offer"></i>
-                    <span class="text">Promocodes</span>
-                </a>
-            </li>
+           
             
         </ul>
         <br>

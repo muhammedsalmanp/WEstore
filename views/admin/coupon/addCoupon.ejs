@@ -1,0 +1,83 @@
+<section class="content-main">
+    <ol class="breadcrumb">
+        <% breadcrumbs.forEach(function(crumb, index) { %>
+            <% if (index === breadcrumbs.length - 1) { %>
+                <li class="breadcrumb-item active"><%= crumb.name %></li>
+            <% } else { %>
+                <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.name %></a></li>
+            <% } %>
+        <% }); %>
+    </ol>
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title"><%= locals.title ? locals.title : 'Add Coupon' %> </h2>    
+        </div>
+    </div>
+    <div class="card col-md-9">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <form action="/admin/coupon/addCoupon" method="post" onsubmit="return validateCouponForm()">
+                        <div class="mb-4">
+                            <label for="coupon_code" class="form-label">Coupon Code</label>
+                            <input type="text" placeholder="Enter coupon code" name="coupon_code" class="form-control" id="coupon_code"oninput="convertToLowercase(this)" oninput="checkCouponInput()" />
+                            <div id="code_error_message" style="color: red; display: none;">Coupon code cannot be empty.</div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="discount_amount" class="form-label">Discount Amount</label>
+                            <input type="number" placeholder="Enter discount amount" name="discount_amount" class="form-control" id="discount_amount" oninput="checkCouponInput()" />
+                            <div id="amount_error_message" style="color: red; display: none;">Discount amount cannot be empty or negative.</div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="expiration_date" class="form-label">Expiration Date</label>
+                            <input type="date" name="expiration_date" class="form-control" id="expiration_date" oninput="checkCouponInput()" />
+                            <div id="date_error_message" style="color: red; display: none;">Expiration date cannot be empty.</div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="d-grid gap-2 d-flex justify-content-start">
+                                <button class="btn btn-sm font-sm rounded btn-brand" style="width: 150px;" type="submit">Add Coupon</button>
+                                <button type="button" class="btn btn-sm font-sm rounded btn-brand custom-btn" style="width: 150px;" onclick="window.location.href='/admin/coupon';">Cancel</button>
+                            </div>
+                        </div>
+                    </form>        
+                </div> 
+            </div> 
+        </div> 
+</section>                    
+                    
+<script>
+    function validateCouponForm() {
+        const code = document.getElementById("coupon_code").value.trim();
+        const amount = document.getElementById("discount_amount").value.trim();
+        const date = document.getElementById("expiration_date").value.trim();
+        let valid = true;
+
+        if (code === "") {
+            document.getElementById("code_error_message").style.display = "block";
+            valid = false;
+        } else {
+            document.getElementById("code_error_message").style.display = "none";
+        }
+
+        if (amount === "" || parseFloat(amount) < 0) {
+            document.getElementById("amount_error_message").style.display = "block";
+            valid = false;
+        } else {
+            document.getElementById("amount_error_message").style.display = "none";
+        }
+
+        if (date === "") {
+            document.getElementById("date_error_message").style.display = "block";
+            valid = false;
+        } else {
+            document.getElementById("date_error_message").style.display = "none";
+        }
+
+        return valid;
+    }
+</script>
+<script>
+    function convertToLowercase(input) {
+        input.value = input.value.toLowerCase();
+    }
+</script>

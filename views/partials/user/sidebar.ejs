@@ -1,54 +1,251 @@
-<aside class="navbar-aside" id="offcanvas_aside">
-    <div class="aside-top">
-        <a href="/admin" class="brand-wrap">
-            <img src="../../images/icons/logo-admin.png" class="logo" alt="WE STORE">
-        </a>
-        <div>
-            <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa;
+            padding-top: 20px;
+            border-right: 1px solid #ddd;
+        }
+        .sidebar .nav-link {
+            color: #333;
+        }
+        .sidebar .nav-link.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .sidebar .material-icons {
+            margin-right: 10px;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            flex: 1;
+        }
+        .tab-content {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .header-v2 {
+            width: 100%;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            position: fixed;
+            top: 0;
+            left: 250px;
+            right: 0;
+            z-index: 1000;
+        }
+        .container-menu-desktop {
+            padding: 10px 0;
+        }
+        .menu-desktop {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .icon-header-item {
+            cursor: pointer;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .dropdown-item {
+            padding: 8px 16px;
+            display: block;
+            text-decoration: none;
+            color: black;
+        }
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+            }
+            .content {
+                margin-left: 0;
+            }
+            .header-v2 {
+                left: 0;
+            }
+        }
+    </style>
+
+    <!-- Header -->
+    <header class="header-v2">
+        <div class="container-menu-desktop">
+            <div class="wrap-menu-desktop">
+                <nav class="limiter-menu-desktop container">
+                    <!-- Logo desktop -->
+                    <a href="/" class="logo">
+                        <img src="/images/icons/Westore-logo.png" alt="IMG-LOGO">
+                    </a>
+
+                    <!-- Menu desktop -->
+                    <div class="menu-desktop">
+                        <ul class="main-menu">
+                            <li class="active-menu">
+                                <a href="/">Home</a>
+                            </li>
+                            <li>
+                                <a href="/allProducts">All Products</a>
+                            </li>
+                            <li>
+                                <a href="/">About</a>
+                            </li>
+                            <li>
+                                <a href="/">Contact</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Icon header -->
+                    <div class="wrap-icon-header flex-w flex-r-m">
+                        <% if (typeof user !=='undefined') { %>
+                            <% if (user) { %>
+                        <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
+                            <i class="zmdi zmdi-search"></i>
+                        </div>
+
+                        <a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="0">
+                            <i class="zmdi zmdi-shopping-cart"></i>
+                        </a>
+
+                        <a href="/wishlist" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
+                            <i class="zmdi zmdi-favorite-outline"></i>
+                        </a>
+
+                        <!-- Profile Icon with Dropdown -->
+                        <div class="dropdown">
+                            <a href="javascript:void(0)" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 dropdown-toggle" id="profileDropdown">
+                                <i class="zmdi zmdi-account-o"></i>
+                            </a>
+                            <div class="dropdown-menu">
+                                <a href="/user/dashboard" class="dropdown-item">View Profile</a>
+                                <a href="/logout" class="dropdown-item">Logout</a>
+                            </div>
+                        </div>
+
+                        <% } %>
+                        <% } else { %>
+                        <a href="/login" class="flex-c-m stext-101 cl0 size-105 bg1 bor1 hov-btn1 p-lr-5 trans-04 ml-5">
+                            Login
+                        </a>
+                        <% } %>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul class="nav flex-column" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="dashboard-tab" data-toggle="tab" href="#dashboard" role="tab" aria-controls="dashboard" aria-selected="true">
+                    <i class="material-icons mr-10">dashboard</i>Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="orders-tab" data-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false">
+                    <i class="material-icons mr-10">shopping_bag</i>Orders
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="track-orders-tab" data-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false">
+                    <i class="material-icons mr-10">track_changes</i>Track Your Order
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="address-tab" data-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="false">
+                    <i class="material-icons mr-10">location_on</i>My Address
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="account-detail-tab" data-toggle="tab" href="#account-detail" role="tab" aria-controls="account-detail" aria-selected="false">
+                    <i class="material-icons mr-10">person</i>Account details
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">
+                    <i class="material-icons mr-10">exit_to_app</i>Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content">
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                Dashboard content goes here.
+            </div>
+            <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                Orders content goes here.
+            </div>
+            <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
+                Track Your Order content goes here.
+            </div>
+            <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
+                My Address content goes here.
+            </div>
+            <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
+                Account details content goes here.
+            </div>
         </div>
     </div>
-    <nav>
-        
-        <ul class="menu-aside">
-            <li class="<%= currentRoute === '/admin' ? 'menu-item active' : 'menu-item' %>">
-                <a class="menu-link" href="/admin"> <i class="icon material-icons md-home"></i>
-                    <span class="text">Dashboard</span>
-                </a>
-            </li>
-            <li class="<%= currentRoute === '/admin/products' || currentRoute === '/admin/addProduct' ? 'menu-item active' : 'menu-item' %>">
-                <a class="menu-link" href="/admin/products"> <i class="icon material-icons md-shopping_bag"></i>
-                    <span class="text">Products</span>
-                </a>
-            </li>
-            <li class="<%= currentRoute === '/admin/users' ? 'menu-item active' : 'menu-item' %>">
-                <a class="menu-link" href="/admin/users"> <i class="icon material-icons md-people"></i>
-                    <span class="text">Users</span>
-                </a>
-            </li>
-            <li class="<%= currentRoute === '/admin/category' || currentRoute === '/admin/addCategory' ? 'menu-item active' : 'menu-item' %>">
-                <a class="menu-link" href="/admin/category"> <i class="icon material-icons md-category"></i>
-                    <span class="text">Category</span>
-                </a>
-            </li>
-            <li class="<%= currentRoute === '/admin/orders' ? 'menu-item active' : 'menu-item' %>">
-                <a class="menu-link" href="#"> <i class="icon material-icons md-featured_play_list"></i>
-                    <span class="text">Orders</span>
-                </a>
-                
-            </li>
-            <li class="<%= currentRoute === '/admin/banners' ? 'menu-item active' : 'menu-item' %>">
-                <a class="menu-link" href="#"> <i class="icon material-icons md-image"></i>
-                    <span class="text">Banners</span>
-                </a>
-            </li>
-            <li class="<%= currentRoute === '/admin/promocodes' ? 'menu-item active' : 'menu-item' %>">
-                <a class="menu-link" href="#"> <i class="icon material-icons md-local_offer"></i>
-                    <span class="text">Promocodes</span>
-                </a>
-            </li>
-            
-        </ul>
-        <br>
-        <br>
-    </nav>
-</aside>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the profile dropdown elements
+            const profileDropdown = document.getElementById('profileDropdown');
+            const dropdownMenu = profileDropdown ? profileDropdown.nextElementSibling : null;
+
+            // Toggle dropdown visibility on profile icon click
+            if (profileDropdown) {
+                profileDropdown.addEventListener('click', function () {
+                    if (dropdownMenu) {
+                        dropdownMenu.classList.toggle('show');
+                    }
+                });
+            }
+
+            // Close the dropdown if clicking outside of it
+            document.addEventListener('click', function (event) {
+                if (dropdownMenu && !profileDropdown.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+        });
+    </script>
+

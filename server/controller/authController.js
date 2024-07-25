@@ -325,7 +325,6 @@ module.exports={
     });
   },
 
-
   adminRegister: async (req, res) => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
   

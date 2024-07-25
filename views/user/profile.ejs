@@ -1,269 +1,22 @@
-<!-- Profile form-->
+<style>
+  .custom-input {
+    width: 100%;
+    height: 3px; /* Adjust the height as needed */
+    margin-bottom: 10px; /* Optional: Add some margin for better spacing */
+  }
 
-<!-- Profile form-->
-<!-- <section class="user-profile-page">
-    <div class="px-4 py-5 px-md-5 text-lg-start" style="background-color: hsl(0, 0%, 96%)">
-        <div class="row gx-lg-5 justify-content-center">
-            <div class="col-lg-3 mb-5 mb-lg-0">
-                <div class="card">
-                    <div class="card-body py-5 px-md-5">
-                        <div class="d-flex">
-                            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                <a href="#" class="nav-link active" id="v-pills-account-tab" data-bs-toggle="pill" data-bs-target="#v-pills-account" type="button" role="tab" aria-controls="v-pills-account" aria-selected="true">Account</a>
-                                <a href="#" class="nav-link" id="v-pills-password-tab" data-bs-toggle="pill" data-bs-target="#v-pills-password" type="button" role="tab" aria-controls="v-pills-password" aria-selected="false">Change Password</a>
-                                <a href="#" class="nav-link" id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">Orders</a>
-                                <a href="#" class="nav-link" id="v-pills-wishlist-tab" data-bs-toggle="pill" data-bs-target="#v-pills-wishlist" type="button" role="tab" aria-controls="v-pills-wishlist" aria-selected="false">Wishlist</a>
-                                <a href="#" class="nav-link" id="v-pills-address-tab" data-bs-toggle="pill" data-bs-target="#v-pills-address" type="button" role="tab" aria-controls="v-pills-address" aria-selected="false">Address</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-9 mb-5 mb-lg-0">
-                <div class="card">
-                    <div class="card-body py-5 px-md-5">
-                        <div class="tab-content" id="v-pills-tabContent">
-                            
-                            <div class="tab-pane fade show active" id="v-pills-account" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0">
-                                <form id="update_profile" action="/user/EditProfile" method="post">
-                                    <div class="row">
-                                        <div class="col-md-12 mb-4">
-                                            <div class="form-outline">
-                                                <h3 class="text-capitalize" id="username">
-                                                    <%= user.firstName %> <%= user.lastName %>
-                                                </h3>
-                                                <p>Update Profile</p>
-                                            </div>
-                                            <hr />
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-outline">
-                                                <label for="firstName" class="form-label text-left">First Name</label>
-                                                <input name="firstName" type="text" class="form-control" id="firstName" placeholder="First Name" value="<%= user.firstName %>">
-                                                <small class="text-danger"></small>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-outline">
-                                                <label for="lastName" class="form-label text-left">Last Name</label>
-                                                <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Last Name" value="<%= user.lastName %>">
-                                                <small class="text-danger"></small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-outline mb-4">
-                                        <label for="email" class="form-label text-left">Email</label>
-                                        <input name="email" type="email" class="form-control" id="email" value="<%= user.email %>" placeholder="example@gmail.com" disabled>
-                                        <small class="text-danger"></small>
-                                    </div>
-                                    <div class="flex-c-m">
-                                        <button type="submit" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">Update</button>
-                                    </div>
-                                </form>
-                            </div>
-                        
-                            <div class="tab-pane fade" id="v-pills-password" role="tabpanel"
-                                aria-labelledby="v-pills-profile-tab" tabindex="0">
-                                <div class="row">
-                                    <div class="col-md-12 mb-4">
-                                        <div class="form-outline">
-                                            <h3 class="text-capitalize">
+  .custom-checkbox {
+    border: 1px solid #ccc; /* Add a light grey border */
+    padding: 5px; /* Add some padding for better visibility */
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+  }
 
-                                                Change Password
-                                            </h3>
-                                        </div>
-                                        <hr />
-                                    </div>
-                                </div>
-                             
-                                <form id="changePasswordForm" action="/user/changePassword" method="POST">
-                                    <div class="form-outline mb-4">
-                                        <label for="currentPassword" class="form-label text-left">Current
-                                            Password</label>
-                                        <input name="currentPassword" type="password" class="form-control"
-                                            id="currentPassword" required>
-                                    </div>
-                                    <div class="form-outline mb-4">
-                                        <label for="newPassword" class="form-label text-left">New Password</label>
-                                        <input name="newPassword" type="password" class="form-control" id="newPassword"
-                                            required>
-                                    </div>
-                                    <div class="form-outline mb-4">
-                                        <label for="confirmPassword" class="form-label text-left">Confirm
-                                            Password</label>
-                                        <input name="confirmPassword" type="password" class="form-control"
-                                            id="confirmPassword" required>
-                                    </div>
-                                    <div class="flex-c-m">
-                                        <button type="submit"
-                                            class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">Confirm</button>
-                                    </div>
-                                </form>
-
-                            </div>
-                  
-                            <div class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">
-                                <div class="row">
-                                    <div class="col-md-12 mb-4">
-                                        <div class="form-outline">
-                                            <h3 class="text-capitalize">My Orders</h3>
-                                        </div>
-                                        <hr />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12 col-xl-12 m-lr-auto m-b-50">
-                                        <div class="wrap-table-shopping-cart">
-                                            <table class="table-shopping-cart">
-                                                <tr class="table_head">
-                                                    <th class="column-1">Order ID</th>
-                                                    <th class="column-2">Date</th>
-                                                    <th class="column-3">Status</th>
-                                                    <th class="column-4">Total</th>
-                                                    <th class="column-5">Action</th>
-                                                </tr>
-                                                <tr class="table_row">
-                                                    <td class="column-1">#234234</td>
-                                                    <td class="column-2">01/02/2024</td>
-                                                    <td class="column-3">Processing</td>
-                                                    <td class="column-4">$250.00</td>
-                                                    <td class="column-5">
-                                                        <a href="#" class="table-button">View</a>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                          
-                            <div class="tab-pane fade" id="v-pills-wishlist" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">
-                                <div class="row">
-                                    <div class="col-md-12 mb-4">
-                                        <div class="form-outline">
-                                            <h3 class="text-capitalize">Wishlist</h3>
-                                        </div>
-                                        <hr />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12 col-xl-12 m-lr-auto m-b-50">
-                                        <div class="wrap-table-shopping-cart">
-                                            <table class="table-shopping-cart">
-                                                <tr class="table_head">
-                                                    <th class="column-1">Product</th>
-                                                    <th class="column-2"></th>
-                                                    <th class="column-3">Price</th>
-                                                    <th class="column-4"></th>
-                                                    <th class="column-5">Actions</th>
-                                                </tr>
-                                                <tr class="table_row">
-                                                    <td class="column-1">
-                                                        <div class="how-itemcart1">
-                                                            <img src="images/item-cart-04.jpg" alt="IMG">
-                                                        </div>
-                                                    </td>
-                                                    <td class="column-2">Fresh Strawberries</td>
-                                                    <td class="column-3">$36.00</td>
-                                                    <td class="column-4"></td>
-                                                    <td class="column-5">
-                                                        <a href="#" class="table-button">View</a>
-                                                        <a href="#" class="table-button">Remove</a>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                           
-                            <div class="tab-pane fade" id="v-pills-address" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">
-                                <div class="row">
-                                    <div class="col-md-12 mb-4">
-                                        <div class="form-outline">
-                                            <h3 class="text-capitalize">Saved Addresses</h3>
-                                        </div>
-                                        <hr />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12 col-xl-12 m-lr-auto m-b-50">
-                                        <div class="wrap-table-shopping-cart">
-                                            <table class="table-shopping-cart">
-                                                <tr class="table_head">
-                                                    <th class="column-1">Address</th>
-                                                    <th class="column-2">City</th>
-                                                    <th class="column-3">State</th>
-                                                    <th class="column-4">Country</th>
-                                                    <th class="column-5">Action</th>
-                                                </tr>
-                                                <tr class="table_row">
-                                                    <td class="column-1">123 Main St</td>
-                                                    <td class="column-2">Anytown</td>
-                                                    <td class="column-3">CA</td>
-                                                    <td class="column-4">USA</td>
-                                                    <td class="column-5">
-                                                        <a href="#" class="table-button">Edit</a>
-                                                        <a href="#" class="table-button">Remove</a>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 mb-4">
-                                        <div class="form-outline">
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">Add New Address</button>
-                                        </div>
-                                    </div>
-                                </div>
-                           
-                                <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form id="addAddressForm" action="/user/addAddress" method="post">
-                                                    <div class="form-outline mb-4">
-                                                        <label for="address" class="form-label text-left">Address</label>
-                                                        <input name="address" type="text" class="form-control" id="address" required>
-                                                    </div>
-                                                    <div class="form-outline mb-4">
-                                                        <label for="city" class="form-label text-left">City</label>
-                                                        <input name="city" type="text" class="form-control" id="city" required>
-                                                    </div>
-                                                    <div class="form-outline mb-4">
-                                                        <label for="state" class="form-label text-left">State</label>
-                                                        <input name="state" type="text" class="form-control" id="state" required>
-                                                    </div>
-                                                    <div class="form-outline mb-4">
-                                                        <label for="country" class="form-label text-left">Country</label>
-                                                        <input name="country" type="text" class="form-control" id="country" required>
-                                                    </div>
-                                                    <div class="flex-c-m">
-                                                        <button type="submit" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">Save</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            
-                            </div>
-                       
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section> -->
+  .form-check-label-sm {
+    margin-left: 20px; /* Adjust spacing between checkbox and label */
+  }
+</style>
 <section class="pt-150 pb-150">
   <div class="container">
     <div class="row">
@@ -284,6 +37,31 @@
                     ><i class="fi-rs-settings-sliders mr-10"></i>Dashboard</a
                   >
                 </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    id="account-detail-tab"
+                    data-bs-toggle="tab"
+                    href="#account-detail"
+                    role="tab"
+                    aria-controls="account-detail"
+                    aria-selected="true"
+                    ><i class="fi-rs-user mr-10"></i>Account details</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    id="address-tab"
+                    data-bs-toggle="tab"
+                    href="#address"
+                    role="tab"
+                    aria-controls="address"
+                    aria-selected="true"
+                    ><i class="fi-rs-marker mr-10"></i>My Address</a
+                  >
+                </li>
+                
                 <li class="nav-item">
                   <a
                     class="nav-link"
@@ -309,30 +87,7 @@
                     Order</a
                   >
                 </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    id="address-tab"
-                    data-bs-toggle="tab"
-                    href="#address"
-                    role="tab"
-                    aria-controls="address"
-                    aria-selected="true"
-                    ><i class="fi-rs-marker mr-10"></i>My Address</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    id="account-detail-tab"
-                    data-bs-toggle="tab"
-                    href="#account-detail"
-                    role="tab"
-                    aria-controls="account-detail"
-                    aria-selected="true"
-                    ><i class="fi-rs-user mr-10"></i>Account details</a
-                  >
-                </li>
+                
                 <li class="nav-item">
                   <a class="nav-link" href="/logout"
                     ><i class="fi-rs-sign-out mr-10"></i>Logout</a
@@ -343,6 +98,7 @@
           </div>
           <div class="col-md-8">
             <div class="tab-content dashboard-content">
+              <!-- Dashboard -->
               <div
                 class="tab-pane fade active show"
                 id="dashboard"
@@ -365,6 +121,8 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Orders -->
               <div
                 class="tab-pane fade"
                 id="orders"
@@ -421,6 +179,8 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Track Orders -->
               <div
                 class="tab-pane fade"
                 id="track-orders"
@@ -475,47 +235,283 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Address Section -->
               <div
                 class="tab-pane fade"
                 id="address"
                 role="tabpanel"
                 aria-labelledby="address-tab"
               >
-                <div class="row">
-                  <div class="col-lg-6">
-                    <div class="card mb-3 mb-lg-0">
-                      <div class="card-header">
-                        <h5 class="mb-0">Billing Address</h5>
-                      </div>
-                      <div class="card-body">
-                        <address>
-                          3522 Interstate<br />
-                          75 Business Spur,<br />
-                          Sault Ste. <br />Marie, MI 49783
-                        </address>
-                        <p>New York</p>
-                        <a href="#" class="btn-small">Edit</a>
-                      </div>
-                    </div>
+                <div class="card">
+                  <div
+                    class="card-header d-flex justify-content-between align-items-center mb-2"
+                  >
+                    <h5 class="mb-0">Address</h5>
+                    <!-- Add Address Button Triggering Modal -->
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#addAddressModal"
+                    >
+                      <i class="">+</i> Add Address
+                    </button>
                   </div>
-                  <div class="col-lg-6">
-                    <div class="card">
-                      <div class="card-header">
-                        <h5 class="mb-0">Shipping Address</h5>
+                  <div class="row m-2">
+                      <% if (addresses && addresses.length > 0) { %>
+                          <% addresses.forEach((address, index) => { %>
+                              <div class="col-lg-6 mb-3">
+                                  <div class="card">
+                                      <div class="card-header">
+                                          <h5 class="mb-0">
+                                              Address <%= index + 1 %>
+                                          </h5>
+                                      </div>
+                                      <div class="card-body">
+                                          <div>
+                                              <p><strong>House Number:</strong> <%= address.houseNumber %></p>
+                                              <p><strong>Street:</strong> <%= address.street %></p>
+                                              <p><strong>City:</strong> <%= address.city %></p>
+                                              <p><strong>Zipcode:</strong> <%= address.zipcode %></p>
+                                              <p><strong>Country:</strong> <%= address.country %></p>
+                                              <% if (address.landmark) { %>
+                                                  <p><strong>Landmark:</strong> <%= address.landmark %></p>
+                                              <% } %>
+                                              <% if (address.phoneNumber) { %>
+                                                  <p><strong>Phone Number:</strong> <%= address.phoneNumber %></p>
+                                              <% } %>
+                                          </div>
+                                          <div class="btn-group" role="group">
+                                              <button 
+                                                  type="button" 
+                                                  class="btn btn-small btn-primary btn-edit" 
+                                                  data-address-id="<%= address._id %>"
+                                                  data-address='<%= JSON.stringify(address) %>'
+                                              >
+                                                  Edit
+                                              </button>
+                                              <button 
+                                                  type="button" 
+                                                  class="btn btn-small btn-danger btn-delete" 
+                                                  data-address-id="<%= address._id %>"
+                                              >
+                                                  Delete
+                                              </button>
+                                              <% if (!address.isDefault) { %>
+                                                <button 
+                                                    type="button" 
+                                                    class="btn btn-small btn-warning" 
+                                                    id="set-default-btn-<%= address._id %>" 
+                                                    data-address-id="<%= address._id %>"
+                                                >
+                                                    Set as Default
+                                                </button>
+                                              <% } %>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          <% }); %>
+                      <% } else { %>
+                          <p>No addresses found.</p>
+                      <% } %>
+                  </div>
+
+          
+           
+                  
+                  </div>
+                </div>
+
+                <!-- Add Address Modal -->
+                <div
+                  class="modal fade"
+                  id="addAddressModal"
+                  tabindex="-1"
+                  aria-labelledby="addAddressModalLabel"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="addAddressModalLabel">
+                          Add New Address
+                        </h5>
+                        <button
+                          type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        ></button>
                       </div>
-                      <div class="card-body">
-                        <address>
-                          4299 Express Lane<br />
-                          Sarasota, <br />FL 34249 USA <br />Phone:
-                          1.941.227.4444
-                        </address>
-                        <p>Sarasota</p>
-                        <a href="#" class="btn-small">Edit</a>
+                      <div class="modal-body">
+                        <!-- Address Form in Modal -->
+                        <form
+                          id="addAddressForm"
+                          action="/user/addAddress"
+                          method="POST"
+                        >
+                          <div class="form-group">
+                            <label for="place">Place</label>
+                            <select
+                              name="place"
+                              id="place"
+                              class="form-control form-control-sm custom-input"
+                            >
+                              <option value="" disabled selected>
+                                Select Place
+                              </option>
+                              <option value="home">Home</option>
+                              <option value="work">Work</option>
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <label for="houseNumber">House Number</label>
+                            <input
+                              type="number"
+                              name="houseNumber"
+                              id="houseNumber"
+                              class="form-control form-control-sm custom-input"
+                              required
+                            />
+                          </div>
+                          <div class="form-group">
+                            <label for="street">Street</label>
+                            <input
+                              type="text"
+                              name="street"
+                              id="street"
+                              class="form-control form-control-sm custom-input"
+                              required
+                            />
+                          </div>
+                          <div class="form-group">
+                            <label for="city">City</label>
+                            <input
+                              type="text"
+                              name="city"
+                              id="city"
+                              class="form-control form-control-sm custom-input"
+                              required
+                            />
+                          </div>
+                          <div class="form-group">
+                            <label for="zipcode">Zipcode</label>
+                            <input
+                              type="number"
+                              name="zipcode"
+                              id="zipcode"
+                              class="form-control form-control-sm custom-input"
+                              required
+                            />
+                          </div>
+                          <div class="form-group">
+                            <label for="country">Country</label>
+                            <input
+                              type="text"
+                              name="country"
+                              id="country"
+                              class="form-control form-control-sm custom-input"
+                              required
+                            />
+                          </div>
+                          <div class="form-group">
+                            <label for="phoneNumber">Phone Number</label>
+                            <input
+                              type="tel"
+                              name="phoneNumber"
+                              id="phoneNumber"
+                              class="form-control form-control-sm custom-input"
+                              required
+                            />
+                          </div>
+                          <div class="form-group">
+                            <label for="landmark">Landmark (Optional)</label>
+                            <input
+                              type="text"
+                              name="landmark"
+                              id="landmark"
+                              class="form-control form-control-sm custom-input"
+                              required
+                            />
+                          </div>
+                          <div class="form-group d-flex align-items-center">
+                            <button
+                              type="submit"
+                              class="btn btn-primary btn-sm"
+                            >
+                              Save Address
+                            </button>
+                          </div>
+                        </form>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+        
+              <!-- Edit Address Modal -->
+              <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="editAddressForm">
+                            <div class="modal-body">
+                                <input type="hidden" id="editAddressId" name="addressId">
+                                <div class="form-group">
+                                    <label for="editPlace">Place</label>
+                                    <select class="form-control" id="editPlace" name="place" required>
+                                        <option value="">Select Place</option>
+                                        <option value="home">Home</option>
+                                        <option value="work">Work</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editHouseNumber">House Number</label>
+                                    <input type="text" class="form-control" id="editHouseNumber" name="houseNumber" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editStreet">Street</label>
+                                    <input type="text" class="form-control" id="editStreet" name="street" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editCity">City</label>
+                                    <input type="text" class="form-control" id="editCity" name="city" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editZipcode">Zipcode</label>
+                                    <input type="text" class="form-control" id="editZipcode" name="zipcode" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editCountry">Country</label>
+                                    <input type="text" class="form-control" id="editCountry" name="country" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editLandmark">Landmark</label>
+                                    <input type="text" class="form-control" id="editLandmark" name="landmark">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editPhoneNumber">Phone Number</label>
+                                    <input type="text" class="form-control" id="editPhoneNumber" name="phoneNumber">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+              </div>
+
+
+              <!-- Account Details -->
               <div
                 class="tab-pane fade"
                 id="account-detail"
@@ -603,7 +599,7 @@
                           <label for="newPassword" class="form-label text-left"
                             >New Password</label
                           >
-                            <div class="input-group">
+                          <div class="input-group">
                             <input
                               name="newPassword"
                               type="password"
@@ -663,6 +659,7 @@
     </div>
   </div>
 </section>
+
 <!-- Modal -->
 <div
   class="modal fade"
@@ -709,86 +706,289 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> <!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<!-- Include SweetAlert2 -->
 
 <script>
-    document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
-        e.preventDefault(); // Prevent form submission
+  document
+    .getElementById("changePasswordForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault(); // Prevent form submission
 
-        const firstName = document.getElementById('firstName').value;
-        const lastName = document.getElementById('lastName').value;
-        const currentPassword = document.getElementById('currentPassword').value;
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
+      const firstName = document.getElementById("firstName").value;
+      const lastName = document.getElementById("lastName").value;
+      const currentPassword = document.getElementById("currentPassword").value;
+      const newPassword = document.getElementById("newPassword").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
 
-        if (newPassword !== confirmPassword) {
+      if (newPassword !== confirmPassword) {
+        Swal.fire({
+          icon: "error",
+          title: "Validation Error",
+          text: "New passwords do not match",
+        });
+        return; // Exit function to prevent further execution
+      }
+
+      // Optional client-side validation for password complexity
+      if (
+        newPassword.length < 8 ||
+        !/[A-Z]/.test(newPassword) ||
+        !/[0-9]/.test(newPassword)
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Validation Error",
+          text: "New password must be at least 8 characters long and contain at least one uppercase letter and one digit",
+        });
+        return; // Exit function to prevent further execution
+      }
+
+      // If all validations pass, submit the form using AJAX
+      fetch("/user/updateUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          currentPassword,
+          newPassword,
+          confirmPassword,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
             Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'New passwords do not match',
+              icon: "success",
+              title: "Success",
+              text: data.message,
+            }).then(() => {
+              // Stay on the same page instead of redirecting to home
+              window.location.href = "/user/profile"; // Redirect to user profile
             });
-            return; // Exit function to prevent further execution
-        }
-
-        // Optional client-side validation for password complexity
-        if (newPassword.length < 8 || !/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+          } else {
             Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'New password must be at least 8 characters long and contain at least one uppercase letter and one digit',
+              icon: "error",
+              title: "Error",
+              text: data.message,
             });
-            return; // Exit function to prevent further execution
-        }
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Server Error",
+            text: "An error occurred while changing the password",
+          });
+        });
+    });
 
-        // If all validations pass, submit the form using AJAX
-        fetch('/user/updateUser', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ firstName, lastName, currentPassword, newPassword, confirmPassword }),
+  function togglePasswordVisibility(fieldId) {
+    const field = document.getElementById(fieldId);
+    const icon = field.nextElementSibling.querySelector("i");
+    if (field.type === "password") {
+      field.type = "text";
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
+    } else {
+      field.type = "password";
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+    }
+  }
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- SweetAlert CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<!-- SweetAlert JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Handle edit button click
+      document.addEventListener('click', function(event) {
+          if (event.target && event.target.classList.contains('btn-edit')) {
+              try {
+                  const address = JSON.parse(event.target.getAttribute('data-address'));
+                  if (address) {
+                      document.getElementById('editAddressId').value = address._id;
+                      document.getElementById('editPlace').value = address.place;
+                      document.getElementById('editHouseNumber').value = address.houseNumber;
+                      document.getElementById('editStreet').value = address.street;
+                      document.getElementById('editCity').value = address.city;
+                      document.getElementById('editZipcode').value = address.zipcode;
+                      document.getElementById('editCountry').value = address.country;
+                      document.getElementById('editLandmark').value = address.landmark || '';
+                      document.getElementById('editPhoneNumber').value = address.phoneNumber || '';
+                      $('#editAddressModal').modal('show');
+                  } else {
+                      console.error('Address data is not valid.');
+                  }
+              } catch (e) {
+                  console.error('Error parsing address data:', e);
+              }
+          }
+      });
+
+      // Handle form submission
+      document.getElementById('editAddressForm').addEventListener('submit', function(event) {
+          event.preventDefault();
+
+          const addressId = document.getElementById('editAddressId').value;
+          const updatedAddress = {
+              place: document.getElementById('editPlace').value,
+              houseNumber: document.getElementById('editHouseNumber').value,
+              street: document.getElementById('editStreet').value,
+              city: document.getElementById('editCity').value,
+              zipcode: document.getElementById('editZipcode').value,
+              country: document.getElementById('editCountry').value,
+              landmark: document.getElementById('editLandmark').value,
+              phoneNumber: document.getElementById('editPhoneNumber').value
+          };
+
+          fetch(`/user/address/${addressId}/edit`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(updatedAddress)
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  $('#editAddressModal').modal('hide');
+                  window.location.href = '/user/profile'; // Redirect to user profile
+              } else {
+                  console.error('Update failed:', data.message);
+              }
+          })
+          .catch(error => console.error('Error:', error));
+      });
+  });
+</script>
+
+
+
+
+<script>
+  document.addEventListener('click', function(event) {
+    if (event.target && event.target.classList.contains('btn-delete')) {
+        const addressId = event.target.getAttribute('data-address-id');
+
+        // Proceed with the delete request
+        fetch(`/user/address/${addressId}/delete`, {
+            method: 'DELETE'
         })
         .then(response => response.json())
         .then(data => {
+            console.log('Response:', data); // Log the response for debugging
             if (data.success) {
+                // Show success message with SweetAlert
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
+                    title: 'Deleted!',
                     text: data.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
                 }).then(() => {
-                    // Optionally refresh the page after success
-                    window.location.href ="/user/dashboard"; // Refresh the page
+                    // Redirect to the user profile page after clicking OK
+                    window.location.href = '/user/profile';
                 });
             } else {
+                // Show error message with SweetAlert
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
+                    title: 'Error!',
                     text: data.message,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
                 });
             }
         })
         .catch(error => {
             console.error('Error:', error);
             Swal.fire({
+                title: 'Error!',
+                text: 'Something went wrong.',
                 icon: 'error',
-                title: 'Server Error',
-                text: 'An error occurred while changing the password',
+                confirmButtonText: 'OK'
+            });
+        });
+    }
+});
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.btn-set-default').forEach(button => {
+        button.addEventListener('click', event => {
+            event.preventDefault();
+            const addressId = event.target.dataset.addressId;
+            setAsDefault(addressId);
+        });
+    });
+});
+
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[id^="set-default-btn-"]').forEach(button => {
+        button.addEventListener('click', function() {
+            const addressId = this.getAttribute('data-address-id');
+
+            if (!addressId) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Address ID is missing.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            fetch(`/set-default-address/${addressId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Address set as default successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: data.message || 'Failed to set address as default.',
+                        icon: 'error',
+                        confirmButtonText: 'Try Again'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An unexpected error occurred.',
+                    icon: 'error',
+                    confirmButtonText: 'Try Again'
+                });
             });
         });
     });
+});
 
-    function togglePasswordVisibility(fieldId) {
-        const field = document.getElementById(fieldId);
-        const icon = field.nextElementSibling.querySelector('i');
-        if (field.type === 'password') {
-            field.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            field.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
-    }
+
 </script>
-
