@@ -6,6 +6,9 @@ const path = require("path");
 const fs = require("fs");
 
 module.exports = {
+
+  /*Product Edit, add ,delete,list or unlist*/
+
   getProducts: async (req, res) => {
     const locals = {
       title: "Products",
@@ -65,25 +68,22 @@ module.exports = {
     });
   },
 
-  addProducts: async (req, res) => {
+ addProducts: async (req, res) => {
     console.log(req.body);
     try {
       const existProduct = await Product.findOne({
         name: req.body.productName.toLowerCase(),
       });
       if (existProduct) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Product already exist" });
+        req.flash("error","product alredey exist.")
+        return res.redirect("/admin/add-product")  
       }
-
-      // Ensure req.files is defined and contains the expected fields
+  
       if (!req.files || !req.files.images || !req.files.primaryImage) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Images are required" });
+        req.flash("error","images are required.")
+        return res.redirect("/admin/add-product")      
       }
-
+  
       let secondaryImages = [];
       req.files.images.forEach((e) => {
         secondaryImages.push({
@@ -91,7 +91,7 @@ module.exports = {
           path: e.path,
         });
       });
-
+  
       secondaryImages.forEach(async (e) => {
         await sharp(
           path.join(__dirname, "../../public/uploads/products-images/") + e.name
@@ -102,15 +102,15 @@ module.exports = {
               e.name
           );
       });
-
-      let primaryImage = [];
+  
+      let primaryImage = {};
       req.files.primaryImage.forEach((e) => {
         primaryImage = {
           name: e.filename,
           path: e.path,
         };
       });
-
+  
       await sharp(
         path.join(__dirname, "../../public/uploads/products-images/") +
           primaryImage.name
@@ -120,9 +120,9 @@ module.exports = {
           path.join(__dirname, "../../public/uploads/products-images/crp/") +
             primaryImage.name
         );
-
+  
       const product = new Product({
-        product_name: req.body.productName.toLowerCase(),
+        productName: req.body.productName.toLowerCase(),
         category: req.body.categoryName,
         description: req.body.productDespt,
         stock: req.body.productStock,
@@ -133,29 +133,28 @@ module.exports = {
         resolution: req.body.resolution,
         Processor: req.body.processor,
         ramSize: req.body.ramSize,
-        hardDriveSize: req.body.hdSize,
-        hardDiskDescription: req.body.hdDescription,
-        graphicsChipsetBrand: req.body.graphics,
-        operatingSystem: req.body.os,
+        hardDriveSize: req.body.hardDriveSize,
+        hardDiskDescription: req.body.hardDiskDescription,
+        graphicsChipsetBrand: req.body.graphicsChipsetBrand,
+        operatingSystem: req.body.operatingSystem,
         audioDetails: req.body.audioDetails,
-        numberofUSB: req.body.usbPort,
+        numberofUSB: req.body.numberofUSB,
         countryofOrigin: req.body.countryofOrigin,
-        itemWeight: req.body.weight,
+        itemWeight: req.body.itemWeight,
         primaryImages: primaryImage,
         secondaryImages: secondaryImages,
       });
-
+  
       await product.save();
       req.flash("success", "Product added successfully");
       res.redirect("/admin/products");
     } catch (error) {
       console.log(error);
-      //   res.status(500).json({ message: 'Server error' });
       req.flash("error", error.message);
       return res.redirect("/admin/add-product");
     }
   },
-
+  
   getEditProducts: async (req, res) => {
     const locals = {
       title: "Products",
@@ -263,7 +262,7 @@ module.exports = {
 
       // Update the product
       const updateProduct = {
-        product_name: req.body.productName.toLowerCase(),
+        productName: req.body.productName.toLowerCase(),
         category: req.body.categoryName,
         description: req.body.productDespt,
         stock: req.body.productStock,
@@ -274,14 +273,14 @@ module.exports = {
         resolution: req.body.resolution,
         Processor: req.body.processor,
         ramSize: req.body.ramSize,
-        hardDriveSize: req.body.hdSize,
-        hardDiskDescription: req.body.hdDescription,
-        graphicsChipsetBrand: req.body.graphics,
-        operatingSystem: req.body.os,
+        hardDriveSize: req.body.hardDriveSize,
+        hardDiskDescription: req.body.hardDiskDescription,
+        graphicsChipsetBrand: req.body.graphicsChipsetBrand,
+        operatingSystem: req.body.operatingSystem,
         audioDetails: req.body.audioDetails,
-        numberofUSB: req.body.usbPort,
+        numberofUSB: req.body.numberofUSB,
         countryofOrigin: req.body.countryofOrigin,
-        itemWeight: req.body.weight,
+        itemWeight: req.body.itemWeight,
         primaryImages: primaryImage,
         secondaryImages: secondaryImages,
       };
@@ -291,8 +290,8 @@ module.exports = {
       res.redirect("/admin/products");
     } catch (error) {
       console.error(error);
-
-      res.redirect("/products/editProducts").status(500).json({ message: "Server error" });
+      req.flash("error", "Product edited unsuccessfully");
+      res.redirect("/admin/edit-product/:id");
     }
   },
 
@@ -329,6 +328,7 @@ module.exports = {
         .json({ success: false, message: "Server error", error });
     }
   },
+
   deleteProduct: async (req, res) => {
     try {
       const productId = req.body.productId;
@@ -355,6 +355,8 @@ module.exports = {
     }
   },
 
+  /*stock mangengment*/
+  
   getStocks: async (req, res) => {
     try {
         const perPage = 7;
@@ -391,7 +393,6 @@ module.exports = {
     }
   },
 
-
   updateStocks: async (req, res) => {
     const { productId, newStock } = req.body;
 
@@ -411,4 +412,5 @@ module.exports = {
       res.json({ success: false });
     }
   },
+
 };

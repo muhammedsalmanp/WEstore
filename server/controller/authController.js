@@ -1,8 +1,6 @@
 const bcrypt = require('bcrypt');
 const adminLayout = './layouts/authLayout'
 
-
-
 const User = require("../model/userSchema");
 const OTP = require("../model/otpSchema");
 
@@ -120,6 +118,7 @@ module.exports={
   },
 
   /*--otpVerifying--*/
+
   otpVerify: async (req, res) => {
     console.log(req.body);
     try {
@@ -163,7 +162,9 @@ module.exports={
       return res.redirect("/verifyOtp");
     }
   },
+
   /*--reset otp--*/
+
   resendOtp: async (req, res) => {
     try {
       let userId;
@@ -195,10 +196,13 @@ module.exports={
       });
     }
   },
+
   /*--forgetPassword--*/
+
   getFogetPassword: async (req, res) => {
     res.render("auth/user/forgetPass");
   },
+
   forgetPassword: async (req, res) => {
     try {
       const { email } = req.body;
@@ -218,7 +222,9 @@ module.exports={
       return res.redirect("/forgetPass");
     }
   },
-  //verifying user by otp
+
+  /*--verifying user by otp--*/
+
   getForgetPasswordVerify: async (req, res) => {
     if (!req.session.forgetToken) {
       return res.redirect("/");
@@ -251,10 +257,13 @@ module.exports={
       return res.redirect("/forgetOtpVerify");
     }
   },
+
   /*-reset new password-*/
+
   getResetPassword: async (req, res) => {
     res.render("auth/user/resetPass");
   },
+
   resetPassword: async (req, res) => {
     console.log(req.body);
     try {
@@ -283,6 +292,7 @@ module.exports={
       return res.redirect("/resetPass");
     }
   },
+  
   /*--user Logout--*/
 
   getUserLogout: (req, res) => {
@@ -303,7 +313,8 @@ module.exports={
   },
   
 
-  //admin   
+  /*--admin--*/
+
   getAdminLogin: (req, res) => {
     const locals = {
       title: "Admin Login",
@@ -314,6 +325,7 @@ module.exports={
       layout: adminLayout,
     });
   },
+
   getAdminRegister: (req, res) => {
     const locals = {
       title: "Admin Register",
@@ -387,6 +399,7 @@ module.exports={
     req.flash("success", "admin successfully logged in");
     return res.redirect("/admin");
   },
+
   AdminLogout:(req,res)=>{    
       
       req.flash("success","You have been Logged out.")

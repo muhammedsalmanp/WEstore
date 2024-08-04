@@ -20,7 +20,7 @@
                                     <a href="/shop/productDetails/<%= product._id %>"><img src="/uploads/products-images/crp/<%= product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>" alt="#"></a> 
                                   </td>
                                   <td class="product-des product-name">
-                                      <h5 class="product-name"><a href="/shop/productDetails/<%= product._id %>"><%= product.product_name %></a></h5>
+                                      <h5 class="product-name"><a href="/shop/productDetails/<%= product._id %>"><%= product.productName %></a></h5>
                                   </td>
                                   <td class="price" data-title="Price"><span>$<%= product.price %>.00</span></td>
                                   <td class="text-center" data-title="Stock">

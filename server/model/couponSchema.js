@@ -1,25 +1,32 @@
 const mongoose = require('mongoose');
 
 const couponSchema = new mongoose.Schema({
-    code: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true
-    },
-    discountAmount: {
-        type: Number,
-        required: true,
-        min: 0
-    },
-    expirationDate: {
-        type: Date,
-        required: true
-    },
-    isActive: {
-        type: Boolean,
-        default: true
-    }
+  code: {
+    type: String,
+    required: true,
+    unique: true,
+    uppercase: true
+  },
+  discountPercentage: {
+    type: Number,
+    required: true
+  },
+  minPurchaseAmount: {
+    type: Number,
+    required: true
+  },
+  expirationDate: {
+    type: Date,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
 }, {
     timestamps: true 
 });

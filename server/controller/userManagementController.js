@@ -4,6 +4,7 @@ const adminLayout = "./layouts/adminLayouts";
 
 
 module.exports = {
+  
   getAllUsers: async (req, res) => {
     const locals = {
       title: "Users",

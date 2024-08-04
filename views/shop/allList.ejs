@@ -1,3 +1,69 @@
+<style>
+  .custome-checkbox {
+  margin-bottom: 15px;
+}
+
+.custome-checkbox .form-check-input {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.custome-checkbox .form-check-label {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.sidebar-widget h5 {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.sidebar-widget .widget-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.sidebar-widget {
+  margin-bottom: 30px;
+}
+
+.sidebar-widget .price-filter-inner {
+  padding: 10px 0;
+}
+
+.price_slider_amount {
+  display: flex;
+  align-items: center;
+}
+
+.price_slider_amount .label-input {
+  flex-grow: 1;
+}
+
+.suggestions-list {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 1000;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background: #f0f0f0;
+}
+</style>
+
+
+</style>
+
 <section class="mt-50 mb-50">
     <div class="page-header breadcrumb-wrap mb-15">
         <div class="container">
@@ -13,30 +79,31 @@
             <div class="col-lg-9">
                 <div class="shop-product-fillter">
                     <div class="totall-product">
-                        <p> We found <strong class="text-brand"><%=productCount %></strong> items for you!</p>
+                        <p> We found <strong class="text-brand"><%= filteredCount %></strong> items for you!</p>
                     </div>
-
+                    
                     <div class="sort-by-product-area">
-                        <div class="sort-by-cover">
-                            <div class="sort-by-product-wrap">
-                                <div class="sort-by">
-                                    <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
-                                </div>
-                                <div class="sort-by-dropdown-wrap">
-                                    <span> Featured <i class="fi-rs-angle-small-down"></i></span>
-                                </div>
-                            </div>
-                            <div class="sort-by-dropdown">
-                                <ul>
-                                    <li><a class="active" href="#">Featured</a></li>
-                                    <li><a href="#">Price: Low to High</a></li>
-                                    <li><a href="#">Price: High to Low</a></li>
-                                    <li><a href="#">Release Date</a></li>
-                                    <li><a href="#">Avg. Rating</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                      <div class="sort-by-cover">
+                          <div class="sort-by-product-wrap">
+                              <div class="sort-by">
+                                  <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
+                              </div>
+                              <div class="sort-by-dropdown-wrap">
+                                  <span> Featured <i class="fi-rs-angle-small-down"></i></span>
+                              </div>
+                          </div>
+                          <div class="sort-by-dropdown">
+                              <ul>
+                                  <li><a href="?sort=featured">Featured</a></li>
+                                  <li><a href="?sort=price-asc">Price: Low to High</a></li>
+                                  <li><a href="?sort=price-desc">Price: High to Low</a></li>
+                                  <li><a href="?sort=name-asc">A to Z</a></li>
+                                  <li><a href="?sort=name-desc">Z to A</a></li>
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+                  
                 </div>
                 <div class="row product-grid-3">
                     <% products.filter(product=> product.isActive).forEach (product=>{ %>
@@ -75,7 +142,7 @@
                                     <a href="shop-grid-right.html"><%= product.category.name %></a>
                                     </div>
                                     <h2>
-                                    <a href="/shop/productDetails/<%- product._id %>"><%= product.product_name %></a>
+                                    <a href="/shop/productDetails/<%- product._id %>"><%= product.productName %></a>
                                     </h2>
                                     <div class="rating-result" title="90%">
                                         <span>
@@ -135,130 +202,105 @@
                    <% } %> 
             </div>
             <div class="col-lg-3 primary-sidebar sticky-sidebar">
-                <div class="widget-category mb-30">
-                    <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
-                    <ul class="categories">
-                        <% categories.forEach(category => { %>
-                            <li><a href="shop-grid-right.html"><%= category.name %></a></li>
-                        <% }) %>
-                    </ul>
+              <div class="widget-category mb-30">
+                <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
+                <ul class="categories">
+                  <% categories.forEach(category => { %>
+                    <li><a href="/allProducts?category=<%= category._id %>"><%= category.name %></a></li>
+                  <% }) %>
+                </ul>
+              </div>
+              
+              <form id="filter-form" action="/allProducts" method="GET">
+                <!-- Persisting the category filter -->
+                <% if (category) { %>
+                  <input type="hidden" name="category" value="<%= category %>">
+                <% } %>
+                
+                  <!-- Filter By Processor -->
+                  <div class="sidebar-widget mb-30">
+                    <h5 class="widget-title mb-10">Processor</h5>
+                    <div class="custome-checkbox">
+                      <% ['Intel', 'AMD', 'Apple M1', 'Qualcomm Snapdragon', 'Samsung Exynos'].forEach((processor, index) => { %>
+                        <div style="margin-bottom: 10px;">
+                          <input class="form-check-input" type="checkbox" id="Processor-<%= index %>" name="Processor" value="<%= processor %>" style="margin-right: 5px;">
+                          <label class="form-check-label" for="Processor-<%= index %>"><%= processor %></label>
+                        </div>
+                      <% }) %>
+                    </div>
+                  </div>
+                
+                <!-- Filter By RAM Size -->
+                <div class="sidebar-widget mb-30">
+                  <h5 class="widget-title mb-10">RAM Size</h5>
+                  <div class="custome-checkbox">
+                    <% [4, 8, 16, 32, 64].forEach((ram, index) => { %>
+                      <div style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="checkbox" id="ramSize-<%= index %>" name="ramSize" value="<%= ram %>" style="margin-right: 5px;">
+                        <label class="form-check-label" for="ramSize-<%= index %>"><%= ram %>GB</label>
+                      </div>
+                    <% }) %>
+                  </div>
                 </div>
-                <!-- Fillter By Price -->
-                <div class="sidebar-widget price_range range mb-30">
-                    <div class="widget-header position-relative mb-20 pb-10">
-                        <h5 class="widget-title mb-10">Fill by price</h5>
-                        <div class="bt-1 border-color-1"></div>
-                    </div>
-                    <div class="price-filter">
-                        <div class="price-filter-inner">
-                            <div id="slider-range"></div>
-                            <div class="price_slider_amount">
-                                <div class="label-input">
-                                    <span>Range:</span><input type="text" id="amount" name="price" placeholder="Add Your Price" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-group">
-                        <div class="list-group-item mb-10 mt-10">
-                            <label class="fw-900 mt-15">Processors (CPU)</label>
-                            <div class="custome-checkbox">
-                                <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox11" value="">
-                                <label class="form-check-label" for="exampleCheckbox11"><span>i3</span></label>
-                                <br>
-                                <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox21" value="">
-                                <label class="form-check-label" for="exampleCheckbox21"><span>i5</span></label>
-                                <br>
-                                <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox31" value="">
-                                <label class="form-check-label" for="exampleCheckbox31"><span>i7</span></label>
-                                <br>
-                                <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox31" value="">
-                                <label class="form-check-label" for="exampleCheckbox31"><span>i9</span></label>
-                            </div>
-                            <label class="fw-900">RAM</label>
-                            <div class="custome-checkbox">
-                                <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox1" value="">
-                                <label class="form-check-label" for="exampleCheckbox1"><span>4GB</span></label>
-                                <br>
-                                <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox2" value="">
-                                <label class="form-check-label" for="exampleCheckbox2"><span>6GB</span></label>
-                                <br>
-                                <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox3" value="">
-                                <label class="form-check-label" for="exampleCheckbox3"><span>8GB</span></label>
-                                <br>
-                                <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox4" value="">
-                                <label class="form-check-label" for="exampleCheckbox4"><span>16GB</span></label>
-                                <br>
-                                <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox5" value="">
-                                <label class="form-check-label" for="exampleCheckbox5"><span>32GB</span></label>
-                            </div>
-                            <label class="fw-900 mt-15">Hard disk</label>
-                            <div class="custome-checkbox">
-                                <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox11" value="">
-                                <label class="form-check-label" for="exampleCheckbox11"><span>NVMe drive</span></label>
-                                <br>
-                                <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox21" value="">
-                                <label class="form-check-label" for="exampleCheckbox21"><span>SSD</span></label>
-                                <br>
-                                <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox31" value="">
-                                <label class="form-check-label" for="exampleCheckbox31"><span>HDD</span></label>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="shop-grid-right.html" class="btn btn-sm btn-default"><i class="fi-rs-filter mr-5"></i> Fillter</a>
+                
+                <!-- Filter By Hard Drive Size -->
+                <div class="sidebar-widget mb-30">
+                  <h5 class="widget-title mb-10">Hard Drive Size</h5>
+                  <div class="custome-checkbox">
+                    <% [128, 256, 512, 1024, 2048].forEach((hardDrive, index) => { %>
+                      <div style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="checkbox" id="hardDriveSize-<%= index %>" name="hardDriveSize" value="<%= hardDrive %>" style="margin-right: 5px;">
+                        <label class="form-check-label" for="hardDriveSize-<%= index %>"><%= hardDrive %>GB</label>
+                      </div>
+                    <% }) %>
+                  </div>
                 </div>
-                <!-- Product sidebar Widget -->
-                <div class="sidebar-widget product-sidebar  mb-30 p-30 bg-grey border-radius-10">
-                    <div class="widget-header position-relative mb-20 pb-10">
-                        <h5 class="widget-title mb-10">New products</h5>
-                        <div class="bt-1 border-color-1"></div>
-                    </div>
-                    <div class="single-post clearfix">
-                        <div class="image">
-                            <img src="assets/imgs/shop/thumbnail-3.jpg" alt="#">
-                        </div>
-                        <div class="content pt-10">
-                            <h5><a href="shop-product-detail.html">Chen Cardigan</a></h5>
-                            <p class="price mb-0 mt-5">$99.50</p>
-                            <div class="product-rate">
-                                <div class="product-rating" style="width:90%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="single-post clearfix">
-                        <div class="image">
-                            <img src="assets/imgs/shop/thumbnail-4.jpg" alt="#">
-                        </div>
-                        <div class="content pt-10">
-                            <h6><a href="shop-product-detail.html">Chen Sweater</a></h6>
-                            <p class="price mb-0 mt-5">$89.50</p>
-                            <div class="product-rate">
-                                <div class="product-rating" style="width:80%"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="single-post clearfix">
-                        <div class="image">
-                            <img src="assets/imgs/shop/thumbnail-5.jpg" alt="#">
-                        </div>
-                        <div class="content pt-10">
-                            <h6><a href="shop-product-detail.html">Colorful Jacket</a></h6>
-                            <p class="price mb-0 mt-5">$25</p>
-                            <div class="product-rate">
-                                <div class="product-rating" style="width:60%"></div>
-                            </div>
-                        </div>
-                    </div>
+                
+                <!-- Filter By Hard Disk Description -->
+                <div class="sidebar-widget mb-30">
+                  <h5 class="widget-title mb-10">Hard Disk Type</h5>
+                  <div class="custome-checkbox">
+                    <% ['HDD', 'SSD', 'Hybrid', 'NVMe'].forEach((hardDisk, index) => { %>
+                      <div style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="checkbox" id="hardDiskDescription-<%= index %>" name="hardDiskDescription" value="<%= hardDisk %>" style="margin-right: 5px;">
+                        <label class="form-check-label" for="hardDiskDescription-<%= index %>"><%= hardDisk %></label>
+                      </div>
+                    <% }) %>
+                  </div>
                 </div>
-                <div class="banner-img wow fadeIn mb-45 animated d-lg-block d-none">
-                    <img src="assets/imgs/banner/banner-11.jpg" alt="">
-                    <div class="banner-text">
-                        <span>Women Zone</span>
-                        <h4>Save 17% on <br>Office Dress</h4>
-                        <a href="shop-grid-right.html">Shop Now <i class="fi-rs-arrow-right"></i></a>
-                    </div>
+                
+                <!-- Filter By Graphics Chipset -->
+                <div class="sidebar-widget mb-30">
+                  <h5 class="widget-title mb-10">Graphics Chipset</h5>
+                  <div class="custome-checkbox">
+                    <% ['NVIDIA', 'AMD', 'Intel', 'Apple', 'Non-Graphic'].forEach((chipset, index) => { %>
+                      <div style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="checkbox" id="graphicsChipsetBrand-<%= index %>" name="graphicsChipsetBrand" value="<%= chipset %>" style="margin-right: 5px;">
+                        <label class="form-check-label" for="graphicsChipsetBrand-<%= index %>"><%= chipset %></label>
+                      </div>
+                    <% }) %>
+                  </div>
                 </div>
+                
+                <!-- Filter By Operating System -->
+                <div class="sidebar-widget mb-30">
+                  <h5 class="widget-title mb-10">Operating System</h5>
+                  <div class="custome-checkbox">
+                    <% ['Windows', 'macOS', 'Linux', 'Chrome OS', 'Android'].forEach((os, index) => { %>
+                      <div style="margin-bottom: 10px;">
+                        <input class="form-check-input" type="checkbox" id="operatingSystem-<%= index %>" name="operatingSystem" value="<%= os %>" style="margin-right: 5px;">
+                        <label class="form-check-label" for="operatingSystem-<%= index %>"><%= os %></label>
+                      </div>
+                    <% }) %>
+                  </div>
+                </div>
+                
+                <!-- Filter Button -->
+                <button type="submit" class="btn btn-sm btn-default"><i class="fi-rs-filter mr-5"></i> Filter</button>
+              </form>
             </div>
+            
+          
         </div>
     </div>
 </section>

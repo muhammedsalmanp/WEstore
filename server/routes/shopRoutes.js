@@ -14,12 +14,12 @@ router.get("/shop/productDetails/:id",shopController.getProductDetails)
 
 //allProducts
 router.get("/allProducts",shopController.getAllProduct)
-
+router.get('/allProducts/search',shopController.getSearchSuggestions)
 
 // Review
 
 router.get("/submitReview",reviewController.getAllReviews)
-router.post("/submitReview",reviewController.submitReview);
+router.post("/submitReview",reviewController.submitReview)
 
 
 module.exports = router                                    

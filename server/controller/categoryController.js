@@ -37,6 +37,7 @@ module.exports = {
       breadcrumbs,
     });
   },
+
   getAddCategory: async (req, res) => {
     const locals = {
       titel: "Add Category",
@@ -52,6 +53,7 @@ module.exports = {
       breadcrumbs
     });
   },
+
   addCategory: async (req, res) => {
     try {
       console.log(req.body);
@@ -75,6 +77,7 @@ module.exports = {
       console.error(error);
     }
   },
+
   getEditCategory: async (req, res) => {
     const category = await Category.findById(req.params.id);
     const breadcrumbs = [
@@ -88,6 +91,7 @@ module.exports = {
       breadcrumbs,
     });
   },
+
   editCategory: async (req, res) => {
     try {
       const { status } = req.body;
@@ -126,6 +130,7 @@ module.exports = {
       return res.redirect(`/admin/category/editCategory`);
     }
   },
+
   softdelete: async (req, res) => {
     try {
       const categoryId = req.body.categoryId;
@@ -155,6 +160,7 @@ module.exports = {
         .json({ success: false, message: "Server error", error });
     }
   },
+  
   deleteCategory: async (req, res) => {
     try {
       const categoryId = req.body.categoryId;

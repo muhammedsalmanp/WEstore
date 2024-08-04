@@ -1,87 +1,92 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
- 
-    product_name:{
-        type:String,
-        require:true,
+    productName: {
+        type: String,
+        required: true,
     },
-    oldPrice:{
-        type:Number,
-        require:true,
+    oldPrice: {
+        type: Number,
+        required: true,
     },
-    price:{
-        type:Number,
-        require:true,
+    price: {
+        type: Number,
+        required: true,
     },
-    description:{
-        type:String,
+    description: {
+        type: String,
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Category",
+        ref: 'Category',
         required: true,
     },
-    isActive:{
-        type:Boolean,
-        default:true
+    isActive: {
+        type: Boolean,
+        default: true,
     },
-    stock:{
-        type:Number,
-        min:0,
-        requires:true,
-        default:0
-    },
-    Colour:{
-        type:String,   
-    },
-    displaySize:{
+    stock: {
         type: Number,
-        require:true,
+        min: 0,
+        required: true,
+        default: 0,
     },
-    resolution:{
+    Colour: {
         type: String,
-        require:true,
     },
-    Processor:{
-        type: String,
-        require:true,
-    },
-    ramSize:{
-        type:  Number,
-        require:true,
-    },
-    hardDriveSize:{
+    displaySize: {
         type: Number,
-        require:true,
+        required: true,
     },
-    hardDiskDescription:{
+    resolution: {
         type: String,
-        require:true,
+        required: true,
     },
-    graphicsChipsetBrand:{
+    Processor: {
         type: String,
-        require:true,
-    }, 
-    operatingSystem:{
+        enum: ['Intel', 'AMD', 'Apple M1', 'Qualcomm Snapdragon', 'Samsung Exynos'],
+        required: true,
+    },
+    ramSize: {
+        type: Number,
+        enum: [4, 8, 16, 32, 64],
+        required: true,
+    },
+    hardDriveSize: {
+        type: Number,
+        enum: [128, 256, 512, 1024, 2048],
+        required: true,
+    },
+    hardDiskDescription: {
         type: String,
-        require:true,
+        enum: ['HDD', 'SSD', 'Hybrid', 'NVMe'],
+        required: true,
     },
-    numberofUSB:{
-        type:  Number,
-        require:true,
-    },
-    audioDetails:{
+    graphicsChipsetBrand: {
         type: String,
-        require:true,
+        enum: ['NVIDIA', 'AMD', 'Intel', 'Apple',"Non-Graphic"],
+        required: true,
     },
-    countryofOrigin:{
+    operatingSystem: {
         type: String,
-        require:true,
+        enum: ['Windows', 'macOS', 'Linux', 'Chrome OS', 'Android'],
+        required: true,
     },
-    itemWeight:{
-        type:  String,
-        require:true,
+    numberofUSB: {
+        type: Number,
+        required: true,
+    },
+    audioDetails: {
+        type: String,
+        required: true,
+    },
+    countryofOrigin: {
+        type: String,
+        required: true,
+    },
+    itemWeight: {
+        type: String,
+        required: true,
     },
     reviews: [
         {
@@ -89,31 +94,29 @@ const productSchema = new mongoose.Schema({
             ref: 'Review',
         },
     ],
-    primaryImages:[
+    primaryImages: [
         {
-            name:{
-                type:String,
+            name: {
+                type: String,
             },
-            path:{
-                type:String
-            }
-        }
+            path: {
+                type: String,
+            },
+        },
     ],
-    secondaryImages:[
+    secondaryImages: [
         {
-            name:{
-                type:String,
+            name: {
+                type: String,
             },
-            path:{
-                type:String
-            }
-        }
+            path: {
+                type: String,
+            },
+        },
     ],
-    
-},
-{
+}, {
     timestamps: true,
     strict: false,
-  },
-)
-module.exports = mongoose.model("Product", productSchema);
+});
+
+module.exports = mongoose.model('Product', productSchema);

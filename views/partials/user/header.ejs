@@ -23,6 +23,82 @@
 	.dropdown-item:hover {
 	  background-color: #f1f1f1;
 	}
+	/* Container for search input and icon */
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+	width: 80%;
+}
+
+/* Style for search input */
+.input-search {
+    padding: 8px 40px 8px 12px; /* Add padding on the right for the icon */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1;
+}
+
+/* Style for search icon */
+#search-icon {
+    position: absolute;
+    right: 12px; /* Position inside the input field */
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    padding: 8px;
+    pointer-events: all; /* Ensure the icon can be clicked */
+}
+
+/* Style for suggestions dropdown */
+.suggestions {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 100%; /* Position below the search container */
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 200px; /* Optional: limit the height */
+    overflow-y: auto; /* Optional: add scroll if content is too long */
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+/* Style for each suggestion item */
+.suggestions ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.suggestions li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggestions li:hover {
+    background-color: #f0f0f0;
+}
+
+/* Style for error message */
+.error-message {
+    position: absolute;
+    top: 100%; /* Position below the search container */
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    color: red;
+    font-size: 14px;
+    display: none; /* Initially hidden */
+    text-align: center;
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+
   </style>
 <!-- Header -->
 <header class="header-v2">
@@ -51,16 +127,23 @@
 							<a href="/">Contact</a>
 						</li>
 					</ul>
-				</div>    
+				</div> 
+				   
   
 				<!-- Icon header -->
 				<div class="wrap-icon-header flex-w flex-r-m">
-					<% if (typeof user !=='undefined') { %>
-						<% if (user) { %>
-					<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-						<i class="zmdi zmdi-search"></i>
+					<div class="wrap-icon-header flex-w flex-r-m">
+						<div class="search-container">
+							<input id="search-input" type="text" placeholder="Search..." class="input-search">
+							<div id="search-icon" class="icon-header-item cl2 hov-cl1 trans-04">
+								<i class="zmdi zmdi-search"></i>
+							</div>
+							<div id="suggestions" class="suggestions"></div>
+							<div id="error-message" class="error-message" style="display: none;">No products found.</div>
+						</div>
 					</div>
-  
+					<% if (typeof user !=='undefined') { %>
+						<% if (user) { %>		
 					<a  href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="0">
 						<i class="zmdi zmdi-shopping-cart"></i>
 					</a>
@@ -114,3 +197,61 @@
 	  });
 	});
   </script>
+ <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('search-input');
+    const searchIcon = document.getElementById('search-icon');
+    const suggestionsList = document.getElementById('suggestions');
+    const errorMessage = document.getElementById('error-message');
+
+    const showSuggestions = async (query) => {
+        try {
+            const response = await fetch(`/allProducts/search?query=${encodeURIComponent(query)}`);
+            const suggestions = await response.json();
+
+            if (suggestions.length > 0) {
+                const limitedSuggestions = suggestions.slice(0, 4); // Limit to 4 suggestions
+                suggestionsList.innerHTML = '<ul>' + limitedSuggestions.map(item => `<li>${item}</li>`).join('') + '</ul>';
+                suggestionsList.style.display = 'block';
+                errorMessage.style.display = 'none'; // Hide error message
+            } else {
+                suggestionsList.style.display = 'none';
+                errorMessage.style.display = 'block'; // Show error message
+            }
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+            suggestionsList.style.display = 'none';
+            errorMessage.style.display = 'block'; // Show error message
+        }
+    };
+
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim();
+        if (query.length > 0) {
+            showSuggestions(query);
+        } else {
+            suggestionsList.style.display = 'none';
+            errorMessage.style.display = 'none';
+        }
+    });
+
+    searchIcon.addEventListener('click', () => {
+        const query = searchInput.value.trim();
+        if (query.length > 0) {
+            window.location.href = `/allProducts?search=${encodeURIComponent(query)}`;
+        } else {
+            errorMessage.style.display = 'block'; // Show error message if no query is entered
+            suggestionsList.style.display = 'none';
+        }
+    });
+
+    suggestionsList.addEventListener('click', (e) => {
+        if (e.target.tagName === 'LI') {
+            const selectedSuggestion = e.target.textContent;
+            window.location.href = `/allProducts?search=${encodeURIComponent(selectedSuggestion)}`;
+        }
+    });
+});
+</script>
+	
+	

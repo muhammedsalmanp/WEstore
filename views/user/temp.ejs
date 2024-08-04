@@ -757,3 +757,502 @@
   
   
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+<section class="content-main">
+  <ol class="breadcrumb">
+      <% breadcrumbs.forEach(function(crumb, index) { %>
+          <% if (index === breadcrumbs.length - 1) { %>
+              <li class="breadcrumb-item active"><%= crumb.name %></li>
+          <% } else { %>
+              <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.name %></a></li>
+          <% } %>
+      <% }); %>
+  </ol>
+  <div class="row">
+      <div class="col-9">
+          <div class="content-header">
+              <h2 class="content-title">Edit Product - <%= product.productName %>
+              </h2>
+          </div>
+      </div>
+  </div>
+  <form id="editProductForm" action="/admin/edit-product/<%= product._id %>" method="post" enctype="multipart/form-data">
+      <div class="row">
+          <div class="col-lg-9">
+              <div class="card mb-4">
+                  <div class="card-body">
+                      <!-- Product Name -->
+                      <div class="mb-4">
+                          <label for="product_name" class="form-label">Product Name</label>
+                          <input type="text" value="<%= product.productName %>" placeholder="Type here"
+                              class="form-control" name="productName" id="product_name">
+                      </div>
+  
+                      <!-- Status -->
+                      <div class="mb-4">
+                          <label for="status" class="form-label">Status</label>
+                          <select class="form-select" name="status" aria-label="List or Unlist">
+                              <option value="true" <% if (!product.isActive) { %> selected <% } %>>Unlisted</option>
+                              <option value="false" <% if (product.isActive) { %> selected <% } %>>Listed</option>
+                          </select>
+                      </div>
+  
+                      <!-- Categories -->
+                      <div class="mb-4">
+                          <label for="category_name" class="form-label">Categories</label>
+                          <select name="categoryName" id="categoryName" class="form-select">
+                              <option value="<%= product.category._id %>"><%= product.category.name %></option>
+                              <% categories.forEach(category => { %>
+                                  <% if (category._id.toString() !== product.category._id.toString()) { %>
+                                      <option value="<%= category._id %>"><%= category.name %></option>
+                                  <% } %>
+                              <% }) %>
+                          </select>
+                      </div>
+  
+                      <!-- Full Description -->
+                      <div class="mb-4">
+                          <label class="form-label">Full Description</label>
+                          <textarea placeholder="Type here" class="form-control" name="description" rows="4"><%= product.description %></textarea>
+                      </div>
+  
+                      <!-- Stock -->
+                      <div class="row">
+                          <div class="col-lg-4">   
+                              <div class="mb-4">
+                                  <label class="form-label">Stock</label>
+                                  <input placeholder="Enter stock" name="stock" value="<%= product.stock %>" type="number" class="form-control" min="0">
+                              </div>
+                          </div> 
+                              <!-- Price -->
+                          <div class="col-lg-4">     
+                              <div class="mb-4">
+                                  <label class="form-label">Price</label>
+                                  <input placeholder="Enter price" value="<%= product.price %>" name="price" type="number" class="form-control" min="0">
+                              </div>
+                          </div>
+                              <!-- Old Price -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">Old Price</label>
+                                  <input placeholder="₹" value="<%= product.oldPrice %>" type="number" name="oldPrice" class="form-control" min="0">
+                              </div>
+                          </div>
+                              <!-- Colour -->
+                          <div class="col-lg-4">      
+                              <div class="mb-4">
+                                  <label class="form-label">Colour</label>
+                                  <input placeholder="Colour" value="<%= product.Colour %>" class="form-control" name="colour">
+                              </div>
+                          </div>
+                              <!-- Display Size -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">Display Size</label>
+                                  <input placeholder="Enter display size" value="<%= product.displaySize %>" type="number" name="displaySize" class="form-control" min="0">
+                              </div>
+                          </div>
+                              <!-- Resolution -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">Resolution</label>
+                                  <input placeholder="Enter resolution" value="<%= product.resolution %>" class="form-control" name="resolution">
+                              </div>
+                          </div>
+                              <!-- Processor -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">Processor</label>
+                                  <select class="form-select" name="processor">
+                                      <option value="Intel" <% if (product.Processor === 'Intel') { %> selected <% } %>>Intel</option>
+                                      <option value="AMD" <% if (product.Processor === 'AMD') { %> selected <% } %>>AMD</option>
+                                      <option value="Apple M1" <% if (product.Processor === 'Apple M1') { %> selected <% } %>>Apple M1</option>
+                                      <option value="Qualcomm Snapdragon" <% if (product.Processor === 'Qualcomm Snapdragon') { %> selected <% } %>>Qualcomm Snapdragon</option>
+                                      <option value="Samsung Exynos" <% if (product.Processor === 'Samsung Exynos') { %> selected <% } %>>Samsung Exynos</option>
+                                  </select>
+                              </div>
+                          </div>
+                              <!-- RAM Size -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">RAM Size</label>
+                                  <select class="form-select" name="ramSize">
+                                      <option value="4" <% if (product.ramSize === 4) { %> selected <% } %>>4 GB</option>
+                                      <option value="8" <% if (product.ramSize === 8) { %> selected <% } %>>8 GB</option>
+                                      <option value="16" <% if (product.ramSize === 16) { %> selected <% } %>>16 GB</option>
+                                      <option value="32" <% if (product.ramSize === 32) { %> selected <% } %>>32 GB</option>
+                                      <option value="64" <% if (product.ramSize === 64) { %> selected <% } %>>64 GB</option>
+                                  </select>
+                              </div>
+                          </div>
+                              <!-- Hard Drive Size -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">Hard Drive Size</label>
+                                  <select class="form-select" name="hardDriveSize">
+                                      <option value="128" <% if (product.hardDriveSize === 128) { %> selected <% } %>>128 GB</option>
+                                      <option value="256" <% if (product.hardDriveSize === 256) { %> selected <% } %>>256 GB</option>
+                                      <option value="512" <% if (product.hardDriveSize === 512) { %> selected <% } %>>512 GB</option>
+                                      <option value="1024" <% if (product.hardDriveSize === 1024) { %> selected <% } %>>1 TB</option>
+                                      <option value="2048" <% if (product.hardDriveSize === 2048) { %> selected <% } %>>2 TB</option>
+                                  </select>
+                              </div>
+                          </div>
+                              <!-- Hard Disk Description -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">Hard Disk Description</label>
+                                  <select class="form-select" name="hardDiskDescription">
+                                      <option value="HDD" <% if (product.hardDiskDescription === 'HDD') { %> selected <% } %>>HDD</option>
+                                      <option value="SSD" <% if (product.hardDiskDescription === 'SSD') { %> selected <% } %>>SSD</option>
+                                      <option value="Hybrid" <% if (product.hardDiskDescription === 'Hybrid') { %> selected <% } %>>Hybrid</option>
+                                      <option value="NVMe" <% if (product.hardDiskDescription === 'NVMe') { %> selected <% } %>>NVMe</option>
+                                  </select>
+                              </div>
+                          </div>
+                              <!-- Graphics Chipset Brand -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">Graphics Chipset Brand</label>
+                                  <select class="form-select" name="graphics">
+                                      <option value="NVIDIA" <% if (product.graphicsChipsetBrand === 'NVIDIA') { %> selected <% } %>>NVIDIA</option>
+                                      <option value="AMD" <% if (product.graphicsChipsetBrand === 'AMD') { %> selected <% } %>>AMD</option>
+                                      <option value="Intel" <% if (product.graphicsChipsetBrand === 'Intel') { %> selected <% } %>>Intel</option>
+                                      <option value="Apple" <% if (product.graphicsChipsetBrand === 'Apple') { %> selected <% } %>>Apple</option>
+                                      <option value="Non-Graphic" <% if (product.graphicsChipsetBrand === 'Non-Graphic') { %> selected <% } %>>Non-Graphic</option>
+                                  </select>
+                              </div>
+                          </div>
+                              <!-- Operating System -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">Operating System</label>
+                                  <select class="form-select" name="os">
+                                      <option value="Windows" <% if (product.operatingSystem === 'Windows') { %> selected <% } %>>Windows</option>
+                                      <option value="macOS" <% if (product.operatingSystem === 'macOS') { %> selected <% } %>>macOS</option>
+                                      <option value="Linux" <% if (product.operatingSystem === 'Linux') { %> selected <% } %>>Linux</option>
+                                      <option value="Chrome OS" <% if (product.operatingSystem === 'Chrome OS') { %> selected <% } %>>Chrome OS</option>
+                                      <option value="Android" <% if (product.operatingSystem === 'Android') { %> selected <% } %>>Android</option>
+                                  </select>
+                              </div>
+                          </div> 
+                              <!-- Number of USB Ports -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">Number of USB Ports</label>
+                                  <input placeholder="Number of USB ports" value="<%= product.numberofUSB %>" type="number" name="numberofUSB" class="form-control" min="0">
+                              </div>
+                          </div>
+                              <!-- Audio Details -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">Audio Details</label>
+                                  <input placeholder="Audio details" value="<%= product.audioDetails %>" class="form-control" name="audioDetails">
+                              </div>
+                          </div>
+                              <!-- Country of Origin -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">Country of Origin</label>
+                                  <input placeholder="Country of origin" value="<%= product.countryofOrigin %>" class="form-control" name="countryofOrigin">
+                              </div>
+                          </div>
+                              <!-- Item Weight -->
+                          <div class="col-lg-4">
+                              <div class="mb-4">
+                                  <label class="form-label">Item Weight</label>
+                                  <input placeholder="Item weight" value="<%= product.itemWeight %>" class="form-control" name="itemWeight">
+                              </div>
+                          </div>
+                     </div>
+                     <div class="row">
+                        <!-- Primary image upload with cropping -->
+                        <div class="col-lg-4">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4>Primary Image</h4>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="input-upload">
+                                        <label for="image1" class="form-label">
+                                            <% if (product.primaryImages[0]) { %>
+                                                <img id="preview1"
+                                                    src="/uploads/products-images/crp/<%- product.primaryImages[0].name %>" alt=""
+                                                    width="150px">
+                                                <% } else {%>
+                                                    <img id="preview1" src="../../assets/imgs/theme/upload.svg" alt=""
+                                                        width="150px">
+                                                    <% } %>
+                                        </label>
+                                        <input type="file" class="form-control" id="image1" name="primaryImage">
+                                    </div>
+                                    <button type="button" class="btn btn-md rounded font-sm"
+                                        onclick="document.getElementById('image1').click();">Upload Image</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Secondary images upload -->
+                        <div class="col-lg-4"> 
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4>Secondary Image 1</h4>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="input-upload">
+                                        <label for="image2" class="form-label">
+                                            <% if (product.secondaryImages[0]) { %>
+                                                <img id="preview2"
+                                                    src="/uploads/products-images/crp/<%-product.secondaryImages[0].name %>" alt=""
+                                                    width="150px">
+                                                <% } else {%>
+                                                    <img id="preview2" src="../../assets/imgs/theme/upload.svg" alt=""
+                                                        width="150px">
+                                                    <% } %>
+                                        </label>
+                                        <input type="file" class="form-control" id="image2" name="image2">
+                                    </div>
+                                    <button type="button" class="btn btn-md rounded font-sm"
+                                        onclick="document.getElementById('image2').click();">Upload Image</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4>Secondary Image 2</h4>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="input-upload">
+                                        <label for="image3" class="form-label">
+                                            <% if (product.secondaryImages[1]) { %>
+                                                <img id="preview3"
+                                                    src="/uploads/products-images/crp/<%-product.secondaryImages[1].name %>" alt=""
+                                                    width="150px">
+                                                <% } else {%>
+                                                    <img id="preview3" src="../../assets/imgs/theme/upload.svg" alt=""
+                                                        width="150px">
+                                                    <% } %>
+                                        </label>
+                                        
+                                        <input type="file" class="form-control" id="image3" name="image3">
+                                    </div>
+                                    <button type="button" class="btn btn-md rounded font-sm"
+                                        onclick="document.getElementById('image3').click();">Upload Image</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4"> 
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4>Secondary Image 3</h4>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="input-upload">
+                                        <label for="image4" class="form-label">
+                                            <% if (product.secondaryImages[0]) { %>
+                                                <img id="preview4"
+                                                    src="/uploads/products-images/crp/<%-product.secondaryImages[2].name %>" alt=""
+                                                    width="150px">
+                                                <% } else {%>
+                                                    <img id="preview4" src="../../assets/imgs/theme/upload.svg" alt=""
+                                                        width="150px">
+                                                    <% } %>
+                                        </label>
+                                        <input type="file" class="form-control" id="image4" name="image4">
+                                    </div>
+                                    <button type="button" class="btn btn-md rounded font-sm"
+                                        onclick="document.getElementById('image4').click();">Upload Image</button>
+                                </div>
+                            </div>
+                        </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                        <button class="btn btn-md rounded font-sm" type="submit">Update</button>
+                        <a href="/admin/products" class="btn btn-light rounded font-sm">Cancel</a>
+                    </div>
+                </div>
+                </div> 
+              </div>
+          </div>
+      </div>
+  </form>
+  
+</section> <!-- content-main end// -->
+
+<!-- Image Crop Modal -->
+<div class="modal fade" id="imageCropModal" tabindex="-1" aria-labelledby="imageCropModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="imageCropModalLabel">Crop Image</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <img id="imageToCrop" src="" alt="Crop this image" style="max-width: 100%;">
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" id="cropImageBtn">Crop</button>
+          </div>
+      </div>
+  </div>
+</div>
+<style>
+  .cropper-bg {
+      max-width: 100%;
+  }
+</style>
+
+
+<!-- Cropper.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.js"></script>
+<script defer>
+  let currentInputId, currentPreviewId, cropper;
+  let croppedImages = {};
+  let originalFileNames = {};
+
+  document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById('image1').addEventListener('change', function () { prepareImageForCropping('image1', 'preview1'); });
+      document.getElementById('image2').addEventListener('change', function () { prepareImageForCropping('image2', 'preview2'); });
+      document.getElementById('image3').addEventListener('change', function () { prepareImageForCropping('image3', 'preview3'); });
+      document.getElementById('image4').addEventListener('change', function () { prepareImageForCropping('image4', 'preview4'); });
+
+
+
+      document.getElementById('cropImageBtn').addEventListener('click', function () {
+          performCropping();
+      });
+
+      $('#imageCropModal').on('shown.bs.modal', function () {
+          let image = document.getElementById('imageToCrop');
+          cropper = new Cropper(image, {
+              aspectRatio: 1,
+              viewMode: 1,
+              dragMode: "move",
+              minContainerWidth: 450,
+              minContainerHeight: 500,
+              minCropBoxWidth: 400,
+              minCropBoxHeight: 400,
+              minCanvasHeight: 500,
+              minCanvasWidth: 500,
+          });
+      });
+
+      $('#imageCropModal').on('hidden.bs.modal', function () {
+          if (cropper) {
+              cropper.destroy();
+              cropper = null;
+          }
+      });
+  });
+
+  function prepareImageForCropping(inputId, previewId) {
+      currentInputId = inputId;
+      currentPreviewId = previewId;
+      const input = document.getElementById(inputId);
+      const file = input.files[0];
+      const newDate = new Date().getTime();
+      originalFileNames[inputId] = `${ file.name }_${ newDate }`
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+          document.getElementById('imageToCrop').src = e.target.result;
+          $('#imageCropModal').modal('show');
+      };
+      reader.readAsDataURL(file);
+  }
+
+  function performCropping() {
+      if (!cropper) {
+          console.error("Cropper is not initialized.");
+          return;
+      }
+
+      cropper.getCroppedCanvas().toBlob((blob) => {
+
+
+          const previewId = currentPreviewId;
+          const file = new File([blob], originalFileNames[currentInputId], { type: 'image/png' });
+
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          document.getElementById(currentInputId).files = dataTransfer.files;
+
+
+          const preview = document.getElementById(currentPreviewId);
+
+          preview.src = URL.createObjectURL(blob);
+
+
+          croppedImages[currentInputId] = blob;
+          $('#imageCropModal').modal('hide');
+
+
+      }, 'image/png');
+
+  }
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+

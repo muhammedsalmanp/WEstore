@@ -35,7 +35,7 @@ const orderSchema = new mongoose.Schema({
     },
     paymentMethod: {
         type: String,
-        enum: ['COD','Bank Transfer', 'Check', 'Paypal'],
+        enum: ['COD', 'Wallet', 'Online Payment'],
         required: true
     },
     status: {
@@ -46,8 +46,11 @@ const orderSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    expectedDeliveryDate: {
+        type: Date,
+        required: true
     }
 });
-
 
 module.exports = mongoose.model('Order', orderSchema);

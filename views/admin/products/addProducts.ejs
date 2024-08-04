@@ -28,7 +28,7 @@
                             <input type="text" placeholder="Type here" name="productName" class="form-control" id="product_name" oninput="checkInput(this)">
                             <div id="product_name_error" class="error-message" style="color: red; display: none;">Product title cannot be empty.</div>
                         </div>
-
+    
                         <!-- Category selection -->
                         <div class="mb-4">
                             <label class="form-label">Category</label>
@@ -38,7 +38,7 @@
                                 <% }) %>
                             </select>
                         </div>
-
+    
                         <!-- Stock and price inputs -->
                         <div class="row">
                             <div class="col-lg-4">
@@ -54,12 +54,28 @@
                                     <input placeholder="₹" type="number" class="form-control" name="price" min="0" oninput="checkInput(this)">
                                     <div id="price_error" class="error-message" style="color: red; display: none;">Price cannot be negative.</div>
                                 </div>
-                            </div>
+                            </div>                      
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Old Price</label>
                                     <input placeholder="₹" type="number" class="form-control" name="oldPrice" min="0" oninput="checkInput(this)">
                                     <div id="oldPrice_error" class="error-message" style="color: red; display: none;">Old price cannot be negative.</div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Display Size</label>
+                                    <input placeholder="Display Size" type="number" class="form-control" name="displaySize" oninput="checkInput(this)">
+                                    <div id="displaySize_error" class="error-message" style="color: red; display: none;">Display Size cannot be empty.</div>
+                                </div>
+                            </div>
+                        
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Resolution</label>
+                                    <input placeholder="Resolution" type="text" class="form-control" name="resolution" oninput="checkInput(this)">
+                                    <div id="resolution_error" class="error-message" style="color: red; display: none;">Resolution cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -71,173 +87,199 @@
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
-                                    <label class="form-label">Display size</label>
-                                    <input placeholder="" type="number" class="form-control" name="displaySize" min="0" oninput="checkInput(this)">
-                                    <div id="displaySize_error" class="error-message" style="color: red; display: none;">Display size cannot be negative.</div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="mb-4">
-                                    <label class="form-label">Resolution</label>
-                                    <input placeholder="" type="text" class="form-control" name="resolution" oninput="checkInput(this)">
-                                    <div id="resolution_error" class="error-message" style="color: red; display: none;">Resolution cannot be empty.</div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="mb-4">
                                     <label class="form-label">Processor</label>
-                                    <input placeholder="i5" type="text" class="form-control" name="processor" oninput="checkInput(this)">
+                                    <select class="form-select" name="processor">
+                                        <option value="Intel">Intel</option>
+                                        <option value="AMD">AMD</option>
+                                        <option value="Apple M1">Apple M1</option>
+                                        <option value="Qualcomm Snapdragon">Qualcomm Snapdragon</option>
+                                        <option value="Samsung Exynos">Samsung Exynos</option>
+                                    </select>
                                     <div id="processor_error" class="error-message" style="color: red; display: none;">Processor cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">RAM Size</label>
-                                    <input placeholder="4" type="number" class="form-control" name="ramSize" min="0" oninput="checkInput(this)">
-                                    <div id="ramSize_error" class="error-message" style="color: red; display: none;">RAM size cannot be negative.</div>
+                                    <select class="form-select" name="ramSize">
+                                        <option value="4">4 GB</option>
+                                        <option value="8">8 GB</option>
+                                        <option value="16">16 GB</option>
+                                        <option value="32">32 GB</option>
+                                        <option value="64">64 GB</option>
+                                    </select>
+                                    <div id="ramSize_error" class="error-message" style="color: red; display: none;">RAM size cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Hard Drive Size</label>
-                                    <input placeholder="128" type="number" class="form-control" name="hdSize" min="0" oninput="checkInput(this)">
-                                    <div id="hdSize_error" class="error-message" style="color: red; display: none;">Hard drive size cannot be negative.</div>
+                                    <select class="form-select" name="hardDriveSize">
+                                        <option value="128">128 GB</option>
+                                        <option value="256">256 GB</option>
+                                        <option value="512">512 GB</option>
+                                        <option value="1024">1 TB</option>
+                                        <option value="2048">2 TB</option>
+                                    </select>
+                                    <div id="hardDriveSize_error" class="error-message" style="color: red; display: none;">Hard drive size cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Hard Disk Description</label>
-                                    <input placeholder="SSD" type="text" class="form-control" name="hdDescription" oninput="checkInput(this)">
-                                    <div id="hdDescription_error" class="error-message" style="color: red; display: none;">Hard disk description cannot be empty.</div>
+                                    <select class="form-select" name="hardDiskDescription">
+                                        <option value="HDD">HDD</option>
+                                        <option value="SSD">SSD</option>
+                                        <option value="Hybrid">Hybrid</option>
+                                        <option value="NVMe">NVMe</option>
+                                    </select>
+                                    <div id="hardDiskDescription_error" class="error-message" style="color: red; display: none;">Hard disk description cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Graphics Chipset Brand</label>
-                                    <input placeholder="NVIDIA" type="text" class="form-control" name="graphics" oninput="checkInput(this)">
-                                    <div id="graphics_error" class="error-message" style="color: red; display: none;">Graphics chipset brand cannot be empty.</div>
+                                    <select class="form-select" name="graphicsChipsetBrand">
+                                        <option value="NVIDIA">NVIDIA</option>
+                                        <option value="AMD">AMD</option>
+                                        <option value="Intel">Intel</option>
+                                        <option value="Apple">Apple</option>
+                                        <option value="Non-Graphic">Non-Graphic</option>
+                                    </select>
+                                    <div id="graphicsChipsetBrand_error" class="error-message" style="color: red; display: none;">Graphics chipset brand cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Operating System</label>
-                                    <input placeholder="Windows" type="text" class="form-control" name="os" oninput="checkInput(this)">
-                                    <div id="os_error" class="error-message" style="color: red; display: none;">Operating system cannot be empty.</div>
+                                    <select class="form-select" name="operatingSystem">
+                                        <option value="Windows">Windows</option>
+                                        <option value="macOS">macOS</option>
+                                        <option value="Linux">Linux</option>
+                                        <option value="Chrome OS">Chrome OS</option>
+                                        <option value="Android">Android</option>
+                                    </select>
+                                    <div id="operatingSystem_error" class="error-message" style="color: red; display: none;">Operating system cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Number of USB 3.0 Ports</label>
-                                    <input placeholder="1" type="number" class="form-control" name="usbPort" min="0" oninput="checkInput(this)">
-                                    <div id="usbPort_error" class="error-message" style="color: red; display: none;">Number of USB ports cannot be negative.</div>
+                                    <input placeholder="1" type="number" class="form-control" name="numberofUSB" min="0" oninput="checkInput(this)">
+                                    <div id="numberofUSB_error" class="error-message" style="color: red; display: none;">Number of USB ports cannot be negative.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Audio Details</label>
-                                    <input placeholder="Speaker" type="text" class="form-control" name="audioDetails" oninput="checkInput(this)">
+                                    <input type="text" class="form-control" name="audioDetails" oninput="checkInput(this)">
                                     <div id="audioDetails_error" class="error-message" style="color: red; display: none;">Audio details cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Country of Origin</label>
-                                    <input placeholder="IND" type="text" class="form-control" name="countryofOrigin" oninput="checkInput(this)">
+                                    <input type="text" class="form-control" name="countryofOrigin" oninput="checkInput(this)">
                                     <div id="countryofOrigin_error" class="error-message" style="color: red; display: none;">Country of origin cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Item Weight</label>
-                                    <input placeholder="1.5 KG" type="text" class="form-control" name="weight" oninput="checkInput(this)">
-                                    <div id="weight_error" class="error-message" style="color: red; display: none;">Item weight cannot be empty.</div>
+                                    <input type="text" class="form-control" name="itemWeight" oninput="checkInput(this)">
+                                    <div id="itemWeight_error" class="error-message" style="color: red; display: none;">Item weight cannot be empty.</div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <input placeholder="Description" type="text" class="form-control" name="productDespt" oninput="checkInput(this)">
+                                    <div id="description_error" class="error-message" style="color: red; display: none;">Description cannot be empty.</div>
+                                </div>
+                            </div>
+                        
+                            <!-- Primary image upload with cropping -->
+                            <div class="col-lg-12">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Select Primary Image</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="input-upload text-start">
+                                            <label for="image1" class="form-label">
+                                                <img id="preview1" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                                            </label>
+                                            <input type="file" class="form-control" id="image1" style="display: none;" name="primaryImage" onchange="previewImage(event, 'preview1')">
+                                            <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image1').click();">Upload Image</button>
+                                        </div>
+                                        <div id="primaryImage_error" class="error-message" style="color: red; display: none;">Primary image is required.</div>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <!-- Product description -->
-                        <div class="mb-4">
-                            <label class="form-label">Product description</label>
-                            <textarea placeholder="Type here" class="form-control" name="productDespt" rows="4" oninput="checkInput(this)"></textarea>
-                            <div id="productDespt_error" class="error-message" style="color: red; display: none;">Product description cannot be empty.</div>
-                        </div>
-                        <!-- Primary image upload with cropping -->
-                        <div class="col-lg-12">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h4>Select Primary Image</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="input-upload text-start">
-                                        <label for="image1" class="form-label">
-                                            <img id="preview1" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
-                                        </label>
-                                        <input type="file" class="form-control" id="image1" style="display: none;" name="primaryImage" onchange="previewImage(event, 'preview1')">
-                                        <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image1').click();">Upload Image</button>
+                            <!-- Secondary images upload -->
+                            <div class="col-lg-12">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Select Secondary Image 1</h4>
                                     </div>
-                                    <div id="primaryImage_error" class="error-message" style="color: red; display: none;">Primary image is required.</div>
+                                    <div class="card-body">
+                                        <div class="input-upload text-start">
+                                            <label for="image2" class="form-label">
+                                                <img id="preview2" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                                            </label>
+                                            <input type="file" class="form-control" id="image2" name="images" style="display: none;" onchange="previewImage(event, 'preview2')">
+                                            <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image2').click();">Upload Image</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="col-lg-12">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Select Secondary Image 2</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="input-upload text-start">
+                                            <label for="image3" class="form-label">
+                                                <img id="preview3" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                                            </label>
+                                            <input type="file" class="form-control" id="image3" name="images" style="display: none;" onchange="previewImage(event, 'preview3')">
+                                            <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image3').click();">Upload Image</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h4>Select Secondary Image 3</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="input-upload text-start">
+                                            <label for="image4" class="form-label">
+                                                <img id="preview4" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                                            </label>
+                                            <input type="file" class="form-control" id="image4" name="images" style="display: none;" onchange="previewImage(event, 'preview4')">
+                                            <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image4').click();">Upload Image</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <!-- Secondary images upload -->
-                        <div class="col-lg-12">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h4>Select Secondary Image 1</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="input-upload text-start">
-                                        <label for="image2" class="form-label">
-                                            <img id="preview2" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
-                                        </label>
-                                        <input type="file" class="form-control" id="image2" name="images" style="display: none;" onchange="previewImage(event, 'preview2')">
-                                        <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image2').click();">Upload Image</button>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Submit button -->
+                            <button class="btn btn-md rounded font-sm hover-up" type="submit">Add Products</button>
                         </div>
-                        <div class="col-lg-12">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h4>Select Secondary Image 2</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="input-upload text-start">
-                                        <label for="image3" class="form-label">
-                                            <img id="preview3" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
-                                        </label>
-                                        <input type="file" class="form-control" id="image3" name="images" style="display: none;" onchange="previewImage(event, 'preview3')">
-                                        <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image3').click();">Upload Image</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h4>Select Secondary Image 3</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="input-upload text-start">
-                                        <label for="image4" class="form-label">
-                                            <img id="preview4" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
-                                        </label>
-                                        <input type="file" class="form-control" id="image4" name="images" style="display: none;" onchange="previewImage(event, 'preview4')">
-                                        <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image4').click();">Upload Image</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Submit button -->
-                        <button class="btn btn-md rounded font-sm hover-up" type="submit">Add Products</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </div>    
     </form>
-</section>
+</section>   
+
+
+
+    
 
 
 <!-- Image Crop Modal -->
@@ -452,4 +494,22 @@
             event.preventDefault();
         }
     });
+    function checkInput(input) {
+    const value = input.value.trim();
+    const errorId = input.name + "_error";
+
+    if (input.type === "number") {
+        if (value < 0) {
+            document.getElementById(errorId).style.display = "block";
+        } else {
+            document.getElementById(errorId).style.display = "none";
+        }
+    } else {
+        if (value === "") {
+            document.getElementById(errorId).style.display = "block";
+        } else {
+            document.getElementById(errorId).style.display = "none";
+        }
+    }
+}
 </script>

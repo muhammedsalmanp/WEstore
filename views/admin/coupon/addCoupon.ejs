@@ -16,68 +16,96 @@
     <div class="card col-md-9">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-12">
-                    <form action="/admin/coupon/addCoupon" method="post" onsubmit="return validateCouponForm()">
-                        <div class="mb-4">
-                            <label for="coupon_code" class="form-label">Coupon Code</label>
-                            <input type="text" placeholder="Enter coupon code" name="coupon_code" class="form-control" id="coupon_code"oninput="convertToLowercase(this)" oninput="checkCouponInput()" />
-                            <div id="code_error_message" style="color: red; display: none;">Coupon code cannot be empty.</div>
+              <div class="container mt-5">
+                <h1 class="mb-4">Add Coupon</h1>
+                <form action="/admin/coupon/addCoupon" method="post" onsubmit="return validateCouponForm()">
+                    <div class="mb-4">
+                        <label for="coupon_code" class="form-label">Coupon Code</label>
+                        <input type="text" placeholder="Enter coupon code" name="coupon_code" class="form-control" id="coupon_code" oninput="convertToLowercase(this)" />
+                        <div id="code_error_message" style="color: red; display: none;">Coupon code cannot be empty.</div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="discount_percentage" class="form-label">Discount Percentage</label>
+                        <input type="number" placeholder="Enter discount percentage" name="discount_percentage" class="form-control" id="discount_percentage" oninput="checkCouponInput()" />
+                        <div id="percentage_error_message" style="color: red; display: none;">Discount percentage cannot be empty or negative.</div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="min_purchase" class="form-label">Minimum Purchase Amount</label>
+                        <input type="number" placeholder="Enter minimum purchase amount" name="min_purchase" class="form-control" id="min_purchase" oninput="checkCouponInput()" />
+                        <div id="purchase_error_message" style="color: red; display: none;">Minimum purchase amount cannot be empty or negative.</div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="expiration_date" class="form-label">Expiration Date</label>
+                        <input type="date" name="expiration_date" class="form-control" id="expiration_date" oninput="checkCouponInput()" />
+                        <div id="date_error_message" style="color: red; display: none;">Expiration date cannot be empty.</div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea name="description" class="form-control" id="description" placeholder="Enter description"></textarea>
+                        <div id="description_error_message" style="color: red; display: none;">Description cannot be empty.</div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="d-grid gap-2 d-flex justify-content-start">
+                            <button class="btn btn-sm font-sm rounded btn-brand" style="width: 150px;" type="submit">Add Coupon</button>
+                            <button type="button" class="btn btn-sm font-sm rounded btn-brand custom-btn" style="width: 150px;" onclick="window.location.href='/admin/coupon';">Cancel</button>
                         </div>
-                        <div class="mb-4">
-                            <label for="discount_amount" class="form-label">Discount Amount</label>
-                            <input type="number" placeholder="Enter discount amount" name="discount_amount" class="form-control" id="discount_amount" oninput="checkCouponInput()" />
-                            <div id="amount_error_message" style="color: red; display: none;">Discount amount cannot be empty or negative.</div>
-                        </div>
-                        <div class="mb-4">
-                            <label for="expiration_date" class="form-label">Expiration Date</label>
-                            <input type="date" name="expiration_date" class="form-control" id="expiration_date" oninput="checkCouponInput()" />
-                            <div id="date_error_message" style="color: red; display: none;">Expiration date cannot be empty.</div>
-                        </div>
-                        <div class="mb-4">
-                            <div class="d-grid gap-2 d-flex justify-content-start">
-                                <button class="btn btn-sm font-sm rounded btn-brand" style="width: 150px;" type="submit">Add Coupon</button>
-                                <button type="button" class="btn btn-sm font-sm rounded btn-brand custom-btn" style="width: 150px;" onclick="window.location.href='/admin/coupon';">Cancel</button>
-                            </div>
-                        </div>
-                    </form>        
-                </div> 
+                    </div>
+                </form>
+              </div>                      
             </div> 
         </div> 
 </section>                    
                     
 <script>
-    function validateCouponForm() {
-        const code = document.getElementById("coupon_code").value.trim();
-        const amount = document.getElementById("discount_amount").value.trim();
-        const date = document.getElementById("expiration_date").value.trim();
-        let valid = true;
+  function validateCouponForm() {
+  let isValid = true;
 
-        if (code === "") {
-            document.getElementById("code_error_message").style.display = "block";
-            valid = false;
-        } else {
-            document.getElementById("code_error_message").style.display = "none";
-        }
+  const couponCode = document.getElementById('coupon_code').value.trim();
+  const discountPercentage = document.getElementById('discount_percentage').value.trim();
+  const minPurchase = document.getElementById('min_purchase').value.trim();
+  const expirationDate = document.getElementById('expiration_date').value.trim();
+  const description = document.getElementById('description').value.trim();
 
-        if (amount === "" || parseFloat(amount) < 0) {
-            document.getElementById("amount_error_message").style.display = "block";
-            valid = false;
-        } else {
-            document.getElementById("amount_error_message").style.display = "none";
-        }
+  if (!couponCode) {
+      document.getElementById('code_error_message').style.display = 'block';
+      isValid = false;
+  } else {
+      document.getElementById('code_error_message').style.display = 'none';
+  }
 
-        if (date === "") {
-            document.getElementById("date_error_message").style.display = "block";
-            valid = false;
-        } else {
-            document.getElementById("date_error_message").style.display = "none";
-        }
+  if (!discountPercentage || parseFloat(discountPercentage) <= 0) {
+      document.getElementById('percentage_error_message').style.display = 'block';
+      isValid = false;
+  } else {
+      document.getElementById('percentage_error_message').style.display = 'none';
+  }
 
-        return valid;
-    }
-</script>
-<script>
-    function convertToLowercase(input) {
-        input.value = input.value.toLowerCase();
-    }
+  if (!minPurchase || parseFloat(minPurchase) <= 0) {
+      document.getElementById('purchase_error_message').style.display = 'block';
+      isValid = false;
+  } else {
+      document.getElementById('purchase_error_message').style.display = 'none';
+  }
+
+  if (!expirationDate) {
+      document.getElementById('date_error_message').style.display = 'block';
+      isValid = false;
+  } else {
+      document.getElementById('date_error_message').style.display = 'none';
+  }
+
+  if (!description) {
+      document.getElementById('description_error_message').style.display = 'block';
+      isValid = false;
+  } else {
+      document.getElementById('description_error_message').style.display = 'none';
+  }
+
+  return isValid;
+}
+
+function convertToLowercase(element) {
+  element.value = element.value.toUpperCase();
+}
+
 </script>
