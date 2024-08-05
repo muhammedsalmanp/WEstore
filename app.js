@@ -65,20 +65,23 @@ app.use((req, res, next) => {
   next();
 });
 
+
+
+
 // nocache for disabling browser caching
 app.use(nocache());
 
+
 app.use("/admin",adminRouter);
 app.use("/",authRouter);
-app.use('/',shopRouter);
-app.use('/',userRouter);
+app.use('/',checkBlockedUser,shopRouter);
+app.use('/',checkBlockedUser,userRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
 
-app.use(checkBlockedUser);
 
 // error handler
 app.use(function (err, req, res, next) {

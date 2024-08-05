@@ -86,10 +86,28 @@
             border-radius: 0; /* Change border-radius to 0 for square shape */
             background-color: #fff;
         }
-
-
+        /* Optional: Add custom styles for the SweetAlert2 modal */
+    .swal2-html-container {
+        max-height: 900px;
+        overflow-y: auto;
+    }
+    
+    .swal-content {
+        font-size: 10px;
+    }
+    
+    .coupon {
+        
+        border-radius: 5px;
+        padding: 10px;
+        margin: 10px 0;
        
-</style>
+    }
+  
+</style>   
+    
+
+    
 <main class="main">
     <div class="page-header breadcrumb-wrap">
         <div class="container">
@@ -189,8 +207,6 @@
                             <% } %>
                         </div>
                     </div>
-    
-                    <!-- Coupon Section -->
                     <div class="mb-30 mt-50">
                         <div class="heading_s1 mb-3">
                             <h4>Apply Coupon</h4>
@@ -198,25 +214,26 @@
                         <div class="total-amount">
                             <div class="left">
                                 <div class="coupon">
-                                    <form id="coupon-form" action="javascript:void(0)">
+                                    <form id="coupon-form" action="#" target="_blank">
                                         <div class="form-row row justify-content-center">
                                             <div class="form-group col-lg-6">
-                                                <input id="coupon-code" class="font-medium form-control" name="Coupon" placeholder="Enter Your Coupon">
+                                                <input id="coupon-code" class="font-medium" name="Coupon" placeholder="Enter Your Coupon Code">
                                             </div>
                                             <div class="form-group col-lg-6">
-                                                <button type="button" id="apply-coupon" class="btn btn-primary btn-sm">
-                                                    <i class="fi-rs-label mr-10"></i> Apply
+                                                <button type="button" id="apply-coupon" class="btn btn-sm">
+                                                    <i class="fi-rs-label mr-10"></i>Apply
                                                 </button>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
                             </div>
+                            <!-- Container for displaying available coupons -->
                             <div id="available-coupons" class="available-coupons mt-3"></div>
                         </div>
                     </div>
                     
-
+                    
                 </div>
                 
                 <!-- Order Review Section -->
@@ -269,26 +286,70 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="bt-1 border-color-1 mt-30 mb-30">
-                            <div class="payment_option">
-                                <div class="custome-radio">
-                                    <input class="form-check-input" required type="radio" name="payment_option" id="cod" value="COD" checked>
-                                    <label class="form-check-label" for="cod">Cash on Delivery</label>
+                
+                        <!-- Payment Options Section -->
+                        <div class="col-12 m-t-20">
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4 class="mtext-109 cl2">Payment Options</h4>
+                                    <div class="m-l-20 m-t-23">
+                                        <!-- Use Wallet Balance -->
+                                        <div class="form-check m-t-10">
+                                            <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                name="paymentoptions"
+                                                id="payment1"
+                                                value="Wallet"
+                                                checked
+                                            />
+                                            <label class="form-check-label" for="payment1">
+                                                Wallet 
+                                            </label>
+                                           
+                                            <a
+                                                href="#"
+                                                class="btn bg1 cl0 bor1 mt-2 mb-3"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#addMoneyModal"
+                                            >
+                                                + Add Money
+                                            </a>
+                                        </div>
+                                        <div class="form-check m-t-10">
+                                            <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                name="paymentoptions"
+                                                id="payment2"
+                                                value="COD"
+                                            />
+                                            <label class="form-check-label" for="payment2">COD</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                name="paymentoptions"
+                                                id="payment3"
+                                                value="Razor Pay"
+                                            />
+                                            <label class="form-check-label" for="payment3">
+                                                Razor Pay
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="custome-radio">
-                                    <input class="form-check-input" required type="radio" name="payment_option" id="wallet" value="Wallet">
-                                    <label class="form-check-label" for="wallet">Wallet</label>
-                                </div>
-                                <div class="custome-radio">
-                                    <input class="form-check-input" required type="radio" name="payment_option" id="onlinePayment" value="Online Payment">
-                                    <label class="form-check-label" for="onlinePayment">Online Payment</label>
-                                </div>
-                            </div>                        
+                            </div>
                         </div>
+                
+                        <!-- Place Order Button -->
                         <button type="submit" class="btn btn-fill-out btn-block mt-30">Place Order</button>
                     </div>
-                </div> 
-
+                </div>
+                
+                
+                
             </div>
         </div>
             <!-- Add Address Modal -->
@@ -472,6 +533,177 @@
     </section>
     
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+// Function to fetch available coupons
+async function fetchAvailableCoupons() {
+    try {
+        const response = await fetch('/coupons/available'); // Adjust the endpoint as needed
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const coupons = await response.json();
+        return coupons;
+    } catch (error) {
+        console.error('Error fetching available coupons:', error);
+        return [];
+    }
+}
+
+// Function to display available coupons in a SweetAlert2 modal
+async function showAvailableCoupons() {
+    const coupons = await fetchAvailableCoupons();
+
+    let couponsHtml = '<ul class="list-group">'; // Heading and start of list
+
+    if (coupons.length === 0) {
+        couponsHtml += '<li class="list-group-item">No available coupons</li>';
+    } else {
+        coupons.forEach(coupon => {
+            couponsHtml += `
+                <div class="coupon" style="
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    padding: 5px;
+                    
+                ">
+                    <strong>${coupon.code}</strong> - ${coupon.discountPercentage}% off, Min Purchase: $${coupon.minPurchaseAmount} 
+                    <button class="btn btn-sm apply-btn" data-code="${coupon.code}" data-min-purchase="${coupon.minPurchaseAmount}">Apply</button>
+                </div>
+            `;
+        });
+    }
+
+    couponsHtml += '</ul>'; // End of list
+
+    Swal.fire({
+        title: 'Available Coupons',
+        html: couponsHtml,
+        confirmButtonText: 'Close',
+        customClass: {
+            content: 'swal-content',
+            container: 'swal-container'
+        },
+        didOpen: () => {
+            // Attach click event handler to dynamically added buttons
+            const container = Swal.getPopup().querySelector('.swal-content');
+            container.addEventListener('click', function(event) {
+                if (event.target.classList.contains('apply-coupon-btn')) {
+                    const couponCode = event.target.getAttribute('data-coupon-code');
+                    applyCouponCode(couponCode);
+                }
+            });
+        }
+    });
+}
+
+// Function to handle coupon application
+async function applyCoupon() {
+    const couponCode = document.getElementById('coupon-code').value;
+    const totalAmount = parseFloat(document.getElementById('cart-total').textContent.replace('$', ''));
+
+    // Fetch available coupons
+    const coupons = await fetchAvailableCoupons();
+    const coupon = coupons.find(c => c.code === couponCode);
+
+    if (coupon) {
+        if (totalAmount >= coupon.minPurchaseAmount) {
+            Swal.fire({
+                title: 'Success!',
+                text: `Coupon code ${couponCode} applied!`,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+            // Update the cart total here if needed
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: `Your total amount is less than the minimum required purchase amount of $${coupon.minPurchaseAmount}.`,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    } else {
+        Swal.fire({
+            title: 'Error!',
+            text: `Coupon code ${couponCode} is not valid.`,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    // Show available coupons after applying a coupon
+    await showAvailableCoupons();
+}
+
+// Function to handle applying a coupon code from the list
+async function applyCouponCode(couponCode) {
+    const totalAmount = parseFloat(document.getElementById('cart-total').textContent.replace('$', ''));
+
+    // Fetch available coupons
+    const coupons = await fetchAvailableCoupons();
+    const coupon = coupons.find(c => c.code === couponCode);
+
+    if (coupon) {
+        if (totalAmount >= coupon.minPurchaseAmount) {
+            Swal.fire({
+                title: 'Success!',
+                text: `Coupon code ${couponCode} applied!`,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+            // Update the cart total here if needed
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: `Your total amount is less than the minimum required purchase amount of $${coupon.minPurchaseAmount}.`,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    } else {
+        Swal.fire({
+            title: 'Error!',
+            text: `Coupon code ${couponCode} is not valid.`,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+}
+
+// Add event listener to the Apply button
+document.getElementById('apply-coupon').addEventListener('click', async () => {
+    await showAvailableCoupons();
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -696,157 +928,7 @@
 
 </script>
 
-<script>
-// Function to fetch available coupons
-async function fetchAvailableCoupons() {
-    try {
-        const response = await fetch('/coupons/available'); // Adjust the endpoint as needed
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const coupons = await response.json();
-        return coupons;
-    } catch (error) {
-        console.error('Error fetching available coupons:', error);
-        return [];
-    }
-}
 
-// Function to display available coupons in a SweetAlert2 modal
-async function showAvailableCoupons() {
-    const coupons = await fetchAvailableCoupons();
-
-    let couponsHtml = '<h5>Available Coupons</h5><ul class="list-group">'; // Heading and start of list
-
-    if (coupons.length === 0) {
-        couponsHtml += '<li class="list-group-item">No available coupons</li>';
-    } else {
-        coupons.forEach(coupon => {
-            couponsHtml += `
-                <li class="list-group-item">
-                    <strong>${coupon.code}</strong> - ${coupon.discountPercentage}% off, Min Purchase: $${coupon.minPurchaseAmount}
-                    <a href="#" class="btn btn-primary apply-coupon-btn" data-coupon-code="${coupon.code}">
-                        Apply
-                    </a>
-                </li>
-            `;
-        });
-    }
-
-    couponsHtml += '</ul>'; // End of list
-
-    Swal.fire({
-        title: 'Available Coupons',
-        html: couponsHtml,
-        confirmButtonText: 'Close',
-        customClass: {
-            content: 'swal-content',
-            container: 'swal-container'
-        },
-        didOpen: () => {
-            // Attach click event handler to dynamically added buttons
-            const container = Swal.getPopup().querySelector('.swal-content');
-            container.addEventListener('click', function(event) {
-                if (event.target.classList.contains('apply-coupon-btn')) {
-                    const couponCode = event.target.getAttribute('data-coupon-code');
-                    applyCouponCode(couponCode);
-                }
-            });
-        }
-    });
-}
-
-// Function to handle applying a coupon code
-async function applyCouponCode(couponCode) {
-    try {
-        const response = await fetch('/coupons/apply', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ couponCode })
-        });
-
-        const result = await response.json();
-        if (!response.ok) {
-            throw new Error(result.error || 'Error applying coupon');
-        }
-
-        Swal.fire({
-            title: 'Success!',
-            text: `Coupon code ${couponCode} applied! Discount: ${result.discount}%. New total: $${result.newTotalPrice.toFixed(2)}`,
-            icon: 'success',
-            confirmButtonText: 'OK'
-        });
-
-        // Update the cart total on the page
-        document.getElementById('cart-total').textContent = `Total: $${result.newTotalPrice.toFixed(2)}`;
-
-        // Update the coupon input area
-        document.getElementById('available-coupons').innerHTML = `
-            <span>Applied Coupon: ${couponCode}</span>
-            <button id="remove-coupon" class="btn btn-danger">Remove Coupon</button>
-        `;
-        document.getElementById('remove-coupon').addEventListener('click', removeCoupon);
-
-    } catch (error) {
-        Swal.fire({
-            title: 'Error!',
-            text: error.message,
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-    }
-}
-
-// Function to remove applied coupon
-async function removeCoupon() {
-    try {
-        const response = await fetch('/coupons/remove', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const result = await response.json();
-        if (!response.ok) {
-            throw new Error(result.error || 'Error removing coupon');
-        }
-
-        Swal.fire({
-            title: 'Success!',
-            text: `Coupon removed! New total: $${result.newTotalPrice.toFixed(2)}`,
-            icon: 'success',
-            confirmButtonText: 'OK'
-        });
-
-        // Update the cart total on the page
-        document.getElementById('cart-total').textContent = `Total: $${result.newTotalPrice.toFixed(2)}`;
-
-        // Reset the coupon input area
-        document.getElementById('available-coupons').innerHTML = `
-            <input type="text" id="coupon-code" class="form-control" placeholder="Enter coupon code">
-            <button id="apply-coupon" class="btn btn-primary btn-sm">Apply Coupon</button>
-        `;
-        document.getElementById('apply-coupon').addEventListener('click', applyCoupon);
-
-    } catch (error) {
-        Swal.fire({
-            title: 'Error!',
-            text: error.message,
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-    }
-}
-
-// Add event listener to the Apply button
-document.getElementById('apply-coupon').addEventListener('click', async () => {
-    await showAvailableCoupons(); // Fetch and display available coupons
-});
-
-</script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const placeOrderBtn = document.getElementById('place-order-btn');
@@ -899,5 +981,7 @@ document.getElementById('apply-coupon').addEventListener('click', async () => {
             }
         });
     });
-    </script>
-    
+</script>
+
+
+ 

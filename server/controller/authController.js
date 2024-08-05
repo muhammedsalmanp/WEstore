@@ -83,11 +83,18 @@ module.exports={
     /*--checking is admin or not--*/
 
     const user = await User.findOne({ email, isAdmin: false });
-
+   
     if (!user) {
       req.flash(
         "error",
         "User does not exist or invalid credentials, please register!!!"
+      );
+      return res.redirect("/login");
+    }
+    if (user.isBlocked){
+      req.flash(
+        "error",
+        "your blocked by admin,plese contact with admin"
       );
       return res.redirect("/login");
     }
@@ -97,7 +104,7 @@ module.exports={
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
-      req.flash("error", "invalid credential");
+      req.flash("error", "passwoerd not matech");
       console.log("passwoerd not matech");
       return res.redirect("/login");
     }

@@ -196,15 +196,16 @@ module.exports = {
   },
 
   /*-- user side --*/
-    /*get coupons and appy coupons */
-  getAllCoupons :  (req, res) => {
-    Coupon.find({ isActive: true })
-      .then(coupons => res.json(coupons))
-      .catch(error => {
-        console.error('Error fetching available coupons:', error);
-        res.status(500).json({ error: 'Failed to fetch available coupons' });
-      })
-  }, 
+    /*get coupons and appy coupons */                      
+  getAllCoupons : async (req, res) => {
+    try {
+        const coupons = await Coupon.find({ isActive: true, expirationDate: { $gte: new Date() } });
+        res.json(coupons);
+    } catch (error) {
+        console.error('Error fetching coupons:', error);
+        res.status(500).send('Server error');
+    }
+}, 
 
   applyCoupon: async (req, res) => {
     try {
@@ -271,7 +272,6 @@ module.exports = {
     }
 },
 
-
   removeCoupon: async (req, res) => {
     try {
         const userId = req.session.user; // Assuming the user ID is stored in the session
@@ -312,6 +312,5 @@ module.exports = {
         res.status(500).json({ error: 'Failed to remove coupon' });
     }
   },
-
 
 }           

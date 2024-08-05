@@ -28,7 +28,7 @@ const couponSchema = new mongoose.Schema({
     default: true
   }
 }, {
-    timestamps: true 
+    timestamps: true           
 });
 
 

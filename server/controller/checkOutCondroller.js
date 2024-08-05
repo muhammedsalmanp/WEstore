@@ -5,7 +5,7 @@ const Cart = require("../model/cartSchema");
 
 module.exports = {
 
-    getCheckOut: async (req, res) => {
+    getCheckOut: async (req, res) => {              
         try {
             const userId = req.session.user._id;
             const userAddressData = await UserAddress.findOne({ userId: userId });

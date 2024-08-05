@@ -31,26 +31,25 @@ module.exports = {
   },
  checkBlockedUser : async (req, res, next) => {
     try {
-        // Ensure req.session.user contains the user ID after successful login
         if (req.session.user) {
             const user = await User.findById(req.session.user);
 
-            if (user && user.isBlocked) {
-                // If user is blocked, log them out and redirect to login with error message
-                req.logout((err) => {
+            // Confirm the session is not for an admin
+            if (user && !user.isAdmin && user.isBlocked) {
+                req.flash("error", "User is blocked by the admin");
+                req.session.destroy((err) => {
                     if (err) {
                         console.error('Error logging out:', err);
+                        req.flash("error", "Server error during logout");
+                        return res.redirect("/login");
                     }
-                    req.flash("error", "User is blocked by the admin");
                     res.clearCookie("connect.sid");
                     return res.redirect("/login");
                 });
             } else {
-                // User is not blocked, proceed to the next middleware
                 next();
             }
         } else {
-            // If req.session.user is not set, proceed to the next middleware
             next();
         }
     } catch (error) {
@@ -58,7 +57,7 @@ module.exports = {
         req.flash("error", "Server error");
         res.redirect("/login");
     }
-}
+},
 
 
 
