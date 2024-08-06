@@ -16,7 +16,8 @@ module.exports = {
       const page = parseInt(req.query.page) || 1;
       const products = await Product.find()
           .sort({ createdAt: -1 })
-          .populate("category")
+          .populate({ path: 'category',
+            match: { isActive: true }})
           .skip(perPage * (page - 1))
           .limit(perPage)
           .exec();
@@ -75,7 +76,8 @@ module.exports = {
       console.log(error)
     }
   },
-getAllProduct: async (req, res) => {
+
+  getAllProduct: async (req, res) => {
   const { category, Processor, ramSize, hardDriveSize, hardDiskDescription, graphicsChipsetBrand, operatingSystem, sort, search } = req.query;
 
   const categories = await Category.find();
@@ -87,8 +89,6 @@ getAllProduct: async (req, res) => {
   if (category) {
     filter.category = category;
   }
-
-
 
   if (Processor) {
     filter.Processor = { $in: Array.isArray(Processor) ? Processor : [Processor] };
@@ -116,7 +116,8 @@ getAllProduct: async (req, res) => {
 
   if (search) {
     const categoryNames = await Category.find({
-      name: new RegExp(search, 'i')
+      name: new RegExp(search, 'i'),
+      isActive: true // Ensure we only find active categories
     }).select('_id');
 
     const categoryIds = categoryNames.map(cat => cat._id);
@@ -126,7 +127,6 @@ getAllProduct: async (req, res) => {
       { category: { $in: categoryIds } }
     ];
   }
-
 
   let sortCriteria = {};
   if (sort) {
@@ -154,20 +154,26 @@ getAllProduct: async (req, res) => {
     const filteredCount = await Product.countDocuments(filter);
     const products = await Product.find(filter)
       .sort(sortCriteria)
-      .populate("category")
+      .populate({
+        path: 'category',
+        match: { isActive: true } // Ensure we only populate active categories
+      })
       .skip(perPage * (page - 1))
       .limit(perPage)
       .exec();
 
+    // Filter out products with no active category
+    const activeProducts = products.filter(product => product.category);
+
     const count = await Product.countDocuments({});
     const nextPage = page + 1;
     const hasNextPage = nextPage <= Math.ceil(filteredCount / perPage);
-    const productCount = products.length;
+    const productCount = activeProducts.length;
 
     res.render("shop/allList", {
       user: req.session.user,
       categories,
-      products,
+      products: activeProducts, // Use filtered active products
       current: page,
       pages: Math.ceil(filteredCount / perPage),
       count,
@@ -181,8 +187,9 @@ getAllProduct: async (req, res) => {
     console.error(err);
     res.status(500).send("Server Error");
   }
-},
-getSearchSuggestions : async (req, res) => {
+  },
+
+  getSearchSuggestions : async (req, res) => {
   const query = req.query.query;
   if (!query) {
       return res.json([]);
@@ -207,8 +214,6 @@ getSearchSuggestions : async (req, res) => {
       console.error(err);
       res.status(500).json({ error: 'Server error' });
   }
-},
-
-
-
+  },
+  
 };

@@ -1,124 +1,167 @@
 <style>
     /* Custom table style to remove borders */
-.custom-table {
-    border-collapse: collapse; /* Ensure that borders don't collapse */
-}
-
-.custom-table th, 
-.custom-table td {
-    border: none; /* Remove borders from table cells */
-    background-color: transparent; /* Optional: remove background color */
-}
-
-.custom-table thead th {
-    background-color: transparent; /* Optional: ensure header background is also transparent */
-}
-
-.custom-table tbody tr:nth-of-type(odd),
-.custom-table tbody tr:nth-of-type(even) {
-    background-color: transparent; /* Optional: remove background color from rows */
-}
-/* Resize the checkbox */
-.custom-checkbox {
-    width: 20px; /* Adjust the width of the checkbox */
-    height: 20px; /* Adjust the height of the checkbox */
-}
-
-/* Optional: Adjust the appearance of the checkbox input */
-.custom-checkbox input[type="checkbox"] {
-    width: 100%;
-    height: 100%;
-    transform: scale(1.5); /* Scale up the checkbox if needed */
-}
-.no-border {
-      border: none;
-      box-shadow: none;
+    .custom-table {
+        border-collapse: collapse;
+        /* Ensure that borders don't collapse */
     }
-  
+
+    .custom-table th,
+    .custom-table td {
+        border: none;
+        /* Remove borders from table cells */
+        background-color: transparent;
+        /* Optional: remove background color */
+    }
+
+    .custom-table thead th {
+        background-color: transparent;
+        /* Optional: ensure header background is also transparent */
+    }
+
+    .custom-table tbody tr:nth-of-type(odd),
+    .custom-table tbody tr:nth-of-type(even) {
+        background-color: transparent;
+        /* Optional: remove background color from rows */
+    }
+
+    /* Resize the checkbox */
+    .custom-checkbox {
+        width: 20px;
+        /* Adjust the width of the checkbox */
+        height: 20px;
+        /* Adjust the height of the checkbox */
+    }
+
+    /* Optional: Adjust the appearance of the checkbox input */
+    .custom-checkbox input[type="checkbox"] {
+        width: 100%;
+        height: 100%;
+        transform: scale(1.5);
+        /* Scale up the checkbox if needed */
+    }
+
+    .no-border {
+        border: none;
+        box-shadow: none;
+    }
+
     .coupon .form-row {
-      display: flex;
-      align-items: center;
+        display: flex;
+        align-items: center;
     }
-  
+
     .coupon .form-group {
-      margin-bottom: 0;
+        margin-bottom: 0;
     }
-  
+
     .coupon .btn {
-      margin-left: 10px;
+        margin-left: 10px;
     }
+
     .payment_method {
-            margin: 25px 0;
-        }
+        margin: 25px 0;
+    }
 
-        .payment_option {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+    .payment_option {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
 
-        .custome-radio {
-            display: flex;
-            align-items: center;
-        }
+    .custome-radio {
+        display: flex;
+        align-items: center;
+    }
 
-        .custome-radio input[type="radio"] {
-            display: none;
-        }
+    .custome-radio input[type="radio"] {
+        display: none;
+    }
 
-        .custome-radio label {
-            position: relative;
-            padding-left: 30px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
+    .custome-radio label {
+        position: relative;
+        padding-left: 30px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
 
-        .custome-radio label::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-            border: 2px solid #000;
-            border-radius: 0; /* Change border-radius to 0 for square shape */
-            background-color: #fff;
-        }
-        /* Optional: Add custom styles for the SweetAlert2 modal */
+    .custome-radio label::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid #000;
+        border-radius: 0;
+        /* Change border-radius to 0 for square shape */
+        background-color: #fff;
+    }
+
+    /* Optional: Add custom styles for the SweetAlert2 modal */
     .swal2-html-container {
         max-height: 900px;
         overflow-y: auto;
     }
-    
+
     .swal-content {
         font-size: 10px;
     }
-    
+
     .coupon {
-        
         border-radius: 5px;
         padding: 10px;
         margin: 10px 0;
-       
     }
-  
-</style>   
-    
 
-    
+    .custom-list-group {
+        list-style: none;
+        margin: 0;
+    }
+
+    .custom-list-group .list-group-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .custom-list-group .coupon-text {
+        font-size: 10px;
+        font-weight: bold;
+    }
+
+    .custom-list-group .apply-btn {
+        padding: 5px 10px;
+        font-size: 0.9rem;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .custom-list-group .apply-btn:hover {
+        background-color: #0056b3;
+    }
+</style>
+
 <main class="main">
     <div class="page-header breadcrumb-wrap">
         <div class="container">
             <div class="breadcrumb">
                 <a href="index.html" rel="nofollow">Home</a>
-                <span></span> Shop
-                <span></span> Checkout
+                <span></span> Shop <span></span> Checkout
             </div>
         </div>
     </div>
     <section class="mt-50 mb-50">
+
         <div class="container">
             <div class="row">
                 <!-- Address Section -->
@@ -127,12 +170,13 @@
                         <div class="card-header d-flex justify-content-between align-items-center mb-2">
                             <h5 class="mb-0">Address</h5>
                             <!-- Add Address Button Triggering Modal -->
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#addAddressModal">
                                 <i class="">+</i> Add Address
                             </button>
                         </div>
                         <div class="card-body">
-                            <% if (addresses && addresses.length > 0) { %>
+                            <% if (addresses && addresses.length> 0) { %>
                                 <table class="custom-table">
                                     <thead>
                                         <tr>
@@ -142,71 +186,63 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% addresses.forEach((address, index) => { %>
+                                        <% addresses.forEach((address, index)=> { %>
                                             <tr>
                                                 <td class="align-middle">
-                                                    <input 
-                                                        class="form-check-input custom-checkbox" 
-                                                        type="checkbox" 
-                                                        id="selectAddress<%= index %>" 
-                                                        name="selectedAddress" 
-                                                        value="<%= address._id %>" 
-                                                        <%= address.isDefault ? 'checked' : '' %>
-                                                        onclick="onlyOneCheckbox(this)"
-                                                    />
-                                                </td>                                              
+                                                    <input class="form-check-input custom-checkbox" type="checkbox"
+                                                        id="selectAddress<%= index %>" name="selectedAddress"
+                                                        value="<%= address._id %>" <%=address.isDefault ? 'checked' : ''
+                                                        %>
+                                                    onclick="onlyOneCheckbox(this)" />
+                                                </td>
                                                 <td>
                                                     <div class="address-details">
                                                         <p>
-                                                            <%= address.houseNumber %>, 
-                                                            <%= address.landmark ? address.landmark + ',' : '' %> 
-                                                            <%= address.street %>, 
-                                                            <%= address.city %>, 
-                                                            <%= address.zipcode %>, 
-                                                            <%= address.country %>
+                                                            <%= address.houseNumber %>, <%= address.landmark ?
+                                                                    address.landmark + ',' : '' %>
+                                                                    <%= address.street %>,
+                                                                        <%= address.city %>, <%= address.zipcode %>, <%=
+                                                                                    address.country %>
                                                         </p>
                                                         <% if (address.phoneNumber) { %>
-                                                            <p><strong>Number:</strong> <%= address.phoneNumber %></p>
-                                                        <% } %>
+                                                            <p>
+                                                                <strong>Number:</strong>
+                                                                <%= address.phoneNumber %>
+                                                            </p>
+                                                            <% } %>
                                                     </div>
                                                 </td>
                                                 <td class="text-end align-middle">
                                                     <div class="btn-group" role="group">
-                                                        <button 
-                                                            type="button" 
-                                                            class="btn btn-small btn-primary btn-edit" 
+                                                        <button type="button" class="btn btn-small btn-primary btn-edit"
                                                             data-address-id="<%= address._id %>"
-                                                            data-address='<%= JSON.stringify(address) %>'
-                                                        >
+                                                            data-address="<%= JSON.stringify(address) %>">
                                                             Edit
                                                         </button>
-                                                        <button 
-                                                            type="button" 
-                                                            class="btn btn-small btn-danger btn-delete" 
-                                                            data-address-id="<%= address._id %>"
-                                                        >
+                                                        <button type="button"
+                                                            class="btn btn-small btn-danger btn-delete"
+                                                            data-address-id="<%= address._id %>">
                                                             Delete
                                                         </button>
                                                         <% if (!address.isDefault) { %>
-                                                          <button 
-                                                              type="button" 
-                                                              class="btn btn-small btn-warning m-0" 
-                                                              id="set-default-btn-<%= address._id %>" 
-                                                              data-address-id="<%= address._id %>"
-                                                          >Set Default
-                                                          </button>
-                                                        <% } %>
+                                                            <button type="button" class="btn btn-small btn-warning m-0"
+                                                                id="set-default-btn-<%= address._id %>"
+                                                                data-address-id="<%= address._id %>">
+                                                                Set Default
+                                                            </button>
+                                                            <% } %>
                                                     </div>
                                                 </td>
                                             </tr>
-                                        <% }); %>
+                                            <% }); %>
                                     </tbody>
                                 </table>
-                            <% } else { %>
-                                <p>No addresses found.</p>
-                            <% } %>
+                                <% } else { %>
+                                    <p>No addresses found.</p>
+                                    <% } %>
                         </div>
                     </div>
+                    <!-- Coupon form -->
                     <div class="mb-30 mt-50">
                         <div class="heading_s1 mb-3">
                             <h4>Apply Coupon</h4>
@@ -217,12 +253,21 @@
                                     <form id="coupon-form" action="#" target="_blank">
                                         <div class="form-row row justify-content-center">
                                             <div class="form-group col-lg-6">
-                                                <input id="coupon-code" class="font-medium" name="Coupon" placeholder="Enter Your Coupon Code">
+                                                <input id="coupon-code" class="font-medium" name="Coupon"
+                                                    placeholder="Enter Your Coupon Code"
+                                                    value="<%= appliedCouponCode || '' %>" />
                                             </div>
                                             <div class="form-group col-lg-6">
-                                                <button type="button" id="apply-coupon" class="btn btn-sm">
-                                                    <i class="fi-rs-label mr-10"></i>Apply
-                                                </button>
+                                                <% if (appliedCouponCode) { %>
+                                                    <button type="button" id="remove-coupon"
+                                                        class="btn btn-sm btn-danger">
+                                                        <i class="fi-rs-label mr-10"></i>Remove Coupon
+                                                    </button>
+                                                    <% } else { %>
+                                                        <button type="button" id="apply-coupon" class="btn btn-sm">
+                                                            <i class="fi-rs-label mr-10"></i>Apply
+                                                        </button>
+                                                        <% } %>
                                             </div>
                                         </div>
                                     </form>
@@ -232,10 +277,7 @@
                             <div id="available-coupons" class="available-coupons mt-3"></div>
                         </div>
                     </div>
-                    
-                    
                 </div>
-                
                 <!-- Order Review Section -->
                 <div class="col-md-6">
                     <div class="order_review">
@@ -251,14 +293,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% if (cart && cart.products.length > 0) { %>
+                                    <% if (cart && cart.products && cart.products.length > 0) { %> 
                                         <% cart.products.forEach(product => { %>
                                             <tr>
                                                 <td class="image product-thumbnail">
-                                                    <img src="/uploads/products-images/<%= product._id.primaryImages && product._id.primaryImages.length > 0 ? product._id.primaryImages[0].name : 'default-image.jpg' %>" alt="#" />
+                                                    <img src="/uploads/products-images/<%= product._id.primaryImages && product._id.primaryImages.length > 0 ? product._id.primaryImages[0].name : 'default-image.jpg' %>"
+                                                        alt="#" />
                                                 </td>
                                                 <td class="product-des product-name">
-                                                    <h5 class="product-name"><a href="/shop/productDetails/<%= product._id._id %>"><%= product._id.productName %></a></h5>
+                                                    <h5 class="product-name">
+                                                        <a href="/shop/productDetails/<%= product._id._id %>">
+                                                            <%= product._id.productName %>
+                                                        </a>
+                                                    </h5>
                                                     <span class="product-qty">x <%= product.quantity %></span>
                                                 </td>
                                                 <td>$<%= product.price * product.quantity %></td>
@@ -266,16 +313,32 @@
                                         <% }); %>
                                         <tr>
                                             <th>SubTotal</th>
-                                            <td class="product-subtotal" colspan="2">$<%= cart.totalPrice %></td>
+                                            <td class="product-subtotal" colspan="2">
+                                                $<%= cart.totalPrice %>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th>Shipping</th>
                                             <td colspan="2"><em>Free Shipping</em></td>
                                         </tr>
+                                        <% if (cart.coupon && cart.coupon.code) { %>
+                                        <tr>
+                                            <th>Coupon Applied</th>
+                                            <td colspan="2">
+                                                <%= cart.coupon.code %>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Coupon Discount</th>
+                                            <td colspan="2">
+                                                <%= cart.coupon.discountPercentage %> %
+                                            </td>
+                                        </tr>
+                                        <% } %>
                                         <tr>
                                             <th>Total</th>
                                             <td colspan="2" class="product-subtotal">
-                                                <span class="font-xl text-brand fw-900">$<%= cart.totalPrice %></span>
+                                                <span class="font-xl text-brand fw-900">$<%= cart.offerAppliedTotalAmount %></span>
                                             </td>
                                         </tr>
                                     <% } else { %>
@@ -284,9 +347,9 @@
                                         </tr>
                                     <% } %>
                                 </tbody>
-                            </table>
+                            </table>                            
                         </div>
-                
+
                         <!-- Payment Options Section -->
                         <div class="col-12 m-t-20">
                             <div class="card mt-3">
@@ -295,693 +358,561 @@
                                     <div class="m-l-20 m-t-23">
                                         <!-- Use Wallet Balance -->
                                         <div class="form-check m-t-10">
-                                            <input
-                                                class="form-check-input"
-                                                type="radio"
-                                                name="paymentoptions"
-                                                id="payment1"
-                                                value="Wallet"
-                                                checked
-                                            />
-                                            <label class="form-check-label" for="payment1">
-                                                Wallet 
-                                            </label>
-                                           
-                                            <a
-                                                href="#"
-                                                class="btn bg1 cl0 bor1 mt-2 mb-3"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#addMoneyModal"
-                                            >
-                                                + Add Money
-                                            </a>
+                                            <input class="form-check-input" type="radio" name="paymentoptions" id="payment1" value="Wallet" checked />
+                                            <label class="form-check-label" for="payment1">Wallet</label>
                                         </div>
+                                        
+                                        <!-- Cash on Delivery -->
                                         <div class="form-check m-t-10">
-                                            <input
-                                                class="form-check-input"
-                                                type="radio"
-                                                name="paymentoptions"
-                                                id="payment2"
-                                                value="COD"
-                                            />
-                                            <label class="form-check-label" for="payment2">COD</label>
+                                            <input class="form-check-input" type="radio" name="paymentoptions" id="payment2" value="COD" />
+                                            <label class="form-check-label" for="payment2">Cash on Delivery</label>
                                         </div>
-                                        <div class="form-check">
-                                            <input
-                                                class="form-check-input"
-                                                type="radio"
-                                                name="paymentoptions"
-                                                id="payment3"
-                                                value="Razor Pay"
-                                            />
-                                            <label class="form-check-label" for="payment3">
-                                                Razor Pay
-                                            </label>
+                                        
+                                        <!-- Razor Pay -->
+                                        <div class="form-check m-t-10">
+                                            <input class="form-check-input" type="radio" name="paymentoptions" id="payment3" value="Razor Pay" />
+                                            <label class="form-check-label" for="payment3">Razor Pay</label>
                                         </div>
                                     </div>
+                                    
                                 </div>
                             </div>
                         </div>
-                
+
                         <!-- Place Order Button -->
-                        <button type="submit" class="btn btn-fill-out btn-block mt-30">Place Order</button>
+
+<!-- Place Order Button -->
+<button type="button" id="place-order-btn" class="btn btn-fill-out btn-block mt-30">
+    Place Order
+</button>
+
+
+                        
+                        
                     </div>
                 </div>
-                
-                
-                
             </div>
         </div>
-            <!-- Add Address Modal -->
-            <div
-            class="modal fade"
-            id="addAddressModal"
-            tabindex="-1"
-            aria-labelledby="addAddressModalLabel"
-            aria-hidden="true"
-        >
-            <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="addAddressModalLabel">
-                    Add New Address
-                </h5>
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                ></button>
-                </div>
-                <div class="modal-body">
-                <!-- Address Form in Modal -->
-                <form
-                    id="addAddressForm"
-                    action="/checkOut/addAddress"
-                    method="POST"
-                >
-                    <div class="form-group">
-                    <label for="place">Place</label>
-                    <select
-                        class="form-control"
-                        id="place"
-                        name="place"
-                        required
-                    >
-                        <option value="home">Home</option>
-                        <option value="work">Work</option>
-                    </select>
-                    </div>
-                    <div class="form-group">
-                    <label for="houseNumber">House Number</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="houseNumber"
-                        name="houseNumber"
-                        required
-                    />
-                    </div>
-                    <div class="form-group">
-                    <label for="street">Street</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="street"
-                        name="street"
-                        required
-                    />
-                    </div>
-                    <div class="form-group">
-                    <label for="city">City</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="city"
-                        name="city"
-                        required
-                    />
-                    </div>
-                    <div class="form-group">
-                    <label for="zipcode">Zipcode</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="zipcode"
-                        name="zipcode"
-                        required
-                    />
-                    </div>
-                    <div class="form-group">
-                    <label for="country">Country</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="country"
-                        name="country"
-                        required
-                    />
-                    </div>
-                    <div class="form-group">
-                    <label for="landmark">Landmark</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="landmark"
-                        name="landmark"
-                    />
-                    </div>
-                    <div class="form-group">
-                    <label for="phoneNumber">Phone Number</label>
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="phoneNumber"
-                        name="phoneNumber"
-                    />
-                    </div>
-                    <button
-                    type="submit"
-                    class="btn btn-primary"
-                    >
-                    Add Address
-                    </button>
-                </form>
-                </div>
-            </div>
-            </div>
-            </div>
 
-            <!-- Edit Address Modal -->
-            <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-labelledby="editAddressModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form id="editAddressForm">
-                            <div class="modal-body">
-                                <input type="hidden" id="editAddressId" name="addressId">
-                                <div class="form-group">
-                                    <label for="editPlace">Place</label>
-                                    <select class="form-control" id="editPlace" name="place" required>
-                                        <option value="">Select Place</option>
-                                        <option value="home">Home</option>
-                                        <option value="work">Work</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editHouseNumber">House Number</label>
-                                    <input type="text" class="form-control" id="editHouseNumber" name="houseNumber" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editStreet">Street</label>
-                                    <input type="text" class="form-control" id="editStreet" name="street" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editCity">City</label>
-                                    <input type="text" class="form-control" id="editCity" name="city" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editZipcode">Zipcode</label>
-                                    <input type="text" class="form-control" id="editZipcode" name="zipcode" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editCountry">Country</label>
-                                    <input type="text" class="form-control" id="editCountry" name="country" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editLandmark">Landmark</label>
-                                    <input type="text" class="form-control" id="editLandmark" name="landmark">
-                                </div>
-                                <div class="form-group">
-                                    <label for="editPhoneNumber">Phone Number</label>
-                                    <input type="text" class="form-control" id="editPhoneNumber" name="phoneNumber">
-                                </div>
+        <!-- Add Address Modal -->
+        <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addAddressModalLabel">
+                            Add New Address
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- add Address  Modal -->
+                        <form id="addAddressForm" action="/checkOut/addAddress" method="POST">
+                            <div class="form-group">
+                                <label for="place">Place</label>
+                                <select class="form-control" id="place" name="place" required>
+                                    <option value="home">Home</option>
+                                    <option value="work">Work</option>
+                                </select>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            <div class="form-group">
+                                <label for="houseNumber">House Number</label>
+                                <input type="text" class="form-control" id="houseNumber" name="houseNumber" required />
                             </div>
+                            <div class="form-group">
+                                <label for="street">Street</label>
+                                <input type="text" class="form-control" id="street" name="street" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" class="form-control" id="city" name="city" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="zipcode">Zipcode</label>
+                                <input type="text" class="form-control" id="zipcode" name="zipcode" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <input type="text" class="form-control" id="country" name="country" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="landmark">Landmark</label>
+                                <input type="text" class="form-control" id="landmark" name="landmark" />
+                            </div>
+                            <div class="form-group">
+                                <label for="phoneNumber">Phone Number</label>
+                                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Address</button>
                         </form>
                     </div>
                 </div>
             </div>
+        </div>
+        <!-- Edit Address Modal -->
+        <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog"
+            aria-labelledby="editAddressModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="editAddressForm">
+                        <div class="modal-body">
+                            <input type="hidden" id="editAddressId" name="addressId" />
+                            <div class="form-group">
+                                <label for="editPlace">Place</label>
+                                <select class="form-control" id="editPlace" name="place" required>
+                                    <option value="">Select Place</option>
+                                    <option value="home">Home</option>
+                                    <option value="work">Work</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editHouseNumber">House Number</label>
+                                <input type="text" class="form-control" id="editHouseNumber" name="houseNumber"
+                                    required />
+                            </div>
+                            <div class="form-group">
+                                <label for="editStreet">Street</label>
+                                <input type="text" class="form-control" id="editStreet" name="street" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="editCity">City</label>
+                                <input type="text" class="form-control" id="editCity" name="city" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="editZipcode">Zipcode</label>
+                                <input type="text" class="form-control" id="editZipcode" name="zipcode" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="editCountry">Country</label>
+                                <input type="text" class="form-control" id="editCountry" name="country" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="editLandmark">Landmark</label>
+                                <input type="text" class="form-control" id="editLandmark" name="landmark" />
+                            </div>
+                            <div class="form-group">
+                                <label for="editPhoneNumber">Phone Number</label>
+                                <input type="text" class="form-control" id="editPhoneNumber" name="phoneNumber" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                Close
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                Save changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </section>
-    
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-// Function to fetch available coupons
-async function fetchAvailableCoupons() {
-    try {
-        const response = await fetch('/coupons/available'); // Adjust the endpoint as needed
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+    document.addEventListener("DOMContentLoaded", function () {
+        // Apply coupon event listener
+        const applyCouponBtn = document.getElementById("apply-coupon");
+        if (applyCouponBtn) {
+            applyCouponBtn.addEventListener("click", function () {
+                fetchAvailableCoupons();
+            });
         }
-        const coupons = await response.json();
-        return coupons;
-    } catch (error) {
-        console.error('Error fetching available coupons:', error);
-        return [];
-    }
-}
 
-// Function to display available coupons in a SweetAlert2 modal
-async function showAvailableCoupons() {
-    const coupons = await fetchAvailableCoupons();
+        // Remove coupon event listener
+        const removeCouponBtn = document.getElementById("remove-coupon");
+        if (removeCouponBtn) {
+            removeCouponBtn.addEventListener("click", function () {
+                const couponCode = document.getElementById("coupon-code").value;
 
-    let couponsHtml = '<ul class="list-group">'; // Heading and start of list
-
-    if (coupons.length === 0) {
-        couponsHtml += '<li class="list-group-item">No available coupons</li>';
-    } else {
-        coupons.forEach(coupon => {
-            couponsHtml += `
-                <div class="coupon" style="
-                    border: 1px solid #ddd;
-                    border-radius: 5px;
-                    padding: 5px;
-                    
-                ">
-                    <strong>${coupon.code}</strong> - ${coupon.discountPercentage}% off, Min Purchase: $${coupon.minPurchaseAmount} 
-                    <button class="btn btn-sm apply-btn" data-code="${coupon.code}" data-min-purchase="${coupon.minPurchaseAmount}">Apply</button>
-                </div>
-            `;
-        });
-    }
-
-    couponsHtml += '</ul>'; // End of list
-
-    Swal.fire({
-        title: 'Available Coupons',
-        html: couponsHtml,
-        confirmButtonText: 'Close',
-        customClass: {
-            content: 'swal-content',
-            container: 'swal-container'
-        },
-        didOpen: () => {
-            // Attach click event handler to dynamically added buttons
-            const container = Swal.getPopup().querySelector('.swal-content');
-            container.addEventListener('click', function(event) {
-                if (event.target.classList.contains('apply-coupon-btn')) {
-                    const couponCode = event.target.getAttribute('data-coupon-code');
-                    applyCouponCode(couponCode);
+                if (couponCode) {
+                    removeCoupon(couponCode);
+                } else {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "No Coupon Code",
+                        text: "Please enter a coupon code to remove.",
+                    });
                 }
             });
         }
+
+        // Function to fetch and display available coupons
+        function fetchAvailableCoupons() {
+            fetch("/coupons/available")
+                .then((response) => response.json())
+                .then((coupons) => {
+                    if (coupons.length === 0) {
+                        Swal.fire({
+                            icon: "info",
+                            title: "No Coupons Available",
+                            text: "There are no available coupons at the moment.",
+                        });
+                    } else {
+                        let couponList = `
+                    <ul class="list-group custom-list-group">`;
+                        coupons.forEach((coupon) => {
+                            couponList += `
+                        <li class="list-group-item">
+                            <div class="coupon-text">
+                                <strong>${coupon.code}</strong> - ${coupon.discountPercentage}% off, Min Purchase: $${coupon.minPurchaseAmount}
+                            </div>
+                            <button class="btn btn-sm apply-btn" data-code="${coupon.code}" data-min-purchase="${coupon.minPurchaseAmount}">Apply</button>
+                        </li>`;
+                        });
+                        couponList += "</ul>";
+
+                        Swal.fire({
+                            title: "Available Coupons",
+                            html:
+                                couponList +
+                                '<button class="btn btn-secondary mt-3" id="close-coupons">Close</button>',
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                        });
+
+                        // Add event listeners to the apply buttons in the Swal message
+                        document.querySelectorAll(".apply-btn").forEach((button) => {
+                            button.addEventListener("click", function () {
+                                const code = this.getAttribute("data-code");
+                                applyCoupon(code);
+                            });
+                        });
+
+                        // Add event listener to the close button
+                        document
+                            .getElementById("close-coupons")
+                            .addEventListener("click", function () {
+                                Swal.close();
+                            });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching coupons:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "There was an error fetching the available coupons.",
+                    });
+                });
+        }
+
+        // Function to apply coupon
+        function applyCoupon(code) {
+            fetch("/coupons/apply", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ couponCode: code }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Coupon Applied",
+                            text: "The coupon has been successfully applied.",
+                        }).then(() => {
+                            // Optionally, refresh the page or update the UI if needed
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: data.message,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error applying coupon:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "There was an error applying the coupon.",
+                    });
+                });
+        }
+
+        // Function to remove coupon
+        function removeCoupon(code) {
+            fetch("/coupons/remove", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ couponCode: code }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Coupon Removed",
+                            text: "The coupon has been successfully removed.",
+                        }).then(() => {
+                            // Optionally, refresh the page or update the UI if needed
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: data.message,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error removing coupon:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "There was an error removing the coupon.",
+                    });
+                });
+        }
     });
-}
-
-// Function to handle coupon application
-async function applyCoupon() {
-    const couponCode = document.getElementById('coupon-code').value;
-    const totalAmount = parseFloat(document.getElementById('cart-total').textContent.replace('$', ''));
-
-    // Fetch available coupons
-    const coupons = await fetchAvailableCoupons();
-    const coupon = coupons.find(c => c.code === couponCode);
-
-    if (coupon) {
-        if (totalAmount >= coupon.minPurchaseAmount) {
-            Swal.fire({
-                title: 'Success!',
-                text: `Coupon code ${couponCode} applied!`,
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
-            // Update the cart total here if needed
-        } else {
-            Swal.fire({
-                title: 'Error!',
-                text: `Your total amount is less than the minimum required purchase amount of $${coupon.minPurchaseAmount}.`,
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        }
-    } else {
-        Swal.fire({
-            title: 'Error!',
-            text: `Coupon code ${couponCode} is not valid.`,
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-    }
-
-    // Show available coupons after applying a coupon
-    await showAvailableCoupons();
-}
-
-// Function to handle applying a coupon code from the list
-async function applyCouponCode(couponCode) {
-    const totalAmount = parseFloat(document.getElementById('cart-total').textContent.replace('$', ''));
-
-    // Fetch available coupons
-    const coupons = await fetchAvailableCoupons();
-    const coupon = coupons.find(c => c.code === couponCode);
-
-    if (coupon) {
-        if (totalAmount >= coupon.minPurchaseAmount) {
-            Swal.fire({
-                title: 'Success!',
-                text: `Coupon code ${couponCode} applied!`,
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
-            // Update the cart total here if needed
-        } else {
-            Swal.fire({
-                title: 'Error!',
-                text: `Your total amount is less than the minimum required purchase amount of $${coupon.minPurchaseAmount}.`,
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        }
-    } else {
-        Swal.fire({
-            title: 'Error!',
-            text: `Coupon code ${couponCode} is not valid.`,
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-    }
-}
-
-// Add event listener to the Apply button
-document.getElementById('apply-coupon').addEventListener('click', async () => {
-    await showAvailableCoupons();
-});
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <script>
     // Address Edit Script
-    document.addEventListener('DOMContentLoaded', function() {
-      document.addEventListener('click', function(event) {
-        if (event.target && event.target.classList.contains('btn-edit')) {
-          try {
-            const address = JSON.parse(event.target.getAttribute('data-address'));
-            if (address) {
-              document.getElementById('editAddressId').value = address._id;
-              document.getElementById('editPlace').value = address.place;
-              document.getElementById('editHouseNumber').value = address.houseNumber;
-              document.getElementById('editStreet').value = address.street;
-              document.getElementById('editCity').value = address.city;
-              document.getElementById('editZipcode').value = address.zipcode;
-              document.getElementById('editCountry').value = address.country;
-              document.getElementById('editLandmark').value = address.landmark || '';
-              document.getElementById('editPhoneNumber').value = address.phoneNumber || '';
-              $('#editAddressModal').modal('show');
-            } else {
-              console.error('Address data is not valid.');
+    document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("click", function (event) {
+            if (event.target && event.target.classList.contains("btn-edit")) {
+                try {
+                    const address = JSON.parse(event.target.getAttribute("data-address"));
+                    if (address) {
+                        document.getElementById("editAddressId").value = address._id;
+                        document.getElementById("editPlace").value = address.place;
+                        document.getElementById("editHouseNumber").value =
+                            address.houseNumber;
+                        document.getElementById("editStreet").value = address.street;
+                        document.getElementById("editCity").value = address.city;
+                        document.getElementById("editZipcode").value = address.zipcode;
+                        document.getElementById("editCountry").value = address.country;
+                        document.getElementById("editLandmark").value =
+                            address.landmark || "";
+                        document.getElementById("editPhoneNumber").value =
+                            address.phoneNumber || "";
+                        $("#editAddressModal").modal("show");
+                    } else {
+                        console.error("Address data is not valid.");
+                    }
+                } catch (e) {
+                    console.error("Error parsing address data:", e);
+                }
             }
-          } catch (e) {
-            console.error('Error parsing address data:', e);
-          }
-        }
-      });
-  
-      document.getElementById('editAddressForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const addressId = document.getElementById('editAddressId').value;
-        const updatedAddress = {
-          place: document.getElementById('editPlace').value,
-          houseNumber: document.getElementById('editHouseNumber').value,
-          street: document.getElementById('editStreet').value,
-          city: document.getElementById('editCity').value,
-          zipcode: document.getElementById('editZipcode').value,
-          country: document.getElementById('editCountry').value,
-          landmark: document.getElementById('editLandmark').value,
-          phoneNumber: document.getElementById('editPhoneNumber').value
-        };
-  
-        fetch(`/checkOut/address/${addressId}/edit`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(updatedAddress)
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            $('#editAddressModal').modal('hide');
-            window.location.href = '/checkOut';
-          } else {
-            console.error('Update failed:', data.message);
-          }
-        })
-        .catch(error => console.error('Error:', error));
-      });
-    });
-  
-    // Address Delete Script
-    document.addEventListener('click', function(event) {
-      if (event.target && event.target.classList.contains('btn-delete')) {
-        const addressId = event.target.getAttribute('data-address-id');
-        fetch(`/checkOut/address/${addressId}/delete`, {
-          method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            Swal.fire({
-              title: 'Deleted!',
-              text: data.message,
-              icon: 'success',
-              confirmButtonText: 'OK'
-            }).then(() => {
-              window.location.href = '/checkOut';
-            });
-          } else {
-            Swal.fire({
-              title: 'Error!',
-              text: data.message,
-              icon: 'error',
-              confirmButtonText: 'OK'
-            });
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          Swal.fire({
-            title: 'Error!',
-            text: 'Something went wrong.',
-            icon: 'error',
-            confirmButtonText: 'OK'
-          });
         });
-      }
+
+        document
+            .getElementById("editAddressForm")
+            .addEventListener("submit", function (event) {
+                event.preventDefault();
+                const addressId = document.getElementById("editAddressId").value;
+                const updatedAddress = {
+                    place: document.getElementById("editPlace").value,
+                    houseNumber: document.getElementById("editHouseNumber").value,
+                    street: document.getElementById("editStreet").value,
+                    city: document.getElementById("editCity").value,
+                    zipcode: document.getElementById("editZipcode").value,
+                    country: document.getElementById("editCountry").value,
+                    landmark: document.getElementById("editLandmark").value,
+                    phoneNumber: document.getElementById("editPhoneNumber").value,
+                };
+
+                fetch(`/checkOut/address/${addressId}/edit`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(updatedAddress),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            $("#editAddressModal").modal("hide");
+                            window.location.href = "/checkOut";
+                        } else {
+                            console.error("Update failed:", data.message);
+                        }
+                    })
+                    .catch((error) => console.error("Error:", error));
+            });
     });
-  
+
+    // Address Delete Script
+    document.addEventListener("click", function (event) {
+        if (event.target && event.target.classList.contains("btn-delete")) {
+            const addressId = event.target.getAttribute("data-address-id");
+            fetch(`/checkOut/address/${addressId}/delete`, {
+                method: "DELETE",
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: data.message,
+                            icon: "success",
+                            confirmButtonText: "OK",
+                        }).then(() => {
+                            window.location.href = "/checkOut";
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message,
+                            icon: "error",
+                            confirmButtonText: "OK",
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Something went wrong.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                });
+        }
+    });
+
     // Single Checkbox Selection Script
     function onlyOneCheckbox(checkbox) {
-      var checkboxes = document.getElementsByName('selectedAddress');
-      checkboxes.forEach((item) => {
-        if (item !== checkbox) item.checked = false;
-      });
+        var checkboxes = document.getElementsByName("selectedAddress");
+        checkboxes.forEach((item) => {
+            if (item !== checkbox) item.checked = false;
+        });
     }
-  
+
     // Set Default Address Script
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.btn-set-default').forEach(button => {
-        button.addEventListener('click', event => {
-          event.preventDefault();
-          const addressId = event.target.dataset.addressId;
-          setAsDefault(addressId);
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".btn-set-default").forEach((button) => {
+            button.addEventListener("click", (event) => {
+                event.preventDefault();
+                const addressId = event.target.dataset.addressId;
+                setAsDefault(addressId);
+            });
         });
-      });
     });
-  
-    document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('[id^="set-default-btn-"]').forEach(button => {
-        button.addEventListener('click', function() {
-          const addressId = this.getAttribute('data-address-id');
-  
-          if (!addressId) {
-            Swal.fire({
-              title: 'Error!',
-              text: 'Address ID is missing.',
-              icon: 'error',
-              confirmButtonText: 'OK'
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('[id^="set-default-btn-"]').forEach((button) => {
+            button.addEventListener("click", function () {
+                const addressId = this.getAttribute("data-address-id");
+
+                if (!addressId) {
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Address ID is missing.",
+                        icon: "error",
+                        confirmButtonText: "OK",
+                    });
+                    return;
+                }
+
+                fetch(`/checkOut/set-default-address/${addressId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: "Success!",
+                                text: "Address set as default successfully.",
+                                icon: "success",
+                                confirmButtonText: "OK",
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Error!",
+                                text: data.message || "Failed to set address as default.",
+                                icon: "error",
+                                confirmButtonText: "Try Again",
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        Swal.fire({
+                            title: "Error!",
+                            text: "An unexpected error occurred.",
+                            icon: "error",
+                            confirmButtonText: "Try Again",
+                        });
+                    });
             });
-            return;
-          }
-  
-          fetch(`/checkOut/set-default-address/${addressId}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            }
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              Swal.fire({
-                title: 'Success!',
-                text: 'Address set as default successfully.',
-                icon: 'success',
-                confirmButtonText: 'OK'
-              }).then(() => {
-                window.location.reload();
-              });
-            } else {
-              Swal.fire({
-                title: 'Error!',
-                text: data.message || 'Failed to set address as default.',
-                icon: 'error',
-                confirmButtonText: 'Try Again'
-              });
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-              title: 'Error!',
-              text: 'An unexpected error occurred.',
-              icon: 'error',
-              confirmButtonText: 'Try Again'
-            });
-          });
         });
-      });
     });
 </script>
 
 <script>
-    document.getElementById('applyCouponBtn').addEventListener('click', function() {
-    fetch('/coupons/available')  // Adjust the API endpoint to your actual endpoint
-        .then(response => response.json())
-        .then(coupons => {
-            let couponList = '<ul id="couponsList" class="list-group">';
-            if (coupons.length > 0) {
-                coupons.forEach(function(coupon) {
-                    couponList += `
+    document
+        .getElementById("applyCouponBtn")
+        .addEventListener("click", function () {
+            fetch("/coupons/available") // Adjust the API endpoint to your actual endpoint
+                .then((response) => response.json())
+                .then((coupons) => {
+                    let couponList = '<ul id="couponsList" class="list-group">';
+                    if (coupons.length > 0) {
+                        coupons.forEach(function (coupon) {
+                            couponList += `
                         <li class="list-group-item">
                             <strong>${coupon.code}</strong> - ${coupon.discountPercentage}% off, Min Purchase: ${coupon.minPurchaseAmount}
                             <a href="#" class="btn btn-primary apply-coupon-btn" data-coupon-code="${coupon.code}">Apply</a>
                         </li>
                     `;
-                });
-            } else {
-                couponList += '<li class="list-group-item">No available coupons</li>';
-            }
-            couponList += '</ul>';
+                        });
+                    } else {
+                        couponList +=
+                            '<li class="list-group-item">No available coupons</li>';
+                    }
+                    couponList += "</ul>";
 
-            Swal.fire({
-                title: 'Available Coupons',
-                html: couponList,
-                showCloseButton: true,
-                showCancelButton: false,
-                focusConfirm: false,
-                confirmButtonText: 'Close'
-            });
+                    Swal.fire({
+                        title: "Available Coupons",
+                        html: couponList,
+                        showCloseButton: true,
+                        showCancelButton: false,
+                        focusConfirm: false,
+                        confirmButtonText: "Close",
+                    });
 
-            document.querySelectorAll('.apply-coupon-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    let couponCode = this.getAttribute('data-coupon-code');
-                    document.getElementById('couponInput').value = couponCode;
-                    Swal.close();
+                    document.querySelectorAll(".apply-coupon-btn").forEach((button) => {
+                        button.addEventListener("click", function () {
+                            let couponCode = this.getAttribute("data-coupon-code");
+                            document.getElementById("couponInput").value = couponCode;
+                            Swal.close();
+                        });
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error fetching coupons:", error);
+                    Swal.fire(
+                        "Error",
+                        "Could not load coupons. Please try again later.",
+                        "error"
+                    );
                 });
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching coupons:', error);
-            Swal.fire('Error', 'Could not load coupons. Please try again later.', 'error');
         });
-});
-
 </script>
 
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const placeOrderBtn = document.getElementById('place-order-btn');
-        const orderConfirmation = document.getElementById('orderConfirmation');
-    
-        placeOrderBtn.addEventListener('click', async () => {
-            const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
-            const paymentMethod = document.querySelector('input[name="payment_option"]:checked').id;
-            const totalAmount = document.querySelector('.product-subtotal span').textContent.replace('$', '');
-    
-            if (!selectedAddress) {
-                alert('Please select a shipping address.');
-                return;
-            }
-    
-            const addressId = selectedAddress.value;
-            const products = []; // Populate with actual product details from your cart
-            // Example format for products:
-            // products = [
-            //     { productId: 'productId1', quantity: 2, price: 50 },
-            //     { productId: 'productId2', quantity: 1, price: 30 }
-            // ];
-    
-            try {
-                const response = await fetch('/createOrder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Adjust if necessary
-                    },
-                    body: JSON.stringify({
-                        shippingAddressId: addressId,
-                        paymentMethod,
-                        totalAmount,
-                        products
-                    })
-                });
-    
-                const data = await response.json();
-                if (response.ok) {
-                    orderConfirmation.innerHTML = `<p>Order placed successfully! Your order ID is <strong>${data.order._id}</strong>.</p>`;
-                    // Optionally, redirect to another page
-                    // window.location.href = `/orderConfirmation/${data.order._id}`;
-                } else {
-                    orderConfirmation.innerHTML = `<p>Error: ${data.message}</p>`;
-                }
-            } catch (error) {
-                console.error('Error placing order:', error);
-                orderConfirmation.innerHTML = '<p>There was an error placing your order. Please try again later.</p>';
-            }
-        });
-    });
-</script>
-
-
- 

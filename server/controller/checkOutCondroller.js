@@ -10,12 +10,13 @@ module.exports = {
             const userId = req.session.user._id;
             const userAddressData = await UserAddress.findOne({ userId: userId });
             const addresses = userAddressData ? userAddressData.addresses : [];
-            const cart = await Cart.findOne({ userId: userId }).populate('products._id');
-    
+            const cart = await Cart.findOne({ userId: userId }).populate('products._id').populate('coupon'); ;
+            const appliedCouponCode = cart.coupon ? cart.coupon.code : '';
             res.render("shop/checkOut", {
                 user: req.session.user,
                 addresses: addresses,
-                cart: cart
+                cart: cart,
+                appliedCouponCode
             });
             console.log(cart);
         } catch (error) {

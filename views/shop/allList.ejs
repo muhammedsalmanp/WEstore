@@ -205,7 +205,7 @@
               <div class="widget-category mb-30">
                 <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
                 <ul class="categories">
-                  <% categories.forEach(category => { %>
+                  <%categories.filter(category=> category.isActive).forEach(category => { %>
                     <li><a href="/allProducts?category=<%= category._id %>"><%= category.name %></a></li>
                   <% }) %>
                 </ul>

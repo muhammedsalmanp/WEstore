@@ -223,7 +223,9 @@ module.exports = {
         (total, item) => total + item.quantity * item.price,
         0
       );
-  
+      cart.couponDiscount=0;
+      cart.coupon = null;
+      cart.offerAppliedTotalAmount=0;
       await cart.save();
   
       res.json({ success: true, cart });
@@ -248,6 +250,9 @@ module.exports = {
       cart.products = [];
       cart.totalPrice = 0;
       cart.totalProduct = 0;
+      cart.couponDiscount=0;
+      cart.coupon = null;
+      cart.offerAppliedTotalAmount=0;
       await cart.save();
       res.json({ success: true });
     } catch (error) {}

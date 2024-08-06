@@ -14,7 +14,7 @@ module.exports = {
       title: "Products",
     };
     try {
-      let perPage = 7;
+      let perPage = 12;
       let page = req.query.page || 1;
       const product = await Product.find()
         .populate("category")

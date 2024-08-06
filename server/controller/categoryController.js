@@ -10,7 +10,7 @@ module.exports = {
     const locals = {
       title: "Category",
     };
-    const perPage = 3
+    const perPage = 12
     const page = req.query.page||1
     const categories = await Category.find()
     .skip(perPage*page-perPage)   
