@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
+    orderId: {
+        type: String,
+        unique: true,
+        required: true
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -8,7 +13,7 @@ const orderSchema = new mongoose.Schema({
     },
     products: [
         {
-            productId: {
+            _id: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Product',
                 required: true
@@ -24,7 +29,7 @@ const orderSchema = new mongoose.Schema({
             }
         }
     ],
-    totalAmount: {
+    totalAmount: {   
         type: Number,
         required: true
     },
@@ -40,8 +45,8 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Pending', 'Completed', 'Cancelled'],
-        default: 'Pending'
+        enum: ['Ordered', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled'],
+        default: 'Ordered'
     },
     createdAt: {
         type: Date,
@@ -50,6 +55,18 @@ const orderSchema = new mongoose.Schema({
     expectedDeliveryDate: {
         type: Date,
         required: true
+    },
+    coupon: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Coupon'
+    },
+    couponDiscount: {
+        type: Number,
+        default: 0
+    },
+    offerAppliedTotalAmount: {
+        type: Number,
+        default: 0
     }
 });
 

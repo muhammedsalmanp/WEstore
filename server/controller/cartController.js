@@ -34,53 +34,6 @@ module.exports = {
     }
   },
 
-  
-  // addToCart :async (req, res) => {
-  
-  //     try {
-  //         const { productId, quantity } = req.body;
-  //         if (!productId) {
-  //             return res.status(400).json({ success: false, error: "Product ID is required." });
-  //         }
-  
-  //         const product = await Product.findById(productId);
-  //         if (!product) {
-  //             return res.status(404).json({ success: false, error: "Product not found." });
-  //         }
-  
-  //         if (product.stock <= 0) {
-  //             return res.status(400).json({ success: false, error: "Product is out of stock." });
-  //         }
-  
-  //         const userId = req.session.user._id;
-  //         let cart = await Cart.findOne({ userId }).populate("products._id");
-  //         if (!cart) {
-  //             cart = new Cart({ userId, products: [] });
-  //         }
-  //         let exist = await Cart.findOne({"products._id":productId})
-  //         if(exist){
-  //             return res.status(400).json({ success: false, error: "Product already in cart."});
-  //         }
-  //         if (!cart.products) {
-  //             cart.products = [];
-  //         }
-  //         cart.products.push({
-  //             _id: product._id,
-  //             quantity: parseInt(quantity),
-  //             price: product.price
-  //         });
-  //         cart.totalProduct = cart.products.reduce((total, item) => total + item.quantity, 0);
-  //         cart.totalPrice = cart.products.reduce((total, item) => total + item.quantity * item.price, 0);
-  
-  //         await cart.save();
-  
-  //         res.json({ success: true });
-  //     } catch (error) {
-  //         console.error('Error adding to cart:', error);
-  //         res.status(500).json({ success: false, error: "An error occurred while adding the product to the cart." });
-  //     }
-  // },
-  
   addToCart: async (req, res) => {
     try {
       const { productId, quantity } = req.body;
@@ -134,7 +87,9 @@ module.exports = {
         (total, item) => total + item.quantity * item.price,
         0
       );
-  
+      cart.couponDiscount=0;
+      cart.coupon = null;
+      cart.offerAppliedTotalAmount=cart.totalPrice;
       await cart.save();
   
       res.json({ success: true });
@@ -177,7 +132,9 @@ module.exports = {
         (sum, item) => sum + item.price * item.quantity,
         0
       );
-  
+      cart.couponDiscount=0;
+      cart.coupon = null;
+      cart.offerAppliedTotalAmount=cart.totalPrice;
       await cart.save();
   
       res.json({
@@ -223,9 +180,10 @@ module.exports = {
         (total, item) => total + item.quantity * item.price,
         0
       );
+      
       cart.couponDiscount=0;
       cart.coupon = null;
-      cart.offerAppliedTotalAmount=0;
+      cart.offerAppliedTotalAmount=cart.totalPrice;
       await cart.save();
   
       res.json({ success: true, cart });
@@ -257,12 +215,53 @@ module.exports = {
       res.json({ success: true });
     } catch (error) {}
   },
+
+  getCheckOutC: async (req, res) => {
+    try {
+        const userId = req.session.user;
+        if (!userId) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
   
+        const cart = await Cart.findOne({ userId: userId }).populate('products._id');
+
+        if (!cart || cart.products.length === 0) {
+            return res.redirect('/cart?error=empty'); 
+        }
+
+        let outOfStockRemoved = false;
+        let quantityAdjusted = false;
+
+        
+        cart.products = cart.products.filter(product => {
+            const item = product._id; 
+            if (item.stock === 0) {
+                outOfStockRemoved = true;
+                return false; 
+            } else if (product.quantity > 5) {
+                product.quantity = 5; 
+                quantityAdjusted = true;
+            }
+            return true;
+        });
+
+        
+        await cart.save();
+
+      
+        if (outOfStockRemoved && quantityAdjusted) {
+            return res.redirect('/cart?message=out_of_stock_quantity_adjusted');
+        } else if (outOfStockRemoved) {
+            return res.redirect('/cart?message=out_of_stock');
+        } else if (quantityAdjusted) {
+            return res.redirect('/cart?message=quantity_adjusted');
+        } else {
+            return res.redirect('/checkOut');
+        }
+    } catch (error) {
+        console.error("Error fetching address or cart details:", error);
+        return res.redirect('/cart?error=server');
+    }
 }
-
-
-
-
-
-
-
+}

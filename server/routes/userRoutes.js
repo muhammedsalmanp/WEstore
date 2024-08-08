@@ -7,7 +7,7 @@ const { checkBlockedUser, isAuthenticated } = require('../middleware/authMiddlew
 const { isLoggedOut } = require('../middleware/logoutMiddileware');
 const checkOutCondroller = require("../controller/checkOutCondroller");
 const couponController = require("../controller/CouponCondroller");
-const OrderController = require("../controller/OrderController")
+const orderController = require("../controller/orderController")
 
 
 // user Wishlist 
@@ -46,8 +46,12 @@ router.post("/checkOut/address/:addressId/edit",userController.checkOuteditAddre
 router.delete("/checkOut/address/:addressId/delete",userController.checkOutdeleteAddress)
 router.post("/checkOut/set-default-address/:addressId",userController.checkOutsetDefault)
 
+router.get('/cart/check', cartController.getCheckOutC);
 
-router.post('/createOrder',OrderController.createOrder);
+// order 
+router.post('/checkOut/placeOrder',checkOutCondroller.placeOrder)
+
+router.get("/order/details/:orderId", orderController.getOrder);
 
 
 

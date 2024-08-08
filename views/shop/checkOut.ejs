@@ -331,7 +331,7 @@
                                         <tr>
                                             <th>Coupon Discount</th>
                                             <td colspan="2">
-                                                <%= cart.coupon.discountPercentage %> %
+                                                <%= cart.coupon.discountPercentage %>% Of
                                             </td>
                                         </tr>
                                         <% } %>
@@ -381,14 +381,10 @@
 
                         <!-- Place Order Button -->
 
-<!-- Place Order Button -->
-<button type="button" id="place-order-btn" class="btn btn-fill-out btn-block mt-30">
-    Place Order
-</button>
-
-
-                        
-                        
+                        <button type="button" id="place-order-btn" class="btn btn-fill-out btn-block mt-30">
+                            Place Order
+                        </button>
+                            
                     </div>
                 </div>
             </div>
@@ -916,3 +912,71 @@
         });
 </script>
 
+<script>
+document.getElementById('place-order-btn').addEventListener('click', function() {
+    Swal.fire({
+        title: 'Confirm Order',
+        text: "Do you want to place this order?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, place order!',
+        cancelButtonText: 'No, cancel!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked').value;
+            const paymentMethod = document.querySelector('input[name="paymentoptions"]:checked').value;
+
+            fetch('/checkOut/placeOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    paymentoptions: paymentMethod,
+                    address: selectedAddress
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show a success message with two buttons
+                    Swal.fire({
+                        title: 'Purchase Successful',
+                        html: `Your order has been placed successfully!<br>Your order ID is ${data.orderId}`,
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonText: 'Continue Shopping',
+                        cancelButtonText: 'Show Order Details'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Redirect to the all products page
+                            window.location.href = '/allProducts';
+                        } else {
+                            // Redirect to the order details page
+                            window.location.href = `/order/details/${data.orderId}`;
+                        }
+                    });
+                } else {
+                    // Show a purchase failed message
+                    Swal.fire({
+                        title: 'Purchase Failed',
+                        text: data.message || 'There was an issue with your order. Please try again.',
+                        icon: 'error'
+                    });
+                }
+            })
+            .catch(error => {
+                // Handle any network errors or unexpected issues
+                Swal.fire({
+                    title: 'Error',
+                    text: 'An unexpected error occurred. Please try again later.',
+                    icon: 'error'
+                });
+            });
+        }
+    });
+});
+
+
+
+</script>

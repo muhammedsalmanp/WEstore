@@ -1,0 +1,375 @@
+<style>
+
+.order-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    margin: 20px auto;
+    width: 80%;
+    max-width: 1000px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Animated Checkmark */
+.checkmark-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px; /* Added space below the checkmark */
+    animation: fadeIn 3s ease-in-out;
+}
+
+.checkmark {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: rgb(155, 239, 114); /* Green background color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    animation: bounceIn 1s ease-in-out;
+}
+
+.checkmark::before {
+    content: '✔';
+    color: #fff; /* White checkmark */
+    font-size: 50px;
+    animation: checkmarkAppear 0.5s ease-in-out 1s forwards;
+    opacity: 0;
+}
+.custom-link {
+        color: white;
+        text-decoration: none;
+    }
+@keyframes bounceIn {
+    0% {
+        transform: scale(0);
+    }
+    60% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes checkmarkAppear {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Progress Container */
+.progress-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+
+.progress-step {
+    text-align: center;
+    position: relative;
+    flex: 1;
+}
+
+.progress-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 100%;
+    height: 4px;
+    background-color: #e0e0e0;
+    z-index: -1;
+    transform: translateX(50%);
+}
+
+.progress-step.active ~ .progress-step::after {
+    background-color: #00a2d9;
+}
+
+.progress-step.active::after {
+    background-color: #00a2d9;
+}
+
+.progress-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 2px solid #e0e0e0;
+    display: inline-block;
+    line-height: 30px;
+    text-align: center;
+    color: #e0e0e0;
+    position: relative;
+    z-index: 1;
+}
+
+.progress-step.active .progress-icon {
+    background-color: #00a2d9;
+    color: #fff;
+    border-color: #00a2d9;
+}
+
+.progress-step.active ~ .progress-step .progress-icon {
+    border-color: #00a2d9;
+}
+
+.progress-step p {
+    margin-top: 10px;       
+    font-size: 0.9em;
+    color: #333;
+}
+
+/* Product Section */
+.product-section {
+    display: flex;
+    flex-direction: column; /* Stack products vertically */
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+    flex: 1;
+    text-align: center; 
+    margin: 15px;
+}
+.product-image img {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.product-details {
+    flex: 2;
+    padding: 20px;
+    text-align: left; /* Align text to the left */
+}
+
+.product-details p {
+    margin: 5px 0;
+    font-size: 1.1em;
+    color: #333;
+}
+
+
+/* Offer Details */
+.offer-details {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 20px;
+    border: none; /* Remove border */
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align text to the end */
+}
+
+.offer-details p {
+    margin: 5px 0;
+    font-size: 1.2em;
+    color: #333;
+}
+
+/* Order Details */
+.order-details {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.delivery-info,
+.shipping-address,
+.order-info {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    margin: 0 10px;
+}
+
+.delivery-info {
+    margin-left: 0;
+}
+
+.order-info {
+    margin-right: 0;
+}
+
+.delivery-info p,
+.shipping-address p,
+.order-info p {
+    font-weight: bold;
+    margin-top: 0;
+    color: #111;
+}
+
+.shipping-address p:not(:first-child) {
+    margin: 5px 0;
+}
+
+/* Buttons */
+button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007185;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 4px;
+    display: block;
+    margin: 10px 0;
+}
+
+button:hover {
+    background-color: #005f6b;
+}
+
+.whatsapp-button {
+    background-color: #25d366;
+}
+
+.whatsapp-button:hover {
+    background-color: #1ebe5a;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .order-summary {
+        width: 95%;
+    }
+
+    .product-section {
+        flex-direction: column;
+    }
+
+    .order-details {
+        flex-direction: column;
+    }
+
+    .delivery-info,
+    .shipping-address,
+    .order-info {
+        margin: 10px 0;
+    }
+}
+
+
+
+</style>
+
+    
+    <div class="order-summary">
+        <!-- Animated Checkmark at the Top -->
+        <div class="checkmark-container">
+            <div class="checkmark"></div>
+        </div>
+    
+        <!-- Progress Container -->
+        <div class="progress-container">
+            <div class="progress-step <%= status === 'Ordered' ? 'active' : '' %>">
+                <span class="progress-icon">✔</span>
+                <p>Ordered</p>
+            </div>
+            <div class="progress-step <%= status === 'Shipped' ? 'active' : '' %>">
+                <span class="progress-icon">2</span>
+                <p>Shipped</p>
+            </div>
+            <div class="progress-step <%= status === 'Out for delivery' ? 'active' : '' %>">
+                <span class="progress-icon">3</span>
+                <p>Out for delivery</p>
+            </div>
+            <div class="progress-step <%= status === 'Delivered' ? 'active' : '' %>">
+                <span class="progress-icon">4</span>
+                <p>Delivered</p>
+            </div>
+        </div>
+    
+        <!-- Product and Offer Details -->
+        <div class="product-section">
+            <% if (products && products.length > 0) { %>
+                <% products.forEach(product => { %>
+                    <div class="product-item">
+                        <div class="product-details">
+                            <p>Product Name: <%= product.productName %></p>
+                            <p>Description: <%= product.description %></p>
+                            <p>Price: $<%= product.price %></p>
+                            <p>Quantity: <%= product.quantity %></p>
+                        </div>
+                        <div class="product-image">
+                            <img src="/uploads/products-images/<%= product.primaryImages.length > 0 ? product.primaryImages[0].name : 'default-image.jpg' %>"
+                                 alt="Product Image">
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p>No products found.</p>
+            <% } %>        
+        </div>
+        
+    
+        <!-- Offer Details -->
+        <div class="offer-details">
+            <p>Total Price: $<%= order.totalAmount %></p>
+            <p>Coupon Discount: $<%= order.couponDiscount || "Not Applied" %></p>
+            <p>Offer Applied Total Amount: $<%= order.offerAppliedTotalAmount || order.totalAmount %></p>
+        </div>
+
+        <!-- Order Details Section at the End -->
+        <div class="order-details">
+            <div class="shipping-address">
+                <p>Shipping Address</p>
+                <% if (shippingAddress && shippingAddress.addresses && shippingAddress.addresses.length > 0) { %>
+                    <p><%= shippingAddress.addresses[0].place %></p>
+                    <p><%= shippingAddress.addresses[0].houseNumber %></p>
+                    <p><%= shippingAddress.addresses[0].landmark %>, <%= shippingAddress.addresses[0].zipcode %></p>
+                    <p><%= shippingAddress.addresses[0].street %></p>
+                    <p><%= shippingAddress.addresses[0].city %></p>
+                    <p><%= shippingAddress.addresses[0].country %></p>
+                    <p><%= shippingAddress.addresses[0].phoneNumber %></p>
+                <% } else { %>
+                    <p>No shipping address found.</p>
+                <% } %>
+            </div>
+            <div class="order-info">
+                <p>Order Info</p>
+                <button>Cancel order</button>
+                <button>Update delivery instructions</button>
+                <button>
+                    <a href="/allProducts" class="custom-link">
+                        <i class="fi-rs-shopping-bag mr-10"></i>
+                        Continue Shopping
+                    </a>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        window.onpopstate = function(event) {
+            
+            window.location.href = '/allProducts';
+        };
+    </script>
+    

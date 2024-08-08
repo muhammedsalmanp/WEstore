@@ -1,54 +1,46 @@
-const Wishlist = require("../model/wishlistSchema");
-const User = require("../model/userSchema");
-const Cart = require("../model/cartSchema");
-const Product = require("../model/productSchema");
-const Coupon = require ("../model/couponSchema");
-
+const Order = require("../model/orderSchema");
+const UserAddress = require("../model/userAddressSchema");
 
 module.exports = {
-
- createOrder : async (req, res) => {
-    try {
-        const { selectedAddress, paymentOption } = req.body; // Extract selected address and payment option
-        const userId = req.session.user; // Assume user ID is stored in session
-        const cart = await Cart.findOne({ userId }).populate('products.productId'); // Fetch cart and populate product details
-
-        if (!cart) {
-            return res.status(400).json({ error: 'Cart not found' });
-        }
-
-        const address = await UserAddress.findById(selectedAddress);
-
-        if (!address) {
-            return res.status(400).json({ error: 'Address not found' });
-        }
-
-        const totalAmount = cart.totalPrice; // Use cart total price
-        const expectedDeliveryDate = new Date();
-        expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 4); // Set delivery date to 4 days from now
-
-        const newOrder = new Order({
-            userId,
-            products: cart.products.map(product => ({
-                productId: product.productId._id,
+    getOrder:  async (req, res) => {
+        try {
+            const userId = req.session.user;
+            const { orderId } = req.params; // Get orderId from request parameters
+    
+            // Find the order by userId and orderId, and populate the shippingAddress and products references
+            const order = await Order.findOne({ userId, orderId })
+                .populate('shippingAddress') // Populate the shippingAddress field
+                .populate('products._id') // Populate product details
+                .populate('coupon'); // Populate coupon details if needed
+    
+            if (!order) {
+                return res.status(404).send('Order not found');
+            }
+    
+            const shippingAddress = order.shippingAddress ? order.shippingAddress : null;
+    
+            // Prepare products data
+            const products = order.products.map(product => ({
+                productName: product._id.productName,
+                price: product._id.price,
+                description: product._id.description,
                 quantity: product.quantity,
-                price: product.price
-            })),
-            totalAmount,
-            shippingAddress: selectedAddress,
-            paymentMethod: paymentOption,
-            expectedDeliveryDate
-        });
-
-        await newOrder.save();
-
-        // Clear the cart after successful order creation
-        await Cart.findOneAndUpdate({ userId }, { $set: { products: [], totalPrice: 0 ,totalProduct:0} });
-
-        res.status(201).json({ message: 'Order placed successfully', order: newOrder });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+                primaryImages: product._id.primaryImages // Assuming this field exists
+            }));
+    
+            res.render('shop/orderPage', {
+                user: req.session.user,
+                order: order,
+                shippingAddress: shippingAddress,
+                products: products,
+                status: order.status,
+                coupon: order.coupon, // Include coupon details if needed
+                couponDiscount: order.couponDiscount, // Include coupon discount
+                offerAppliedTotalAmount: order.offerAppliedTotalAmount // Include offer applied total amount
+            });
+        } catch (error) {
+            console.error("Error fetching order details:", error);
+            res.status(500).send('Server error');
+        }
     }
- },
-
 };
