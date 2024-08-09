@@ -1,0 +1,203 @@
+<ol class="breadcrumb">
+    <% breadcrumbs.forEach(function(crumb, index) { %>
+        <% if (index === breadcrumbs.length - 1) { %>
+            <li class="breadcrumb-item active"><%= crumb.name %></li>
+        <% } else { %>
+            <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.name %></a></li>
+        <% } %>
+    <% }); %>
+</ol>
+<div class="content-header">
+    <div>
+        <h2 class="content-title card-title">
+            <%= locals.title ? locals.title : 'Dashboard' %>
+        </h2>
+    </div>
+</div>
+
+
+<section class="content-main">
+   
+
+   <!-- Existing Table Structure -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Order Id</th>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Payment</th>
+                        <th>Items</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% 
+                    const statusOptions = {
+                        'true': ['Returned', 'Received', 'Refund Issued', 'Refund Credited'],
+                        'false': ['Ordered', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled']
+                    };
+
+                    const getStatusOptions = (isReturn) => {
+                        return isReturn ? statusOptions['true'] : statusOptions['false'];
+                    };
+
+                    const getStatusClass = (status) => {
+                        switch(status) {
+                            case 'Ordered': return 'status-ordered';
+                            case 'Shipped': return 'status-shipped';
+                            case 'Out for delivery': return 'status-out-for-delivery';
+                            case 'Delivered': return 'status-delivered';
+                            case 'Cancelled': return 'status-cancelled';
+                            case 'Returned': return 'status-returned';
+                            case 'Received': return 'status-received';
+                            case 'Refund Issued': return 'status-refund-issued';
+                            case 'Refund Credited': return 'status-refund-credited';
+                            default: return '';
+                        }
+                    };
+                    %>
+                    <% orders.forEach((order, index) => { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= order.orderId %></td>
+                            <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
+                            <td><%= order.userId.email %></td>
+                            <td><%= order.paymentMethod %></td>
+                            <td>
+                                <% order.products.forEach(product => { %>
+                                    <div><%= product._id.productName %> (Qty: <%= product.quantity %>)</div>
+                                <% }) %>
+                            </td>
+                            <td><%= order.totalAmount %></td>
+                            <td class="<%= getStatusClass(order.status) %>">
+                                <button class="btn btn-info" onclick="openStatusModal('<%= order._id %>', '<%= order.return %>', '<%= order.status %>')">
+                                    <%= order.status %>
+                                </button>
+                            </td>
+                            <td>
+                                <!-- Action buttons can be added here -->
+                                <a href="/admin/order/<%= order.orderId %>">View in detail </a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Status Update Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="statusModalLabel">Update Order Status</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="statusForm">
+                    <input type="hidden" id="orderId" name="orderId">
+                    <div class="form-group">
+                        <label for="statusSelect">Select Status</label>
+                        <select id="statusSelect" class="form-control" name="status">
+                            <!-- Options will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <% if (orders.length > 0 && (nextPage || current == pages)) { %>
+        <nav aria-label="Dashboard pagination">
+            <ul class="pagination justify-content-center mt-5">
+                <% if (current == 1) { %>
+                    <li class="page-item disabled"><a href="#" class="page-link">First</a></li>
+                <% } else { %>
+                    <li class="page-item"><a href="/admin/order/?page=1" class="page-link">First</a></li>
+                <% } %>
+                <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+                <% if (i !== 1) { %>
+                    <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
+                <% } %>
+                <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+                    <% if (i == current) { %>
+                        <li class="page-item disabled"><a href="#" class="page-link"><%= i %></a></li>
+                    <% } else { %>
+                        <li class="page-item"><a href="/admin/order?page=<%= i %>" class="page-link"><%= i %></a></li>
+                    <% } %>
+                <% if (i == Number(current) + 4 && i < pages) { %>
+                    <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
+                <% } %>
+                <% } %>
+                <% if (current == pages) { %>
+                    <li class="page-item disabled"><a href="#" class="page-link">Last</a></li>
+                <% } else { %>
+                    <li class="page-item"><a href="/admin/order/?page=<%= pages %>" class="page-link">Last</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    <% } %>
+</section>
+<script>
+    function openStatusModal(orderId, isReturn, currentStatus) {
+        const statusSelect = document.getElementById('statusSelect');
+        statusSelect.innerHTML = ''; // Clear existing options
+        
+        const statusOptions = isReturn === 'true' ? 
+            ['Returned', 'Received', 'Refund Issued', 'Refund Credited'] : 
+            ['Ordered', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled'];
+    
+        statusOptions.forEach(status => {
+            const option = document.createElement('option');
+            option.value = status;
+            option.textContent = status;
+            if (status === currentStatus) {
+                option.selected = true;
+            }
+            statusSelect.appendChild(option);
+        });
+    
+        document.getElementById('orderId').value = orderId;
+        $('#statusModal').modal('show');
+    }
+    
+    document.getElementById('statusForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+    
+        const orderId = document.getElementById('orderId').value;
+        const newStatus = document.getElementById('statusSelect').value;
+    
+        if (!newStatus) return;
+    
+        fetch(`/admin/order/${orderId}/update-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: newStatus })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Failed to update status.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+    </script>

@@ -223,7 +223,7 @@ module.exports = {
             return res.status(401).json({ error: 'User not authenticated' });
         }
 
-  
+        // Fetch cart and populate product details
         const cart = await Cart.findOne({ userId: userId }).populate('products._id');
 
         if (!cart || cart.products.length === 0) {
@@ -232,30 +232,36 @@ module.exports = {
 
         let outOfStockRemoved = false;
         let quantityAdjusted = false;
+        let stockExceeded = false;
+        let exceededProducts = [];
 
-        
         cart.products = cart.products.filter(product => {
-            const item = product._id; 
+            const item = product._id;
             if (item.stock === 0) {
                 outOfStockRemoved = true;
-                return false; 
-            } else if (product.quantity > 5) {
-                product.quantity = 5; 
+                return false; // Remove out-of-stock items
+            } else if (product.quantity > item.stock) {
+                stockExceeded = true;
+                exceededProducts.push({
+                    name: item.name, // Assuming `name` is a field in the product schema
+                    requestedQuantity: product.quantity,
+                    availableQuantity: item.stock
+                });
+                product.quantity = item.stock; // Adjust quantity to available stock
                 quantityAdjusted = true;
             }
-            return true;
+            return true; // Keep products that are in stock and quantities are valid
         });
 
-        
         await cart.save();
 
-      
+        // Respond with appropriate message based on the status
         if (outOfStockRemoved && quantityAdjusted) {
             return res.redirect('/cart?message=out_of_stock_quantity_adjusted');
         } else if (outOfStockRemoved) {
             return res.redirect('/cart?message=out_of_stock');
         } else if (quantityAdjusted) {
-            return res.redirect('/cart?message=quantity_adjusted');
+            return res.redirect(`/cart?message=quantity_adjusted&exceeded=${JSON.stringify(exceededProducts)}`);
         } else {
             return res.redirect('/checkOut');
         }

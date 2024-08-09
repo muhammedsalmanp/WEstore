@@ -309,7 +309,7 @@
 </script>
 
 <script>
- $(document).ready(function() {
+$(document).ready(function() {
     $('#proceedToCheckOut').click(function() {
         // Redirect to the server-side route to handle the logic
         window.location.href = '/cart/check';
@@ -317,49 +317,53 @@
 
     // Check URL parameters for messages
     const urlParams = new URLSearchParams(window.location.search);
-    const error = urlParams.get('error');
     const message = urlParams.get('message');
+    const exceeded = urlParams.get('exceeded');
 
-    if (error) {
-        let errorMessage;
-        switch (error) {
-            case 'empty':
-                errorMessage = 'Your cart is empty. Please add products before proceeding.';
-                break;
-            case 'server':
-            default:
-                errorMessage = 'There was an issue checking your cart. Please try again later.';
-                break;
+    if (message) {
+        if (message === 'out_of_stock') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Out of Stock',
+                text: 'Some products in your cart are out of stock.\n We have removed them.',
+            });
+        } else if (message === 'quantity_adjusted') {
+            const exceededProducts = JSON.parse(decodeURIComponent(exceeded));
+            let text = 'Some quantities exceeded available stock. \nThe quantities have been adjusted.';
+
+            exceededProducts.forEach(product => {
+                text += `\nProduct: ${product.name}\nRequested Quantity: ${product.requestedQuantity}\nAvailable Quantity: ${product.availableQuantity}`;
+            });
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Quantity Adjusted',
+                text: text,
+                confirmButtonText: 'Proceed to Checkout'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/checkOut';
+                }
+            });
+        } else if (message === 'out_of_stock_quantity_adjusted') {
+            Swal.fire({
+                icon: 'info',
+                title: 'Update Complete',
+                text: 'Out-of-stock products have been removed,\n and quantities of other products have been adjusted.',
+                confirmButtonText: 'Proceed to Checkout'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/checkOut';
+                }
+            });
         }
-
+    } else if (urlParams.get('error')) {
         Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: errorMessage,
-        });
-    }
-
-    if (message) {
-        let infoMessage;
-        switch (message) {
-            case 'out_of_stock':
-                infoMessage = `Some products in your cart are out of stock.<br> We are removing the out-of-stock products.`;
-                break;
-            case 'quantity_adjusted':
-                infoMessage = 'We are adjusting the quantity of some products in your cart to 5.';
-                break;
-            case 'out_of_stock_quantity_adjusted':
-                infoMessage = `Some products in your cart are out of stock.<br> We are removing the out-of-stock products.<br>We are adjusting the quantity of some products in your cart to 5.`;
-                break;
-        }
-
-        Swal.fire({
-            icon: 'info',
-            title: 'Notice',
-            text: infoMessage,
+            text: 'There was an issue checking your cart. Please try again later.',
         });
     }
 });
-
 
 </script>

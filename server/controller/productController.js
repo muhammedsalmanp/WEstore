@@ -359,7 +359,7 @@ module.exports = {
   
   getStocks: async (req, res) => {
     try {
-        const perPage = 7;
+        const perPage = 15;
         const page = parseInt(req.query.page) || 1;
         const products = await Product.find()
             .sort({ createdAt: -1 })

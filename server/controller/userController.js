@@ -4,7 +4,9 @@ const Wishlist = require("../model/wishlistSchema");
 const Cart = require("../model/cartSchema");
 const UserAddress = require("../model/userAddressSchema");
 const bcrypt = require("bcrypt");
-const Coupon = require ("../model/couponSchema")
+const Coupon = require("../model/couponSchema")
+const Order = require("../model/orderSchema")
+
 
 
 const mongoose = require("mongoose");
@@ -14,27 +16,57 @@ module.exports = {
 
   /*user account details*/
 
+  // getAccountDetails: async (req, res) => {
+  //   try {
+  //     const user = await User.findById(req.session.user);
+  //     const wishlist = await Wishlist.findOne({
+  //       userId: req.session.user,
+  //     }).populate("products");
+  //     const cart = await Cart.findOne({ userId: req.session.user });
+  //     const userAddress = await UserAddress.findOne({
+  //       userId: req.session.user,
+  //     });
+  //     const order = await Order.find({ userId: req.session.user })
+  //     if (!user) {
+  //       req.flash("error", "You need to log in!");
+  //       return res.redirect("/login");
+  //     }
+
+  //     res.render("user/profile", {
+  //       user,
+  //       wishlist,
+  //       cart,
+  //       addresses: userAddress ? userAddress.addresses : [],
+  //       orders :order 
+  //     });
+  //   } catch (error) {
+  //     console.error("Error fetching account details:", error);
+  //     req.flash("error", "An error occurred while fetching details.");
+  //     res.redirect("/user/profile");
+  //   }
+  // },
+
   getAccountDetails: async (req, res) => {
     try {
       const user = await User.findById(req.session.user);
-      const wishlist = await Wishlist.findOne({
-        userId: req.session.user,
-      }).populate("products");
+      const wishlist = await Wishlist.findOne({ userId: req.session.user }).populate("products");
       const cart = await Cart.findOne({ userId: req.session.user });
-      const userAddress = await UserAddress.findOne({
-        userId: req.session.user,
-      });
-
+      const userAddress = await UserAddress.findOne({ userId: req.session.user });
+      const orders = await Order.find({ userId: req.session.user })
+        .populate('shippingAddress') // Populate shippingAddress details
+        .populate('coupon'); // If you need to display coupon details as well
+  
       if (!user) {
         req.flash("error", "You need to log in!");
         return res.redirect("/login");
       }
-
+  
       res.render("user/profile", {
         user,
         wishlist,
         cart,
-        addresses: userAddress ? userAddress.addresses : [], // Ensure this is an array
+        addresses: userAddress ? userAddress.addresses : [],
+        orders
       });
     } catch (error) {
       console.error("Error fetching account details:", error);
@@ -42,7 +74,8 @@ module.exports = {
       res.redirect("/user/profile");
     }
   },
-
+  
+  
   updateUser: async (req, res) => {
     try {
       const {
@@ -161,12 +194,12 @@ module.exports = {
     }
   },
 
-  editAddress : async (req, res) => {
+  editAddress: async (req, res) => {
     try {
       const userId = req.session.user;
       const addressId = req.params.addressId;
       const updatedAddress = req.body;
-  
+
       if (!updatedAddress.place || !['home', 'work'].includes(updatedAddress.place)) {
         return res.json({ success: false, message: "Invalid place value." });
       }
@@ -175,12 +208,12 @@ module.exports = {
         { userId, "addresses._id": addressId },
         { $set: { "addresses.$": updatedAddress } }
       );
-  
+
       if (result.modifiedCount > 0) {
         const userDoc = await UserAddress.findOne({ userId });
-  
+
         console.log('User document:', userDoc);
-  
+
         if (userDoc) {
           const hasDefault = userDoc.addresses.some(
             (address) => address.isDefault
@@ -196,11 +229,11 @@ module.exports = {
         } else {
           console.log("User document not found");
         }
-  
-        req.flash("success","Address updated successfully.")
+
+        req.flash("success", "Address updated successfully.")
         res.json({ success: true, message: "Address updated successfully." });
       } else {
-        req.flash("error","Address update unsuccessful. Address may not be found")
+        req.flash("error", "Address update unsuccessful. Address may not be found")
         res.json({
           success: false,
           message: "Address update unsuccessful. Address may not be found.",
@@ -214,7 +247,7 @@ module.exports = {
       });
     }
   },
-  
+
   deleteAddress: async (req, res) => {
     try {
       const userId = req.session.user;
@@ -269,37 +302,37 @@ module.exports = {
     }
   },
 
-  setDefault:async (req, res) => {
+  setDefault: async (req, res) => {
     try {
-        const { addressId } = req.params;
-        const userId = req.session.user;
-         console.log(addressId);
-        if (!addressId) {
-            return res.json({ success: false, message: 'Address ID is required.' });
-        }
+      const { addressId } = req.params;
+      const userId = req.session.user;
+      console.log(addressId);
+      if (!addressId) {
+        return res.json({ success: false, message: 'Address ID is required.' });
+      }
 
-        const userDocument = await UserAddress.findOne({ userId }).exec();
-        
-        if (!userDocument) {
-            return res.json({ success: false, message: 'User not found.' });
-        }
+      const userDocument = await UserAddress.findOne({ userId }).exec();
 
-        userDocument.addresses.forEach(address => {
-            address.isDefault = false;
-        });
+      if (!userDocument) {
+        return res.json({ success: false, message: 'User not found.' });
+      }
 
-        const selectedAddress = userDocument.addresses.id(addressId);
-        if (!selectedAddress) {
-            return res.json({ success: false, message: 'Address not found.' });
-        }
-        selectedAddress.isDefault = true;
+      userDocument.addresses.forEach(address => {
+        address.isDefault = false;
+      });
 
-        await userDocument.save();
+      const selectedAddress = userDocument.addresses.id(addressId);
+      if (!selectedAddress) {
+        return res.json({ success: false, message: 'Address not found.' });
+      }
+      selectedAddress.isDefault = true;
 
-        res.json({ success: true });
+      await userDocument.save();
+
+      res.json({ success: true });
     } catch (error) {
-        console.error('Error setting default address:', error);
-        res.json({ success: false, message: 'An error occurred while setting the default address.' });
+      console.error('Error setting default address:', error);
+      res.json({ success: false, message: 'An error occurred while setting the default address.' });
     }
   },
 
@@ -359,12 +392,12 @@ module.exports = {
       res.redirect("/checkOut");
     }
   },
-  checkOuteditAddress : async (req, res) => {
+  checkOuteditAddress: async (req, res) => {
     try {
       const userId = req.session.user;
       const addressId = req.params.addressId;
       const updatedAddress = req.body;
-  
+
       if (!updatedAddress.place || !['home', 'work'].includes(updatedAddress.place)) {
         return res.json({ success: false, message: "Invalid place value." });
       }
@@ -373,12 +406,12 @@ module.exports = {
         { userId, "addresses._id": addressId },
         { $set: { "addresses.$": updatedAddress } }
       );
-  
+
       if (result.modifiedCount > 0) {
         const userDoc = await UserAddress.findOne({ userId });
-  
+
         console.log('User document:', userDoc);
-  
+
         if (userDoc) {
           const hasDefault = userDoc.addresses.some(
             (address) => address.isDefault
@@ -394,11 +427,11 @@ module.exports = {
         } else {
           console.log("User document not found");
         }
-  
-        req.flash("success","Address updated successfully.")
+
+        req.flash("success", "Address updated successfully.")
         res.json({ success: true, message: "Address updated successfully." });
       } else {
-        req.flash("error","Address update unsuccessful. Address may not be found")
+        req.flash("error", "Address update unsuccessful. Address may not be found")
         res.json({
           success: false,
           message: "Address update unsuccessful. Address may not be found.",
@@ -465,37 +498,37 @@ module.exports = {
       });
     }
   },
-  checkOutsetDefault:async (req, res) => {
+  checkOutsetDefault: async (req, res) => {
     try {
-        const { addressId } = req.params;
-        const userId = req.session.user;
-         console.log(addressId);
-        if (!addressId) {
-            return res.json({ success: false, message: 'Address ID is required.' });
-        }
+      const { addressId } = req.params;
+      const userId = req.session.user;
+      console.log(addressId);
+      if (!addressId) {
+        return res.json({ success: false, message: 'Address ID is required.' });
+      }
 
-        const userDocument = await UserAddress.findOne({ userId }).exec();
-        
-        if (!userDocument) {
-            return res.json({ success: false, message: 'User not found.' });
-        }
+      const userDocument = await UserAddress.findOne({ userId }).exec();
 
-        userDocument.addresses.forEach(address => {
-            address.isDefault = false;
-        });
+      if (!userDocument) {
+        return res.json({ success: false, message: 'User not found.' });
+      }
 
-        const selectedAddress = userDocument.addresses.id(addressId);
-        if (!selectedAddress) {
-            return res.json({ success: false, message: 'Address not found.' });
-        }
-        selectedAddress.isDefault = true;
+      userDocument.addresses.forEach(address => {
+        address.isDefault = false;
+      });
 
-        await userDocument.save();
+      const selectedAddress = userDocument.addresses.id(addressId);
+      if (!selectedAddress) {
+        return res.json({ success: false, message: 'Address not found.' });
+      }
+      selectedAddress.isDefault = true;
 
-        res.json({ success: true });
+      await userDocument.save();
+
+      res.json({ success: true });
     } catch (error) {
-        console.error('Error setting default address:', error);
-        res.json({ success: false, message: 'An error occurred while setting the default address.' });
+      console.error('Error setting default address:', error);
+      res.json({ success: false, message: 'An error occurred while setting the default address.' });
     }
   },
 

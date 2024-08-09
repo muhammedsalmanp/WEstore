@@ -45,7 +45,7 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Ordered', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled'],
+        enum: ['Ordered', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled', 'Returned', 'Received', 'Refund Issued', 'Refund Credited'],
         default: 'Ordered'
     },
     createdAt: {
@@ -55,7 +55,7 @@ const orderSchema = new mongoose.Schema({
     expectedDeliveryDate: {
         type: Date,
         required: true
-    },
+    },  
     coupon: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Coupon'
@@ -67,7 +67,17 @@ const orderSchema = new mongoose.Schema({
     offerAppliedTotalAmount: {
         type: Number,
         default: 0
-    }
+    },
+    returnReason: { // New field for return reason
+        type: String,
+    },
+    return:{
+      type:Boolean,
+      default:false,
+    },
+    returnID:{
+        type:String,
+      },
 });
 
 module.exports = mongoose.model('Order', orderSchema);

@@ -1,0 +1,469 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<style>
+    /* Order Summary Container */
+    #order-summary {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        margin: 20px auto;
+        width: 80%;
+        max-width: 1000px;
+    }
+
+    /* Checkmark Animation */
+    #checkmark-container {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        margin-bottom: 20px;
+    }
+
+    #checkmark {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #57e874;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 50px;
+    }
+
+    /* Progress Container */
+    #progress-container {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        margin-bottom: 20px;
+        padding: 0 20px;
+    }
+
+    .progress-step {
+        text-align: center;
+        position: relative;
+        flex: 1;
+    }
+
+    .progress-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 25%;
+        right: 0;
+        width: 100%;
+        height: 16px;
+        background-color: #e0e0e0;
+        z-index: -1;
+        transform: translateX(50%);
+    }
+
+    .progress-step.completed .progress-icon {
+        background-color: #00a2d9;
+        color: #e6e4e4;
+        border-color: #00a2d9;
+    }
+
+    .progress-step.completed~.progress-step .progress-icon {
+        border-color: #00a2d9;
+    }
+
+    .progress-icon {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        border-radius: 50%;
+        background-color: #e0e0e0;
+        color: #fff;
+        margin-bottom: 5px;
+        font-size: 24px;
+    }
+
+    .progress-step p {
+        margin: 0;
+        font-size: 20px;
+    }
+
+    /* Product Section */
+    #product-section {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .product-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding: 15px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    .product-image {
+        flex: 1;
+        text-align: center;
+        margin-right: 15px;
+    }
+
+    .product-image img {
+        max-width: 50%;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .product-details {
+        flex: 2;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .product-details p {
+        margin: 5px 0;
+        font-size: 1em;
+        color: #333;
+    }
+
+    .product-cancellation {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .cancel-button,
+    .return-button {
+        padding: 10px 20px;
+        border: none;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    .cancel-button {
+        background-color: #e74c3c;
+        /* Red color */
+    }
+
+    .cancel-button:hover {
+        background-color: #c0392b;
+        /* Darker red on hover */
+    }
+
+    .return-button {
+        background-color: #3498db;
+        /* Blue color */
+    }
+
+    .return-button:hover {
+        background-color: #2980b9;
+        /* Darker blue on hover */
+    }
+
+    /* Offer Details */
+    #offer-details {
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 20px;
+        border: none;
+        background-color: #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #offer-details p {
+        margin: 5px 0;
+        font-size: 1.2em;
+        color: #333;
+    }
+
+    /* Order Details */
+    #order-details {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .delivery-info,
+    .shipping-address,
+    .order-info {
+        flex: 1;
+        padding: 20px;
+        background-color: #fff;
+        margin: 0 10px;
+    }
+
+    .delivery-info {
+        margin-left: 0;
+    }
+
+    .order-info {
+        margin-right: 0;
+    }
+
+    .delivery-info p,
+    .shipping-address p,
+    .order-info p {
+        font-weight: bold;
+        margin-top: 0;
+        color: #111;
+    }
+
+    .shipping-address p:not(:first-child) {
+        margin: 5px 0;
+    }
+
+    /* User Details */
+    #user-details {
+        width: 100%;
+        padding: 20px;
+        background-color: #fff;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #user-details p {
+        margin: 5px 0;
+        font-size: 1.2em;
+        color: #333;
+    }
+
+    /* Buttons */
+    button {
+        padding: 10px 20px;
+        border: none;
+        background-color: #007185;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        border-radius: 4px;
+        display: flex;
+        margin: 10px 0;
+    }
+
+    button:hover {
+        background-color: #005f6b;
+    }
+
+    .whatsapp-button {
+        background-color: #25d366;
+    }
+
+    .whatsapp-button:hover {
+        background-color: #1ebe5a;
+    }
+
+    .custom-link {
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        #order-summary {
+            width: 95%;
+        }
+
+        #product-section {
+            flex-direction: column;
+        }
+
+        #order-details {
+            flex-direction: column;
+        }
+
+        .delivery-info,
+        .shipping-address,
+        .order-info {
+            margin: 10px 0;
+        }
+    }
+</style>
+<ol class="breadcrumb">
+    <% breadcrumbs.forEach(function(crumb, index) { %>
+        <% if (index === breadcrumbs.length - 1) { %>
+            <li class="breadcrumb-item active"><%= crumb.name %></li>
+        <% } else { %>
+            <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.name %></a></li>
+        <% } %>
+    <% }); %>
+</ol>
+<div class="content-header">
+    <div>
+        <h2 class="content-title card-title">
+            <%= locals.title ? locals.title : 'Dashboard' %>
+        </h2>
+    </div>
+</div>
+<div id="order-summary" class="order-summary">
+    
+    <!-- Offer Details -->
+    <div id="offer-details" class="offer-details">
+        <p>Total Price: $<%= order.totalAmount %>
+        </p>
+
+        <p>Offer Applied Total Amount: $<%= (order.offerAppliedTotalAmount || order.totalAmount) < 0 ? 0 :
+                (order.offerAppliedTotalAmount || order.totalAmount) %>
+        </p>
+
+    </div>
+    <!-- Progress Container -->
+    <% if ( !order.return) { %>
+        <div id="progress-container" class="progress-container">
+            <div id="progress-ordered"
+                class="progress-step <%= status === 'Ordered' || status === 'Shipped' || status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Ordered' ? 'active' : '' %> <%= status === 'Ordered' ? 'current' : '' %>">
+                <span class="progress-icon"><i class="fas fa-shopping-cart"></i></span>
+                <p>Ordered</p>
+            </div>
+            <div id="progress-shipped"
+                class="progress-step <%= status === 'Shipped' || status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Shipped' ? 'active' : '' %> <%= status === 'Shipped' ? 'current' : '' %>">
+                <span class="progress-icon"><i class="fas fa-shipping-fast"></i></span>
+                <p>Shipped</p>
+            </div>
+            <div id="progress-out-for-delivery"
+                class="progress-step <%= status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Out for delivery' ? 'active' : '' %> <%= status === 'Out for delivery' ? 'current' : '' %>">
+                <span class="progress-icon"><i class="fas fa-truck"></i></span>
+                <p>Out for Delivery</p>
+            </div>
+            <div id="progress-delivered"
+                class="progress-step <%= status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Delivered' ? 'active' : '' %> <%= status === 'Delivered' ? 'current' : '' %>">
+                <span class="progress-icon"><i class="fas fa-box-open"></i></span>
+                <p>Delivered</p>
+            </div>
+        </div>
+        <% } else {%>
+            <div id="progress-container" class="progress-container">
+                <div id="progress-returned"
+                    class="progress-step <%= status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Returned' ? 'active' : '' %> <%= status === 'Returned' ? 'current' : '' %>">
+                    <span class="progress-icon"><i class="fas fa-undo"></i></span>
+                    <p>Returned</p>
+                </div>
+                <div id="progress-received"
+                    class="progress-step <%= status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Received' ? 'active' : '' %> <%= status === 'Received' ? 'current' : '' %>">
+                    <span class="progress-icon"><i class="fas fa-clipboard-check"></i></span>
+                    <p>Received</p>
+                </div>
+                <div id="progress-refund-issued"
+                    class="progress-step <%= status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Refund Issued' ? 'active' : '' %> <%= status === 'Refund Issued' ? 'current' : '' %>">
+                    <span class="progress-icon"><i class="fas fa-credit-card"></i></span>
+                    <p>Refund Issued</p>
+                </div>
+                <div id="progress-refund-credited"
+                    class="progress-step <%= status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Refund Credited' ? 'active' : '' %> <%= status === 'Refund Credited' ? 'current' : '' %>">
+                    <span class="progress-icon"><i class="fas fa-money-bill-wave"></i></span>
+                    <p>Refund Credited</p>
+                </div>
+            </div>
+            <% } %>
+                <!-- Order Details -->
+                <div id="order-details" class="order-details">
+                    <!-- User Details -->
+                    <div id="user-details" class="delivery-info">
+                        <td>
+
+                        </td>
+                        <p>User Name:<%= order.userId.firstName%>
+                                <%=order.userId.lastName%>
+                        </p>
+                        <p>Email: <%= order.userId.email %>
+                        </p>
+                        <p>Phone Number: <%= shippingAddress.addresses[0].phoneNumber %>
+                        </p>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div id="shipping-address" class="shipping-address">
+                        <p>Shipping Address:</p>
+                        <% if (shippingAddress && shippingAddress.addresses && shippingAddress.addresses.length> 0) { %>
+                            <p>
+                                <%= shippingAddress.addresses[0].place %>
+                            </p>
+                            <p>
+                                <%= shippingAddress.addresses[0].houseNumber %>
+                            </p>
+                            <p>
+                                <%= shippingAddress.addresses[0].landmark %>, <%= shippingAddress.addresses[0].zipcode
+                                        %>
+                            </p>
+                            <p>
+                                <%= shippingAddress.addresses[0].street %>
+                            </p>
+                            <p>
+                                <%= shippingAddress.addresses[0].city %>
+                            </p>
+                            <p>
+                                <%= shippingAddress.addresses[0].country %>
+                            </p>
+                            <p>
+                                <%= shippingAddress.addresses[0].phoneNumber %>
+                            </p>
+                            <% } else { %>
+                                <p>No shipping address found.</p>
+                                <% } %>
+                    </div>
+
+                    <!-- Order Information -->
+                    <div id="order-info" class="order-info">
+                        <p>Order ID:</p>
+                        <p>
+                            <%= order.orderId %>
+                        </p>
+                        <p>Order Date:</p>
+                        <p>
+                            <%= order.orderDate %>
+                        </p>
+                        <p>Delivery Date:</p>
+                        <p>
+                            <%= order.expectedDeliveryDate %>
+                        </p>
+                    </div>
+                </div>
+
+
+
+                <!-- Include order ID in a hidden input -->
+                <input type="hidden" id="order-id" value="<%= order.orderId %>">
+
+                <!-- Product and Offer Details -->
+                <div id="product-section" class="product-section">
+                    <% if (products && products.length> 0) { %>
+                        <% products.forEach(product=> { %>
+                            <div id="product-item-<%= product.id %>" class="product-item">
+                                <div id="product-details-<%= product.id %>" class="product-details">
+                                    <p>Product Name: <%= product.productName %>
+                                    </p>
+
+                                    <p>Description: <%= product.description %>
+                                    </p>
+                                    <p>Price: $<%= product.price %>
+                                    </p>
+                                    <p>Quantity: <%= product.quantity %>
+                                    </p>
+                                    <% if (status==='Delivered' ) { %>
+                                        <p>Delivery Date: <%= product.deliveryDate %>
+                                        </p>
+                                        <% } %>
+                                </div>
+                                <div id="product-image-<%= product.id %>" class="product-image">
+                                    <img src="/uploads/products-images/<%= product.primaryImages.length > 0 ? product.primaryImages[0].name : 'default-image.jpg' %>"
+                                        alt="Product Image">
+                                </div>
+                            </div>
+                            <% }) %>
+                                <% } else { %>
+                                    <p>No products found.</p>
+                                    <% } %>
+                </div>
+</div>

@@ -3,6 +3,8 @@ const UserAddress = require("../model/userAddressSchema")
 const User = require("../model/userSchema");
 const Cart = require("../model/cartSchema");
 const Order = require("../model/orderSchema");
+const Product = require("../model/productSchema");
+
 
 
 const crypto = require('crypto');
@@ -96,8 +98,21 @@ module.exports = {
                 offerAppliedTotalAmount: offerAppliedTotalAmount // Add total amount after coupon
             });
 
+            // Save the order
             await order.save();
+
+            // Update product quantities in inventory
+            for (const item of userCart.products) {
+                if (item._id && item._id._id) {
+                    await Product.findByIdAndUpdate(item._id._id, {
+                        $inc: { stock: -item.quantity } // Decrease the stock quantity
+                    });
+                }
+            }
+
+            // Clear the user's cart
             await Cart.findOneAndDelete({ userId });
+
             console.log("Order:", order);
             return res.status(201).json({ success: true, message: 'Order placed successfully', orderId: orderId });
 

@@ -53,6 +53,9 @@ router.post('/checkOut/placeOrder',checkOutCondroller.placeOrder)
 
 router.get("/order/details/:orderId", orderController.getOrder);
 
+router.post('/order/cancel', orderController.cancelOrder);
+
+router.post('/return-product', orderController.returnProduct);
 
 
 

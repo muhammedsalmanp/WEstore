@@ -1,20 +1,25 @@
 <style>
   .custom-input {
     width: 100%;
-    height: 3px; /* Adjust the height as needed */
-    margin-bottom: 10px; /* Optional: Add some margin for better spacing */
+    height: 3px;
+    /* Adjust the height as needed */
+    margin-bottom: 10px;
+    /* Optional: Add some margin for better spacing */
   }
 
   .custom-checkbox {
-    border: 1px solid #ccc; /* Add a light grey border */
-    padding: 5px; /* Add some padding for better visibility */
+    border: 1px solid #ccc;
+    /* Add a light grey border */
+    padding: 5px;
+    /* Add some padding for better visibility */
     width: 20px;
     height: 20px;
     margin: 5px;
   }
 
   .form-check-label-sm {
-    margin-left: 20px; /* Adjust spacing between checkbox and label */
+    margin-left: 20px;
+    /* Adjust spacing between checkbox and label */
   }
 </style>
 <section class="pt-150 pb-150">
@@ -26,72 +31,33 @@
             <div class="dashboard-menu">
               <ul class="nav flex-column" role="tablist">
                 <li class="nav-item">
-                  <a
-                    class="nav-link active"
-                    id="dashboard-tab"
-                    data-bs-toggle="tab"
-                    href="#dashboard"
-                    role="tab"
-                    aria-controls="dashboard"
-                    aria-selected="false"
-                    ><i class="fi-rs-settings-sliders mr-10"></i>Dashboard</a
-                  >
+                  <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard" role="tab"
+                    aria-controls="dashboard" aria-selected="false"><i
+                      class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
                 </li>
                 <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    id="account-detail-tab"
-                    data-bs-toggle="tab"
-                    href="#account-detail"
-                    role="tab"
-                    aria-controls="account-detail"
-                    aria-selected="true"
-                    ><i class="fi-rs-user mr-10"></i>Account details</a
-                  >
+                  <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab" href="#account-detail" role="tab"
+                    aria-controls="account-detail" aria-selected="true"><i class="fi-rs-user mr-10"></i>Account
+                    details</a>
                 </li>
                 <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    id="address-tab"
-                    data-bs-toggle="tab"
-                    href="#address"
-                    role="tab"
-                    aria-controls="address"
-                    aria-selected="true"
-                    ><i class="fi-rs-marker mr-10"></i>My Address</a
-                  >
+                  <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab"
+                    aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
                 </li>
-                
+
                 <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    id="orders-tab"
-                    data-bs-toggle="tab"
-                    href="#orders"
-                    role="tab"
-                    aria-controls="orders"
-                    aria-selected="false"
-                    ><i class="fi-rs-shopping-bag mr-10"></i>Orders</a
-                  >
+                  <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab"
+                    aria-controls="orders" aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
                 </li>
                 <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    id="track-orders-tab"
-                    data-bs-toggle="tab"
-                    href="#track-orders"
-                    role="tab"
-                    aria-controls="track-orders"
-                    aria-selected="false"
-                    ><i class="fi-rs-shopping-cart-check mr-10"></i>Track Your
-                    Order</a
-                  >
+                  <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab"
+                    aria-controls="track-orders" aria-selected="false"><i
+                      class="fi-rs-shopping-cart-check mr-10"></i>Track Your
+                    Order</a>
                 </li>
-                
+
                 <li class="nav-item">
-                  <a class="nav-link" href="/logout"
-                    ><i class="fi-rs-sign-out mr-10"></i>Logout</a
-                  >
+                  <a class="nav-link" href="/logout"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
                 </li>
               </ul>
             </div>
@@ -99,16 +65,12 @@
           <div class="col-md-8">
             <div class="tab-content dashboard-content">
               <!-- Dashboard -->
-              <div
-                class="tab-pane fade active show"
-                id="dashboard"
-                role="tabpanel"
-                aria-labelledby="dashboard-tab"
-              >
+              <div class="tab-pane fade active show" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
                 <div class="card">
                   <div class="card-header">
                     <h5 class="mb-0">
-                      Hello <%= user.firstName %> <%= user.lastName %>
+                      Hello <%= user.firstName %>
+                        <%= user.lastName %>
                     </h5>
                   </div>
                   <div class="card-body">
@@ -123,12 +85,7 @@
               </div>
 
               <!-- Orders -->
-              <div
-                class="tab-pane fade"
-                id="orders"
-                role="tabpanel"
-                aria-labelledby="orders-tab"
-              >
+              <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                 <div class="card">
                   <div class="card-header">
                     <h5 class="mb-0">Your Orders</h5>
@@ -146,47 +103,28 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>#1357</td>
-                            <td>March 45, 2020</td>
-                            <td>Processing</td>
-                            <td>$125.00 for 2 item</td>
-                            <td>
-                              <a href="#" class="btn-small d-block">View</a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>#2468</td>
-                            <td>June 29, 2020</td>
-                            <td>Completed</td>
-                            <td>$364.00 for 5 item</td>
-                            <td>
-                              <a href="#" class="btn-small d-block">View</a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>#2366</td>
-                            <td>August 02, 2020</td>
-                            <td>Completed</td>
-                            <td>$280.00 for 3 item</td>
-                            <td>
-                              <a href="#" class="btn-small d-block">View</a>
-                            </td>
-                          </tr>
+                          <% orders.forEach(order => { %>
+                            <tr>
+                              <td><%= order.orderId %></td>
+                              <td><%= order.createdAt.toLocaleDateString() %></td>
+                              <td><%= order.status %></td>
+                              <td>$<%= order.totalAmount %> for <%= order.products.length %> item<%= order.products.length > 1 ? 's' : '' %></td>
+                              <td>
+                                <a href="/order/details/<%= order.orderId %>" class="btn-small d-block"> Oder Details</a>
+                              </td>
+                            </tr>
+                          <% }) %>
                         </tbody>
                       </table>
                     </div>
                   </div>
+                  
+                  
                 </div>
               </div>
 
               <!-- Track Orders -->
-              <div
-                class="tab-pane fade"
-                id="track-orders"
-                role="tabpanel"
-                aria-labelledby="track-orders-tab"
-              >
+              <div class="tab-pane fade" id="track-orders" role="tabpanel" aria-labelledby="track-orders-tab">
                 <div class="card">
                   <div class="card-header">
                     <h5 class="mb-0">Orders tracking</h5>
@@ -200,33 +138,18 @@
                     </p>
                     <div class="row">
                       <div class="col-lg-8">
-                        <form
-                          class="contact-form-style mt-30 mb-50"
-                          action="#"
-                          method="post"
-                        >
+                        <form class="contact-form-style mt-30 mb-50" action="#" method="post">
                           <div class="input-style mb-20">
                             <label>Order ID</label>
-                            <input
-                              name="order-id"
-                              placeholder="Found in your order confirmation email"
-                              type="text"
-                              class="square"
-                            />
+                            <input name="order-id" placeholder="Found in your order confirmation email" type="text"
+                              class="square" />
                           </div>
                           <div class="input-style mb-20">
                             <label>Billing email</label>
-                            <input
-                              name="billing-email"
-                              placeholder="Email you used during checkout"
-                              type="email"
-                              class="square"
-                            />
+                            <input name="billing-email" placeholder="Email you used during checkout" type="email"
+                              class="square" />
                           </div>
-                          <button
-                            class="submit submit-auto-width"
-                            type="submit"
-                          >
+                          <button class="submit submit-auto-width" type="submit">
                             Track
                           </button>
                         </form>
@@ -237,448 +160,303 @@
               </div>
 
               <!-- Address Section -->
-              <div
-                class="tab-pane fade"
-                id="address"
-                role="tabpanel"
-                aria-labelledby="address-tab"
-              >
+              <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
                 <div class="card">
-                  <div
-                    class="card-header d-flex justify-content-between align-items-center mb-2"
-                  >
+                  <div class="card-header d-flex justify-content-between align-items-center mb-2">
                     <h5 class="mb-0">Address</h5>
                     <!-- Add Address Button Triggering Modal -->
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      data-bs-toggle="modal"
-                      data-bs-target="#addAddressModal"
-                    >
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                      data-bs-target="#addAddressModal">
                       <i class="">+</i> Add Address
                     </button>
                   </div>
                   <div class="row m-2">
-                      <% if (addresses && addresses.length > 0) { %>
-                          <% addresses.forEach((address, index) => { %>
-                              <div class="col-lg-6 mb-3">
-                                  <div class="card">
-                                      <div class="card-header">
-                                          <h5 class="mb-0">
-                                              Address <%= index + 1 %>
-                                          </h5>
-                                      </div>
-                                      <div class="card-body">
-                                          <div>
-                                              <p><strong>House Number:</strong> <%= address.houseNumber %></p>
-                                              <p><strong>Street:</strong> <%= address.street %></p>
-                                              <p><strong>City:</strong> <%= address.city %></p>
-                                              <p><strong>Zipcode:</strong> <%= address.zipcode %></p>
-                                              <p><strong>Country:</strong> <%= address.country %></p>
-                                              <% if (address.landmark) { %>
-                                                  <p><strong>Landmark:</strong> <%= address.landmark %></p>
-                                              <% } %>
-                                              <% if (address.phoneNumber) { %>
-                                                  <p><strong>Phone Number:</strong> <%= address.phoneNumber %></p>
-                                              <% } %>
-                                          </div>
-                                          <div class="btn-group" role="group">
-                                              <button 
-                                                  type="button" 
-                                                  class="btn btn-small btn-primary btn-edit" 
-                                                  data-address-id="<%= address._id %>"
-                                                  data-address='<%= JSON.stringify(address) %>'
-                                              >
-                                                  Edit
-                                              </button>
-                                              <button 
-                                                  type="button" 
-                                                  class="btn btn-small btn-danger btn-delete" 
-                                                  data-address-id="<%= address._id %>"
-                                              >
-                                                  Delete
-                                              </button>
-                                              <% if (!address.isDefault) { %>
-                                                <button 
-                                                    type="button" 
-                                                    class="btn btn-small btn-warning" 
-                                                    id="set-default-btn-<%= address._id %>" 
-                                                    data-address-id="<%= address._id %>"
-                                                >
-                                                    Set as Default
-                                                </button>
-                                              <% } %>
-                                          </div>
-                                      </div>
-                                  </div>
+                    <% if (addresses && addresses.length> 0) { %>
+                      <% addresses.forEach((address, index)=> { %>
+                        <div class="col-lg-6 mb-3">
+                          <div class="card">
+                            <div class="card-header">
+                              <h5 class="mb-0">
+                                Address <%= index + 1 %>
+                              </h5>
+                            </div>
+                            <div class="card-body">
+                              <div>
+                                <p><strong>House Number:</strong>
+                                  <%= address.houseNumber %>
+                                </p>
+                                <p><strong>Street:</strong>
+                                  <%= address.street %>
+                                </p>
+                                <p><strong>City:</strong>
+                                  <%= address.city %>
+                                </p>
+                                <p><strong>Zipcode:</strong>
+                                  <%= address.zipcode %>
+                                </p>
+                                <p><strong>Country:</strong>
+                                  <%= address.country %>
+                                </p>
+                                <% if (address.landmark) { %>
+                                  <p><strong>Landmark:</strong>
+                                    <%= address.landmark %>
+                                  </p>
+                                  <% } %>
+                                    <% if (address.phoneNumber) { %>
+                                      <p><strong>Phone Number:</strong>
+                                        <%= address.phoneNumber %>
+                                      </p>
+                                      <% } %>
                               </div>
-                          <% }); %>
-                      <% } else { %>
-                          <p>No addresses found.</p>
-                      <% } %>
+                              <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-small btn-primary btn-edit"
+                                  data-address-id="<%= address._id %>" data-address='<%= JSON.stringify(address) %>'>
+                                  Edit
+                                </button>
+                                <button type="button" class="btn btn-small btn-danger btn-delete"
+                                  data-address-id="<%= address._id %>">
+                                  Delete
+                                </button>
+                                <% if (!address.isDefault) { %>
+                                  <button type="button" class="btn btn-small btn-warning"
+                                    id="set-default-btn-<%= address._id %>" data-address-id="<%= address._id %>">
+                                    Set as Default
+                                  </button>
+                                  <% } %>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <% }); %>
+                          <% } else { %>
+                            <p>No addresses found.</p>
+                            <% } %>
                   </div>
 
-          
-           
-                  
-                  </div>
+
+
+
+                </div>
               </div>
 
               <!-- Add Address Modal -->
-              <div
-                  class="modal fade"
-                  id="addAddressModal"
-                  tabindex="-1"
-                  aria-labelledby="addAddressModalLabel"
-                  aria-hidden="true"
-                >
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="addAddressModalLabel">
-                          Add New Address
-                        </h5>
-                        <button
-                          type="button"
-                          class="btn-close"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                      <div class="modal-body">
-                        <!-- Address Form in Modal -->
-                        <form
-                          id="addAddressForm"
-                          action="/user/addAddress"
-                          method="POST"
-                        >
-                          <div class="form-group">
-                            <label for="place">Place</label>
-                            <select
-                              name="place"
-                              id="place"
-                              class="form-control form-control-sm custom-input"
-                            >
-                              <option value="" disabled selected>
-                                Select Place
-                              </option>
-                              <option value="home">Home</option>
-                              <option value="work">Work</option>
-                            </select>
-                          </div>
-                          <div class="form-group">
-                            <label for="houseNumber">House Number</label>
-                            <input
-                              type="number"
-                              name="houseNumber"
-                              id="houseNumber"
-                              class="form-control form-control-sm custom-input"
-                              required
-                            />
-                          </div>
-                          <div class="form-group">
-                            <label for="street">Street</label>
-                            <input
-                              type="text"
-                              name="street"
-                              id="street"
-                              class="form-control form-control-sm custom-input"
-                              required
-                            />
-                          </div>
-                          <div class="form-group">
-                            <label for="city">City</label>
-                            <input
-                              type="text"
-                              name="city"
-                              id="city"
-                              class="form-control form-control-sm custom-input"
-                              required
-                            />
-                          </div>
-                          <div class="form-group">
-                            <label for="zipcode">Zipcode</label>
-                            <input
-                              type="number"
-                              name="zipcode"
-                              id="zipcode"
-                              class="form-control form-control-sm custom-input"
-                              required
-                            />
-                          </div>
-                          <div class="form-group">
-                            <label for="country">Country</label>
-                            <input
-                              type="text"
-                              name="country"
-                              id="country"
-                              class="form-control form-control-sm custom-input"
-                              required
-                            />
-                          </div>
-                          <div class="form-group">
-                            <label for="phoneNumber">Phone Number</label>
-                            <input
-                              type="tel"
-                              name="phoneNumber"
-                              id="phoneNumber"
-                              class="form-control form-control-sm custom-input"
-                              required
-                            />
-                          </div>
-                          <div class="form-group">
-                            <label for="landmark">Landmark (Optional)</label>
-                            <input
-                              type="text"
-                              name="landmark"
-                              id="landmark"
-                              class="form-control form-control-sm custom-input"
-                              required
-                            />
-                          </div>
-                          <div class="form-group d-flex align-items-center">
-                            <button
-                              type="submit"
-                              class="btn btn-primary btn-sm"
-                            >
-                              Save Address
-                            </button>
-                          </div>
-                        </form>
-                      </div>
+              <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addAddressModalLabel">
+                        Add New Address
+                      </h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                  </div>
-              </div>
-              </div>
-        
-              <!-- Edit Address Modal -->
-              <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog" aria-labelledby="editAddressModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                    <div class="modal-body">
+                      <!-- Address Form in Modal -->
+                      <form id="addAddressForm" action="/user/addAddress" method="POST">
+                        <div class="form-group">
+                          <label for="place">Place</label>
+                          <select name="place" id="place" class="form-control form-control-sm custom-input">
+                            <option value="" disabled selected>
+                              Select Place
+                            </option>
+                            <option value="home">Home</option>
+                            <option value="work">Work</option>
+                          </select>
                         </div>
-                        <form id="editAddressForm">
-                            <div class="modal-body">
-                                <input type="hidden" id="editAddressId" name="addressId">
-                                <div class="form-group">
-                                    <label for="editPlace">Place</label>
-                                    <select class="form-control" id="editPlace" name="place" required>
-                                        <option value="">Select Place</option>
-                                        <option value="home">Home</option>
-                                        <option value="work">Work</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editHouseNumber">House Number</label>
-                                    <input type="text" class="form-control" id="editHouseNumber" name="houseNumber" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editStreet">Street</label>
-                                    <input type="text" class="form-control" id="editStreet" name="street" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editCity">City</label>
-                                    <input type="text" class="form-control" id="editCity" name="city" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editZipcode">Zipcode</label>
-                                    <input type="text" class="form-control" id="editZipcode" name="zipcode" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editCountry">Country</label>
-                                    <input type="text" class="form-control" id="editCountry" name="country" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editLandmark">Landmark</label>
-                                    <input type="text" class="form-control" id="editLandmark" name="landmark">
-                                </div>
-                                <div class="form-group">
-                                    <label for="editPhoneNumber">Phone Number</label>
-                                    <input type="text" class="form-control" id="editPhoneNumber" name="phoneNumber">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-              </div>
-
-              <!-- Account Details -->
-              <div
-                class="tab-pane fade"
-                id="account-detail"
-                role="tabpanel"
-                aria-labelledby="account-detail-tab"
-              >
-                <div class="card">
-                  <div class="card-header">
-                    <h5>Account Details</h5>
-                  </div>
-                  <div class="card-body">
-                    <form
-                      id="changePasswordForm"
-                      action="/user/updateUser"
-                      method="POST"
-                    >
-                      <div class="row">
-                        <div class="form-group col-md-6">
-                          <label for="firstName" class="form-label text-left"
-                            >First Name</label
-                          >
-                          <input
-                            name="firstName"
-                            type="text"
-                            class="form-control"
-                            id="firstName"
-                            placeholder="First Name"
-                            value="<%= user.firstName %>"
-                          />
-                          <small class="text-danger"></small>
+                        <div class="form-group">
+                          <label for="houseNumber">House Number</label>
+                          <input type="number" name="houseNumber" id="houseNumber"
+                            class="form-control form-control-sm custom-input" required />
                         </div>
-                        <div class="form-group col-md-6">
-                          <label for="lastName" class="form-label text-left"
-                            >Last Name</label
-                          >
-                          <input
-                            name="lastName"
-                            type="text"
-                            class="form-control"
-                            id="lastName"
-                            placeholder="Last Name"
-                            value="<%= user.lastName %>"
-                          />
-                          <small class="text-danger"></small>
+                        <div class="form-group">
+                          <label for="street">Street</label>
+                          <input type="text" name="street" id="street" class="form-control form-control-sm custom-input"
+                            required />
                         </div>
-                        <div class="form-group col-md-12">
-                          <label for="email" class="form-label text-left"
-                            >Email</label
-                          >
-                          <input
-                            name="email"
-                            type="email"
-                            class="form-control"
-                            id="email"
-                            value="<%= user.email %>"
-                            placeholder="example@gmail.com"
-                            disabled
-                          />
-                          <small class="text-danger"></small>
+                        <div class="form-group">
+                          <label for="city">City</label>
+                          <input type="text" name="city" id="city" class="form-control form-control-sm custom-input"
+                            required />
                         </div>
-                        <div class="form-group col-md-12">
-                          <label
-                            for="currentPassword"
-                            class="form-label text-left"
-                            >Current Password</label
-                          >
-                          <div class="input-group">
-                            <input
-                              name="currentPassword"
-                              type="password"
-                              class="form-control"
-                              id="currentPassword"
-                              required
-                            />
-                            <div class="input-group-append">
-                              <span
-                                class="input-group-text"
-                                onclick="togglePasswordVisibility('currentPassword')"
-                                ><i class="fa fa-eye"></i
-                              ></span>
-                            </div>
-                          </div>
+                        <div class="form-group">
+                          <label for="zipcode">Zipcode</label>
+                          <input type="number" name="zipcode" id="zipcode"
+                            class="form-control form-control-sm custom-input" required />
                         </div>
-                        <div class="form-group col-md-12">
-                          <label for="newPassword" class="form-label text-left"
-                            >New Password</label
-                          >
-                          <div class="input-group">
-                            <input
-                              name="newPassword"
-                              type="password"
-                              class="form-control"
-                              id="newPassword"
-                              required
-                            />
-                            <div class="input-group-append">
-                              <span
-                                class="input-group-text"
-                                onclick="togglePasswordVisibility('newPassword')"
-                                ><i class="fa fa-eye"></i
-                              ></span>
-                            </div>
-                          </div>
+                        <div class="form-group">
+                          <label for="country">Country</label>
+                          <input type="text" name="country" id="country"
+                            class="form-control form-control-sm custom-input" required />
                         </div>
-                        <div class="form-group col-md-12">
-                          <label
-                            for="confirmPassword"
-                            class="form-label text-left"
-                            >Confirm Password</label
-                          >
-                          <div class="input-group">
-                            <input
-                              name="confirmPassword"
-                              type="password"
-                              class="form-control"
-                              id="confirmPassword"
-                              required
-                            />
-                            <div class="input-group-append">
-                              <span
-                                class="input-group-text"
-                                onclick="togglePasswordVisibility('confirmPassword')"
-                                ><i class="fa fa-eye"></i
-                              ></span>
-                            </div>
-                          </div>
+                        <div class="form-group">
+                          <label for="phoneNumber">Phone Number</label>
+                          <input type="tel" name="phoneNumber" id="phoneNumber"
+                            class="form-control form-control-sm custom-input" required />
                         </div>
-                        <div class="col-md-12">
-                          <button
-                            type="submit"
-                            class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04"
-                          >
-                            Update
+                        <div class="form-group">
+                          <label for="landmark">Landmark (Optional)</label>
+                          <input type="text" name="landmark" id="landmark"
+                            class="form-control form-control-sm custom-input" required />
+                        </div>
+                        <div class="form-group d-flex align-items-center">
+                          <button type="submit" class="btn btn-primary btn-sm">
+                            Save Address
                           </button>
                         </div>
-                      </div>
-                    </form>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-          </div>
+            <!-- Edit Address Modal -->
+            <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog"
+              aria-labelledby="editAddressModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <form id="editAddressForm">
+                    <div class="modal-body">
+                      <input type="hidden" id="editAddressId" name="addressId">
+                      <div class="form-group">
+                        <label for="editPlace">Place</label>
+                        <select class="form-control" id="editPlace" name="place" required>
+                          <option value="">Select Place</option>
+                          <option value="home">Home</option>
+                          <option value="work">Work</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="editHouseNumber">House Number</label>
+                        <input type="text" class="form-control" id="editHouseNumber" name="houseNumber" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="editStreet">Street</label>
+                        <input type="text" class="form-control" id="editStreet" name="street" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="editCity">City</label>
+                        <input type="text" class="form-control" id="editCity" name="city" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="editZipcode">Zipcode</label>
+                        <input type="text" class="form-control" id="editZipcode" name="zipcode" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="editCountry">Country</label>
+                        <input type="text" class="form-control" id="editCountry" name="country" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="editLandmark">Landmark</label>
+                        <input type="text" class="form-control" id="editLandmark" name="landmark">
+                      </div>
+                      <div class="form-group">
+                        <label for="editPhoneNumber">Phone Number</label>
+                        <input type="text" class="form-control" id="editPhoneNumber" name="phoneNumber">
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Account Details -->
+            <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
+              <div class="card">
+                <div class="card-header">
+                  <h5>Account Details</h5>
+                </div>
+                <div class="card-body">
+                  <form id="changePasswordForm" action="/user/updateUser" method="POST">
+                    <div class="row">
+                      <div class="form-group col-md-6">
+                        <label for="firstName" class="form-label text-left">First Name</label>
+                        <input name="firstName" type="text" class="form-control" id="firstName" placeholder="First Name"
+                          value="<%= user.firstName %>" />
+                        <small class="text-danger"></small>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="lastName" class="form-label text-left">Last Name</label>
+                        <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Last Name"
+                          value="<%= user.lastName %>" />
+                        <small class="text-danger"></small>
+                      </div>
+                      <div class="form-group col-md-12">
+                        <label for="email" class="form-label text-left">Email</label>
+                        <input name="email" type="email" class="form-control" id="email" value="<%= user.email %>"
+                          placeholder="example@gmail.com" disabled />
+                        <small class="text-danger"></small>
+                      </div>
+                      <div class="form-group col-md-12">
+                        <label for="currentPassword" class="form-label text-left">Current Password</label>
+                        <div class="input-group">
+                          <input name="currentPassword" type="password" class="form-control" id="currentPassword"
+                            required />
+                          <div class="input-group-append">
+                            <span class="input-group-text" onclick="togglePasswordVisibility('currentPassword')"><i
+                                class="fa fa-eye"></i></span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-12">
+                        <label for="newPassword" class="form-label text-left">New Password</label>
+                        <div class="input-group">
+                          <input name="newPassword" type="password" class="form-control" id="newPassword" required />
+                          <div class="input-group-append">
+                            <span class="input-group-text" onclick="togglePasswordVisibility('newPassword')"><i
+                                class="fa fa-eye"></i></span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group col-md-12">
+                        <label for="confirmPassword" class="form-label text-left">Confirm Password</label>
+                        <div class="input-group">
+                          <input name="confirmPassword" type="password" class="form-control" id="confirmPassword"
+                            required />
+                          <div class="input-group-append">
+                            <span class="input-group-text" onclick="togglePasswordVisibility('confirmPassword')"><i
+                                class="fa fa-eye"></i></span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <button type="submit"
+                          class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+                          Update
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
     </div>
   </div>
+  </div>
 </section>
 
 <!-- Modal -->
-<div
-  class="modal fade"
-  id="exampleModal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Add Address</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -687,11 +465,7 @@
           <input type="text" placeholder="Name" class="form-control mb-2" />
 
           <input type="text" placeholder="Address" class="form-control mb-2" />
-          <input
-            type="text"
-            placeholder="House Name"
-            class="form-control mb-2"
-          />
+          <input type="text" placeholder="House Name" class="form-control mb-2" />
           <input type="text" placeholder="Street" class="form-control mb-2" />
           <input type="text" placeholder="Zip code" class="form-control mb-2" />
         </form>
@@ -812,66 +586,66 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-      // Handle edit button click
-      document.addEventListener('click', function(event) {
-          if (event.target && event.target.classList.contains('btn-edit')) {
-              try {
-                  const address = JSON.parse(event.target.getAttribute('data-address'));
-                  if (address) {
-                      document.getElementById('editAddressId').value = address._id;
-                      document.getElementById('editPlace').value = address.place;
-                      document.getElementById('editHouseNumber').value = address.houseNumber;
-                      document.getElementById('editStreet').value = address.street;
-                      document.getElementById('editCity').value = address.city;
-                      document.getElementById('editZipcode').value = address.zipcode;
-                      document.getElementById('editCountry').value = address.country;
-                      document.getElementById('editLandmark').value = address.landmark || '';
-                      document.getElementById('editPhoneNumber').value = address.phoneNumber || '';
-                      $('#editAddressModal').modal('show');
-                  } else {
-                      console.error('Address data is not valid.');
-                  }
-              } catch (e) {
-                  console.error('Error parsing address data:', e);
-              }
+  document.addEventListener('DOMContentLoaded', function () {
+    // Handle edit button click
+    document.addEventListener('click', function (event) {
+      if (event.target && event.target.classList.contains('btn-edit')) {
+        try {
+          const address = JSON.parse(event.target.getAttribute('data-address'));
+          if (address) {
+            document.getElementById('editAddressId').value = address._id;
+            document.getElementById('editPlace').value = address.place;
+            document.getElementById('editHouseNumber').value = address.houseNumber;
+            document.getElementById('editStreet').value = address.street;
+            document.getElementById('editCity').value = address.city;
+            document.getElementById('editZipcode').value = address.zipcode;
+            document.getElementById('editCountry').value = address.country;
+            document.getElementById('editLandmark').value = address.landmark || '';
+            document.getElementById('editPhoneNumber').value = address.phoneNumber || '';
+            $('#editAddressModal').modal('show');
+          } else {
+            console.error('Address data is not valid.');
           }
-      });
+        } catch (e) {
+          console.error('Error parsing address data:', e);
+        }
+      }
+    });
 
-      // Handle form submission
-      document.getElementById('editAddressForm').addEventListener('submit', function(event) {
-          event.preventDefault();
+    // Handle form submission
+    document.getElementById('editAddressForm').addEventListener('submit', function (event) {
+      event.preventDefault();
 
-          const addressId = document.getElementById('editAddressId').value;
-          const updatedAddress = {
-              place: document.getElementById('editPlace').value,
-              houseNumber: document.getElementById('editHouseNumber').value,
-              street: document.getElementById('editStreet').value,
-              city: document.getElementById('editCity').value,
-              zipcode: document.getElementById('editZipcode').value,
-              country: document.getElementById('editCountry').value,
-              landmark: document.getElementById('editLandmark').value,
-              phoneNumber: document.getElementById('editPhoneNumber').value
-          };
+      const addressId = document.getElementById('editAddressId').value;
+      const updatedAddress = {
+        place: document.getElementById('editPlace').value,
+        houseNumber: document.getElementById('editHouseNumber').value,
+        street: document.getElementById('editStreet').value,
+        city: document.getElementById('editCity').value,
+        zipcode: document.getElementById('editZipcode').value,
+        country: document.getElementById('editCountry').value,
+        landmark: document.getElementById('editLandmark').value,
+        phoneNumber: document.getElementById('editPhoneNumber').value
+      };
 
-          fetch(`/user/address/${addressId}/edit`, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(updatedAddress)
-          })
-          .then(response => response.json())
-          .then(data => {
-              if (data.success) {
-                  $('#editAddressModal').modal('hide');
-                  window.location.href = '/user/profile'; // Redirect to user profile
-              } else {
-                  console.error('Update failed:', data.message);
-              }
-          })
-          .catch(error => console.error('Error:', error));
-      });
+      fetch(`/user/address/${addressId}/edit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedAddress)
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            $('#editAddressModal').modal('hide');
+            window.location.href = '/user/profile'; // Redirect to user profile
+          } else {
+            console.error('Update failed:', data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    });
   });
 </script>
 
@@ -879,116 +653,116 @@
 
 
 <script>
-  document.addEventListener('click', function(event) {
+  document.addEventListener('click', function (event) {
     if (event.target && event.target.classList.contains('btn-delete')) {
-        const addressId = event.target.getAttribute('data-address-id');
+      const addressId = event.target.getAttribute('data-address-id');
 
-        // Proceed with the delete request
-        fetch(`/user/address/${addressId}/delete`, {
-            method: 'DELETE'
-        })
+      // Proceed with the delete request
+      fetch(`/user/address/${addressId}/delete`, {
+        method: 'DELETE'
+      })
         .then(response => response.json())
         .then(data => {
-            console.log('Response:', data); // Log the response for debugging
-            if (data.success) {
-                // Show success message with SweetAlert
-                Swal.fire({
-                    title: 'Deleted!',
-                    text: data.message,
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    // Redirect to the user profile page after clicking OK
-                    window.location.href = '/user/profile';
-                });
-            } else {
-                // Show error message with SweetAlert
-                Swal.fire({
-                    title: 'Error!',
-                    text: data.message,
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
+          console.log('Response:', data); // Log the response for debugging
+          if (data.success) {
+            // Show success message with SweetAlert
+            Swal.fire({
+              title: 'Deleted!',
+              text: data.message,
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              // Redirect to the user profile page after clicking OK
+              window.location.href = '/user/profile';
+            });
+          } else {
+            // Show error message with SweetAlert
+            Swal.fire({
+              title: 'Error!',
+              text: data.message,
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          }
         })
         .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'Something went wrong.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
+          console.error('Error:', error);
+          Swal.fire({
+            title: 'Error!',
+            text: 'Something went wrong.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
         });
     }
-});
+  });
 </script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.btn-set-default').forEach(button => {
-        button.addEventListener('click', event => {
-            event.preventDefault();
-            const addressId = event.target.dataset.addressId;
-            setAsDefault(addressId);
-        });
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        const addressId = event.target.dataset.addressId;
+        setAsDefault(addressId);
+      });
     });
-});
+  });
 
 </script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('[id^="set-default-btn-"]').forEach(button => {
-        button.addEventListener('click', function() {
-            const addressId = this.getAttribute('data-address-id');
+      button.addEventListener('click', function () {
+        const addressId = this.getAttribute('data-address-id');
 
-            if (!addressId) {
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Address ID is missing.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-                return;
+        if (!addressId) {
+          Swal.fire({
+            title: 'Error!',
+            text: 'Address ID is missing.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+          return;
+        }
+
+        fetch(`/set-default-address/${addressId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              Swal.fire({
+                title: 'Success!',
+                text: 'Address set as default successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+              }).then(() => {
+                window.location.reload();
+              });
+            } else {
+              Swal.fire({
+                title: 'Error!',
+                text: data.message || 'Failed to set address as default.',
+                icon: 'error',
+                confirmButtonText: 'Try Again'
+              });
             }
-
-            fetch(`/set-default-address/${addressId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'Address set as default successfully.',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: data.message || 'Failed to set address as default.',
-                        icon: 'error',
-                        confirmButtonText: 'Try Again'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'An unexpected error occurred.',
-                    icon: 'error',
-                    confirmButtonText: 'Try Again'
-                });
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+              title: 'Error!',
+              text: 'An unexpected error occurred.',
+              icon: 'error',
+              confirmButtonText: 'Try Again'
             });
-        });
+          });
+      });
     });
-});
+  });
 
 
 </script>

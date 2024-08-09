@@ -8,6 +8,7 @@ const productController = require("../controller/productController");
 const userMangementController = require("../controller/userManagementController");
 const { productUpload, upload } = require("../config/multer");
 const couponController = require("../controller/CouponCondroller");
+const orderCondroller = require("../controller/orderController")
 
 const { isAdminLoggedIn } = require("../middleware/authMiddleware");
 
@@ -22,7 +23,7 @@ router.get(
 );
 3;
 router.get(
-  "/category/editCategory/:id",
+  "/category/editCategory/:id",  
   isAdminLoggedIn,
   categoryController.getEditCategory
 );
@@ -98,10 +99,9 @@ router.post(
 );
 
 /*--users--*/
-router.get("/users", isAdminLoggedIn, userMangementController.getAllUsers);
+router.get("/users", userMangementController.getAllUsers);
 router.post(
   "/users/toggle-block/:id",
-  isAdminLoggedIn,
   userMangementController.toggleBlock
 );
 
@@ -116,5 +116,11 @@ router.delete(
   isAdminLoggedIn,
   couponController.deleteCoupon
 );
+
+/*orders  */
+
+router.get('/order', isAdminLoggedIn,orderCondroller.getAllOrders)
+router.post('/order/:orderId/update-status', orderCondroller.updateOrderStatus);
+router.get('/order/:orderId',orderCondroller.getOrderDetils);
 
 module.exports = router;
