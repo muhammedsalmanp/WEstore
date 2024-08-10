@@ -376,17 +376,30 @@
                                     <img src="/uploads/products-images/<%= product.primaryImages.length > 0 ? product.primaryImages[0].name : 'default-image.jpg' %>"
                                         alt="Product Image">
                                 </div>
-                                <div id="product-cancellation-<%= product.id %>" class="product-cancellation">
+                                <div id="product-cancellation-<%= product._id %>" class="product-cancellation">
                                     <% if (status==='Delivered' ) { %>
-                                        <button id="return-button-<%=  product.productId %>"
-                                            class="return-button">Return</button>
-                                        <% } else { %>
-                                            <input type="hidden" id="delivered-date-<%= product.productId%>" value="<%=  order.expectedDeliveryDate %>">
-
-                                            <button class="cancel-button"
-                                                data-product-id="<%= product.productId%>">Cancel</button>
-                                            <% } %>
+                                        <% if (!order.return) { %>
+                                            <button id="return-button-<%= product.productId %>"
+                                                class="return-button">Return</button>
+                                            <% } else { %>
+                                                <button id="return-button-<%= product.productId %>"
+                                                    class="return-button">Cancel Return</button>
+                                                <% } %>
+                                                    <% } else { %>
+                                                        <input type="hidden"
+                                                            id="delivered-date-<%= product.productId %>"
+                                                            value="<%= order.expectedDeliveryDate %>">
+                                                        <% if (product.isCanceld) { %>
+                                                            <button class="continue-shipping-button"
+                                                                data-product-id="<%= product.productId %>">Continue
+                                                                Shipping</button>
+                                                            <% } else { %>
+                                                                <button class="cancel-button"
+                                                                    data-product-id="<%= product.productId %>">Cancel</button>
+                                                                <% } %>
+                                                                    <% } %>
                                 </div>
+
                             </div>
                             <% }) %>
                                 <% } else { %>
@@ -473,73 +486,115 @@
                             Shopping</a>
                     </button>
                 </div>
+                <!-- Cancel Reason Modal -->
+                <div class="modal fade" id="cancelReasonModal" tabindex="-1" aria-labelledby="cancelReasonModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="cancelReasonModalLabel">Cancel Product</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <textarea id="cancelReasonTextarea" class="form-control"
+                                    placeholder="Enter reason for cancellation"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" id="confirmCancelBtn" class="btn btn-danger">Cancel
+                                    Product</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Return Reason Modal -->
+                <div class="modal fade" id="returnReasonModal" tabindex="-1" aria-labelledby="returnReasonModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="returnReasonModalLabel">Return Product</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <textarea id="returnReasonTextarea" class="form-control"
+                                    placeholder="Enter reason for return"></textarea>
+                                <div class="mt-3">
+                                    <label for="boxStatusSelect" class="form-label">Was the box opened?</label>
+                                    <select id="boxStatusSelect" class="form-select">
+                                        <option value="" disabled selected>Select an option</option>
+                                        <option value="opened">Yes</option>
+                                        <option value="unopened">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" id="confirmReturnBtn" class="btn btn-primary">Return
+                                    Product</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const cancelButtons = document.querySelectorAll('.cancel-button');
 
         cancelButtons.forEach(button => {
             button.addEventListener('click', function () {
-                const productId = this.dataset.productId; // Assuming button has data-product-id
-                const orderId = document.querySelector('#order-id').value; // Assuming you have an element with id 'order-id'
+                const productId = this.dataset.productId;
+                const orderId = document.querySelector('#order-id').value;
+                // Open the modal
+                const cancelModal = new bootstrap.Modal(document.getElementById('cancelReasonModal'));
+                cancelModal.show();
 
-                // Prompt for cancellation reason
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "Do you want to cancel this product?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#e74c3c',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, cancel it!',
-                    input: 'textarea',
-                    inputPlaceholder: 'Please provide a reason for cancellation',
-                    inputAttributes: {
-                        'aria-label': 'Please provide a reason for cancellation'
+                document.getElementById('confirmCancelBtn').onclick = function () {
+                    const reason = document.getElementById('cancelReasonTextarea').value;
+
+                    if (!reason.trim()) {
+                        Swal.fire('Error!', 'Please provide a reason for cancellation.', 'error');
+                        return;
                     }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const reason = result.value;
 
-                        // Proceed with cancellation logic
-                        fetch('/order/cancel', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ orderId, productId, reason })
+                    // Proceed with cancellation logic
+                    fetch('/order/cancel', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ orderId, productId, reason })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message === 'Product cancelled successfully') {
+                                Swal.fire('Cancelled!', 'Your product has been cancelled.', 'success');
+                                location.reload();
+                            } else {
+                                Swal.fire('Error!', data.message, 'error');
+                            }
                         })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.message === 'Product cancelled successfully') {
-                                    Swal.fire('Cancelled!', 'Your product has been cancelled.', 'success');
-                                    location.reload();
-                                } else {
-                                    Swal.fire('Error!', data.message, 'error');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                Swal.fire('Error!', 'An error occurred while cancelling the product.', 'error');
-                            });
-                    }
-                });
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Error!', 'An error occurred while cancelling the product.', 'error');
+                        });
+
+                    cancelModal.hide();
+                };
             });
         });
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
+
         const returnButtons = document.querySelectorAll('.return-button');
 
         returnButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const productId = this.id.split('-')[2]; // Extract the product ID from the button ID
-
-                // Example: Get the delivery date from a hidden input or similar
-                const deliveredDateInput = `<%= order.expectedDeliveryDate %>`;
+            button.addEventListener('click', function () {
+                const productId = this.id.split('-')[2];
+                const deliveredDateInput = '<%= order.expectedDeliveryDate %>';
                 const deliveredDate = deliveredDateInput ? new Date(deliveredDateInput.value) : null;
 
                 if (!deliveredDate) {
@@ -556,7 +611,6 @@
                 const diffDays = Math.floor((currentDate - deliveredDate) / (1000 * 60 * 60 * 24));
 
                 if (diffDays > 7) {
-                    // Show alert if more than 7 days have passed
                     Swal.fire({
                         title: 'Return Not Allowed',
                         text: "You cannot return the product as it has been more than 7 days since delivery.",
@@ -564,122 +618,147 @@
                         confirmButtonColor: '#3498db'
                     });
                 } else {
-                    // Prompt user for return reason and box status
-                    Swal.fire({
-                        title: 'Return Product',
-                        html: `
-                            <label for="return-reason">Reason for return:</label>
-                            <textarea id="return-reason" class="swal2-textarea" placeholder="Enter reason" style="width: 100%; height: 0px; resize: vertical;"></textarea>
+                    const returnModal = new bootstrap.Modal(document.getElementById('returnReasonModal'));
+                    returnModal.show();
 
-                            <label for="box-status" style="display: block; margin-top: 15px;">Was the box opened?</label>
-                            <select id="box-status" class="swal2-select" style="width: 100%;">
-                                <option value="" disabled selected>Select an option</option>
-                                <option value="opened">Yes</option>
-                                <option value="unopened">No</option>
-                            </select>
-                        `,
-                        focusConfirm: false,
-                        preConfirm: () => {
-                            const reason = Swal.getPopup().querySelector('#return-reason').value;
-                            const boxStatus = Swal.getPopup().querySelector('#box-status').value;
-                            if (!reason) {
-                                Swal.showValidationMessage('Please enter a return reason');
-                                return false;
-                            }
-                            if (!boxStatus) {
-                                Swal.showValidationMessage('Please select if the box was opened or not');
-                                return false;
-                            }
-                            return { reason, boxStatus };
-                        },
-                        showCancelButton: true,
-                        confirmButtonColor: '#3498db',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Next'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            const { reason, boxStatus } = result.value;
+                    document.getElementById('confirmReturnBtn').onclick = function () {
+                        const reason = document.getElementById('returnReasonTextarea').value;
+                        const boxStatus = document.getElementById('boxStatusSelect').value;
 
-                            if (boxStatus === 'opened') {
-                                // If the box is opened, ask about damage
-                                Swal.fire({
-                                    title: 'Product Damage',
-                                    text: 'Is the product damaged?',
-                                    input: 'radio',
-                                    inputOptions: {
-                                        'yes': 'Yes',
-                                        'no': 'No'
-                                    },
-                                    inputValidator: (value) => {
-                                        if (!value) {
-                                            return 'Please select whether the product is damaged!';
-                                        }
-                                    },
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#3498db',
-                                    cancelButtonColor: '#d33',
-                                    confirmButtonText: 'Submit'
-                                }).then((damageResult) => {
-                                    if (damageResult.isConfirmed) {
-                                        const damageStatus = damageResult.value;
-                                        handleProductReturn(productId, reason, boxStatus, damageStatus);
-                                    }
-                                });
-                            } else {
-                                // Proceed if unopened
-                                handleProductReturn(productId, reason, boxStatus, 'no');
-                            }
+                        if (!reason.trim()) {
+                            Swal.fire('Error!', 'Please provide a reason for return.', 'error');
+                            return;
                         }
-                    });
+                        if (!boxStatus) {
+                            Swal.fire('Error!', 'Please select if the box was opened or not.', 'error');
+                            return;
+                        }
+
+                        if (boxStatus === 'opened') {
+                            Swal.fire({
+                                title: 'Product Damage',
+                                text: 'Is the product damaged?',
+                                input: 'radio',
+                                inputOptions: {
+                                    'yes': 'Yes',
+                                    'no': 'No'
+                                },
+                                inputValidator: (value) => {
+                                    if (!value) {
+                                        return 'Please select whether the product is damaged!';
+                                    }
+                                },
+                                showCancelButton: true,
+                                confirmButtonColor: '#3498db',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Submit'
+                            }).then((damageResult) => {
+                                if (damageResult.isConfirmed) {
+                                    const damageStatus = damageResult.value;
+                                    handleProductReturn(productId, reason, boxStatus, damageStatus);
+                                }
+                            });
+                        } else {
+                            handleProductReturn(productId, reason, boxStatus, 'no');
+                        }
+
+                        returnModal.hide();
+                    };
                 }
             });
         });
 
         function handleProductReturn(productId, reason, boxStatus, damageStatus) {
-    const orderId = '<%= order.orderId %>'; // Ensure this is correctly fetched and assigned
+            const orderId = '<%= order.orderId %>';
 
-    // Log to check values
-    console.log('Order ID:', orderId);
-    console.log('Product ID:', productId);
-
-    fetch('/return-product', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            orderId,
-            productId,
-            reason,
-            boxStatus,
-            damageStatus
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            Swal.fire(
-                'Return Successful!',
-                `Your product return has been initiated.\nOur team will contact you shortly.\nReturn ID: ${data.returnId}\nExpected Return Amount: ${data.expectedReturnAmount}`,
-                'success'
-            );
-            location.reload()
-        } else {
-            Swal.fire(
-                'Return Failed',
-                data.message || 'There was an error processing your return.',
-                'error'
-            );
+            fetch('/return-product', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    orderId,
+                    productId,
+                    reason,
+                    boxStatus,
+                    damageStatus
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire(
+                            'Return Successful!',
+                            `Your product return has been initiated.\nOur team will contact you shortly.\nReturn ID: ${data.returnId}\nExpected Return Amount: ${data.expectedReturnAmount}`,
+                            'success'
+                        );
+                        location.reload();
+                    } else {
+                        Swal.fire(
+                            'Return Failed',
+                            data.message || 'There was an error processing your return.',
+                            'error'
+                        );
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire(
+                        'Error',
+                        'An error occurred while processing your return request. Please try again later.',
+                        'error'
+                    );
+                });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        Swal.fire(
-            'Error',
-            'An error occurred while processing your return request. Please try again later.',
-            'error'
-        );
     });
-}
+
+</script>
+<script>
+    // Add event listener for "Continue Shipping" button
+    document.querySelectorAll('.continue-shipping-button').forEach(button => {
+        button.addEventListener('click', async (e) => {
+            const productId = e.target.dataset.productId;
+            const orderId = '<%= order.orderId %>'; // Ensure this is available in your template
+
+            try {
+                const response = await fetch('/order/continueShipping', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ orderId, productId })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: result.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Optionally, refresh the page or update the UI here
+                        location.reload(); // Reload the page to reflect changes
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: result.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (error) {
+                console.error('Error restoring product:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Failed to restore product. Please try again later.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
     });
+
 </script>

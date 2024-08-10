@@ -3,6 +3,9 @@ const UserAddress = require("../model/userAddressSchema");
 const User = require("../model/userSchema");
 const Product=require("../model/productSchema")
 const adminLayout = "./layouts/adminLayouts";
+const Coupon = require("../model/couponSchema")
+const crypto = require("crypto");
+const razorpayInstance = require("../config/razorPay");
 
    
 const mongoose = require('mongoose');
@@ -183,7 +186,8 @@ module.exports = {
                 productId: product._id._id,
                 description: product._id.description,
                 quantity: product.quantity,
-                primaryImages: product._id.primaryImages // Assuming this field exists
+                primaryImages: product._id.primaryImages,
+                isCanceld:product.isCanceld,
             }));
     
             res.render('shop/orderPage', {
@@ -203,14 +207,15 @@ module.exports = {
         }
     },
 
-    cancelOrder :async (req, res) =>{
+    cancelOrder: async (req, res) => {
         const { orderId, productId, reason } = req.body;
     
         try {
-            // Fetch the order and populate product details
-            const order = await Order.findOne({ orderId }).populate('products._id');
+            // Fetch the order, populate product and coupon details
+            const order = await Order.findOne({ orderId })
+                .populate('products._id')
+                .populate('coupon'); // Populate coupon details
     
-            // Debugging: Log the fetched order and productId
             console.log('Fetched Order:', order);
             console.log('Requested Product ID:', productId);
     
@@ -218,34 +223,52 @@ module.exports = {
                 return res.status(404).json({ message: 'Order not found' });
             }
     
-            // Find the product in the order
             const product = order.products.find(p => p._id._id.toString() === productId);
     
-            // Debugging: Log the found product
             console.log('Found Product:', product);
     
             if (!product) {
                 return res.status(404).json({ message: 'Product not found in this order' });
             }
     
-            // Check if the order status allows cancellation
-            if (order.status === 'Delivered'||order.status === 'Out for delivery') {
+
+            if (order.status === 'Delivered' || order.status === 'Out for delivery') {
                 return res.status(400).json({ message: 'You can only cancel products from delivered orders' });
             }
     
-            // Update stock
+           
+            product.isCanceld = true;
+    
+           
             const updatedProduct = await Product.findById(productId);
             if (updatedProduct) {
                 updatedProduct.stock += product.quantity;
                 await updatedProduct.save();
             }
     
-            // Update order total amount
+           
             order.totalAmount -= product.price * product.quantity;
-            order.offerAppliedTotalAmount = order.totalAmount - order.couponDiscount;
-            
-            order.status = 'Cancelled'; 
-            
+    
+           
+            let applicableCouponDiscount = 0;
+            if (order.coupon) {
+                if (order.totalAmount >= order.coupon.minPurchaseAmount) {
+                    
+                    applicableCouponDiscount = (order.totalAmount * order.coupon.discountPercentage) / 100;
+                } else {
+                    
+                    order.couponMessage = 'You can no longer use the coupon because the order total is below the minimum purchase amount required.';
+                }
+            }
+    
+
+            order.offerAppliedTotalAmount = order.totalAmount - applicableCouponDiscount;
+    
+
+            const allProductsCanceled = order.products.every(p => p.isCanceld);
+            if (allProductsCanceled) {
+                order.status = 'Cancelled';
+            }
     
             await order.save();
     
@@ -259,6 +282,65 @@ module.exports = {
         }
     },
 
+    restoreProduct: async (req, res) => {
+        const { orderId, productId } = req.body;
+    
+        try {
+            // Fetch the order and populate product and coupon details
+            const order = await Order.findOne({ orderId })
+                .populate('products._id')
+                .populate('coupon');
+    
+            if (!order) {
+                return res.status(404).json({ message: 'Order not found' });
+            }
+    
+            // Find the canceled product
+            const product = order.products.find(p => p._id._id.toString() === productId);
+    
+            if (!product || !product.isCanceld) {
+                return res.status(404).json({ message: 'Product not found or not canceled' });
+            }
+    
+            // Restore the product status
+            product.isCanceld = false;
+    
+            // Update stock
+            const updatedProduct = await Product.findById(productId);
+            if (updatedProduct) {
+                updatedProduct.stock -= product.quantity;
+                await updatedProduct.save();
+            }
+    
+            // Recalculate order total amount
+            order.totalAmount += product.price * product.quantity;
+    
+            // Recalculate coupon discount
+            let applicableCouponDiscount = 0;
+            if (order.coupon && order.totalAmount >= order.coupon.minPurchaseAmount) {
+                applicableCouponDiscount = (order.totalAmount * order.coupon.discountPercentage) / 100;
+            }
+    
+            order.offerAppliedTotalAmount = order.totalAmount - applicableCouponDiscount;
+    
+            // Update order status if necessary
+            const allProductsCanceled = order.products.every(p => p.isCanceld);
+            if (!allProductsCanceled) {
+                order.status = 'Ordered'; // Change to the appropriate status if needed
+            }
+    
+            await order.save();
+    
+            res.json({
+                message: 'Product restored successfully',
+                order
+            });
+        } catch (error) {
+            console.error('Error restoring product:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+    
     returnProduct: async (req, res) => {
         try {
             const { orderId, productId, reason, boxStatus, damageStatus } = req.body;

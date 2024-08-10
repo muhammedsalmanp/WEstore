@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const userController =require('../controller/userController')
+const userController = require('../controller/userController')
 const cartController = require("../controller/cartController")
 const wishlistController = require("../controller/wishlistController")
 const { checkBlockedUser, isAuthenticated } = require('../middleware/authMiddleware');
@@ -12,22 +12,22 @@ const orderController = require("../controller/orderController")
 
 // user Wishlist 
 router.post('/wishlist/add', wishlistController.addToWishlist);
-router.post('/wishlist/remove',wishlistController.removeFromWishlist);
+router.post('/wishlist/remove', wishlistController.removeFromWishlist);
 router.get('/wishlist', wishlistController.getWishlist);
 // user cart
-router.get("/cart",cartController.getCart)
-router.post("/cart/addToCart",cartController.addToCart)
-router.post("/cart/update",cartController.updateCart)
-router.post('/cart/remove',cartController.removeFromCart)
-router.post("/cart/clearCart",cartController.clearCart)
+router.get("/cart", cartController.getCart)
+router.post("/cart/addToCart", cartController.addToCart)
+router.post("/cart/update", cartController.updateCart)
+router.post('/cart/remove', cartController.removeFromCart)
+router.post("/cart/clearCart", cartController.clearCart)
 
 //account Details
-router.get("/user/profile",userController.getAccountDetails)
-router.post("/user/updateUser",userController.updateUser)
-router.post("/user/addAddress",userController.addAddress)
-router.post("/user/address/:addressId/edit",userController.editAddress)
-router.delete("/user/address/:addressId/delete",userController.deleteAddress)
-router.post("/set-default-address/:addressId",userController.setDefault)                                           
+router.get("/user/profile", userController.getAccountDetails)
+router.post("/user/updateUser", userController.updateUser)
+router.post("/user/addAddress", userController.addAddress)
+router.post("/user/address/:addressId/edit", userController.editAddress)
+router.delete("/user/address/:addressId/delete", userController.deleteAddress)
+router.post("/set-default-address/:addressId", userController.setDefault)
 
 // coupon 
 
@@ -39,23 +39,24 @@ router.post('/coupons/remove', couponController.removeCoupon);
 
 //check Out 
 
-router.get('/checkOut',checkOutCondroller.getCheckOut)
+router.get('/checkOut', checkOutCondroller.getCheckOut)
+router.post("/checkOut/addAddress", userController.checkOutaddAddress)
+router.post("/checkOut/address/:addressId/edit", userController.checkOuteditAddress)
+router.delete("/checkOut/address/:addressId/delete", userController.checkOutdeleteAddress)
+router.post("/checkOut/set-default-address/:addressId", userController.checkOutsetDefault)
 
-router.post("/checkOut/addAddress",userController.checkOutaddAddress)
-router.post("/checkOut/address/:addressId/edit",userController.checkOuteditAddress)
-router.delete("/checkOut/address/:addressId/delete",userController.checkOutdeleteAddress)
-router.post("/checkOut/set-default-address/:addressId",userController.checkOutsetDefault)
 
 router.get('/cart/check', cartController.getCheckOutC);
 
+router.post("/user/verify-orderpayment",checkOutCondroller.verifyPayment)
+
 // order 
-router.post('/checkOut/placeOrder',checkOutCondroller.placeOrder)
-
+router.post('/checkOut/placeOrder', checkOutCondroller.placeOrder)
 router.get("/order/details/:orderId", orderController.getOrder);
-
 router.post('/order/cancel', orderController.cancelOrder);
-
+router.post("/order/continueShipping", orderController.restoreProduct);
 router.post('/return-product', orderController.returnProduct);
+
 
 
 
