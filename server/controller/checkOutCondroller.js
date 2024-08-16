@@ -7,6 +7,7 @@ const Product = require("../model/productSchema");
 
 const crypto = require("crypto");
 const razorpayInstance = require("../config/razorPay");
+const { json } = require("express");
 
 
 
@@ -200,7 +201,7 @@ module.exports = {
             expectedDeliveryDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000),
             coupon: userCart.coupon, // Add coupon reference
             couponDiscount: couponDiscount, // Add coupon discount
-            offerAppliedTotalAmount: offerAppliedTotalAmount // Add total amount after coupon
+            offerAppliedTotalAmount: offerAppliedTotalAmount, // Add total amount after coupon
           });
       
           // Save the order
@@ -233,17 +234,19 @@ module.exports = {
       verifyPayment: async (req, res) => {
         try {
           const { paymentId, orderId } = req.body; // Include orderId in the request
-      
-          if (paymentId && orderId) {
-            // Here you would generally have logic to verify the payment with Razorpay API using paymentId
-            // For now, we'll assume verification is successful if paymentId is present
-      
-            // Optionally, you can add more checks to verify payment with Razorpay
-      
-            return res.json({ success: true, orderId: orderId }); // Return orderId along with success status
-          } else {
-            return res.json({ success: false, message: "Payment ID or Order ID is missing" });
+          if (!orderId){
+            return res.json({success:false,message:'order Id not found'})
           }
+          if(!paymentId){
+            return res.json({success:false,message:'Paymet Id not found'})
+          }
+          const order = await Order.findOne({orderId:orderId});
+          if(!order){
+            return res.json({success:false,message:'ivlid Order ID'});
+          };
+          order.paymentId=paymentId;
+          await order.save();
+          res.json({success:true,orderId,paymentId})
         } catch (error) {
           console.error("Error verifying payment:", error);
           return res.status(500).send("Internal Server Error");

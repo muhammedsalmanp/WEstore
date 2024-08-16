@@ -4,7 +4,7 @@ const passport = require("../config/passport-config")
 //authcontroller
 const authController = require('../controller/authController');
 
-const { isLoggedOut } = require('../middleware/logoutMiddileware');
+const { isLoggedOut,isAdminLoggedOut } = require('../middleware/logoutMiddileware');
 const { checkBlockedUser, isAuthenticated } = require('../middleware/authMiddleware');
 
 //user
@@ -17,15 +17,15 @@ router.post('/register', authController.uerRegister);
 // Google Authentication Routes
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
-    req.session.user = req.user;
-    res.redirect('/');
+  req.session.user = req.user;
+  res.redirect('/');
 });
 
 // Facebook Authentication Routes
 router.get('/facebook', passport.authenticate('facebook', { scope: ['email'] }));
 router.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), (req, res) => {
-    req.session.user = req.user;
-    res.redirect('/');
+  req.session.user = req.user;
+  res.redirect('/');
 });
 /*GET verifyotp */
 router
@@ -54,10 +54,10 @@ router
   .get(authController.getResetPassword)
   .post(authController.resetPassword);
 
-router.get('/resendOtp',authController.resendOtp)
+router.get('/resendOtp', authController.resendOtp)
 
-router.get('/logout',authController.getUserLogout)
-  
+router.get('/logout', authController.getUserLogout)
+
 
 
 
@@ -65,16 +65,16 @@ router.get('/logout',authController.getUserLogout)
 //admin
 
 router
-.route('/admin/register')
-.get(authController.getAdminRegister)
-.post(authController.adminRegister)
+  .route('/admin/register')
+  .get(isAdminLoggedOut,authController.getAdminRegister)
+  .post(authController.adminRegister)
 
 /* GET admin login */
 
 router
-.route('/admin/login')
-.get(authController.getAdminLogin)
-.post(authController.adminLogin)
+  .route('/admin/login')
+  .get(isAdminLoggedOut,authController.getAdminLogin)
+  .post(authController.adminLogin)
 
 router.get('/admin/logout', authController.AdminLogout);
 

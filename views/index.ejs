@@ -129,28 +129,12 @@
       <div class="bg-square"></div>
       <div class="container">
         <div class="tab-header">
-          <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="nav-tab-one"
-                data-bs-toggle="tab"
-                data-bs-target="#tab-one"
-                type="button"
-                role="tab"
-                aria-controls="tab-one"
-                aria-selected="true"
-              >
-                New added
-              </button>
-            </li>
-          </ul>
-          <a href="#" class="view-more d-none d-md-flex">View More<i class="fi-rs-angle-double-small-right"></i></a>
+          <a href="/allProducts" class="view-more d-none d-md-flex">View More<i class="fi-rs-angle-double-small-right"></i></a>
         </div>
         <div class="tab-content wow fadeIn animated" id="myTabContent">
           <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
             <div class="row product-grid-4">
-              <% products.filter(product => product.isActive).slice(0, 8).forEach(product => { %>
+              <% newArrivals.forEach(product => { %>
                 <div class="col-lg-3 col-md-4 col-12 col-sm-6">
                   <div class="product-cart-wrap mb-30">
                     <div class="product-img-action-wrap">
@@ -160,9 +144,6 @@
                         </a>
                       </div>
                       <div class="product-action-1">
-                        <!-- <a aria-label="Quick view" class="action-btn hover-up" href="/shop/quickView/<%- product._id %>" data-bs-toggle="modal" data-bs-target="#quickViewModal">
-                          <i class="fi-rs-eye"></i>
-                        </a> -->
                         <% if (user && user.wishlist) { %>
                           <% let isInWishlist = user.wishlist.some(item => item.toString() === product._id.toString()); %>
                           <% if (isInWishlist) { %>
@@ -192,8 +173,8 @@
                         <span><span>90%</span></span>
                       </div>
                       <div class="product-price">
-                        <span>$<%= product.price %>.00</span>
-                        <span class="old-price">$<%= product.oldPrice %>.00</span>
+                        <span>₹<%= product.price %>.00</span>
+                        <span class="old-price">₹<%= product.oldPrice %>.00</span>
                       </div>
                       <div class="product-action-1 show">
                         <% if (product.stock > 0) { %>
@@ -215,6 +196,7 @@
         </div>
       </div>
     </section>
+    
   
    <!--end of product show areaya -->
 
@@ -363,423 +345,48 @@
    <!--end of banner-3 -->
    
    <!-- new Arrivals -->
-  <section class="section-padding">
+   <section class="section-padding">
     <div class="container wow fadeIn animated">
       <h3 class="section-title mb-20"><span>New</span> Arrivals</h3>
       <div class="carausel-6-columns-cover position-relative">
-        <div
-          class="slider-arrow slider-arrow-2 carausel-6-columns-arrow"
-          id="carausel-6-columns-2-arrows"
-        ></div>
-        <div
-          class="carausel-6-columns carausel-arrow-center"
-          id="carausel-6-columns-2"
-        >
-          <div class="product-cart-wrap small hover-up">
-            <div class="product-img-action-wrap">
-              <div class="product-img product-img-zoom">
-                <a href="shop-product-right.html">
-                  <img
-                    class="default-img"
-                    src="frd/assets/imgs/shop/product-2-1.jpg"
-                    alt=""
-                  />
-                  <img
-                    class="hover-img"
-                    src="frd/assets/imgs/shop/product-2-2.jpg"
-                    alt=""
-                  />
-                </a>
+        <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-2-arrows"></div>
+        <div class="carausel-6-columns carausel-arrow-center" id="carausel-6-columns-2">
+          <% newArrivals.forEach(product => { %>
+            <div class="product-cart-wrap small hover-up">
+              <div class="product-img-action-wrap">
+                <div class="product-img product-img-zoom">
+                  <a href="/shop/productDetails/<%- product._id %>">
+                    <img class="default-img" src="/uploads/products-images/crp/<%- product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>" alt="Product Image" />
+                    <img class="hover-img" src="/uploads/products-images/crp/<%- product.secondaryImages[1] ? product.secondaryImages[1].name : product.primaryImages[0].name %>" alt="Product Image" />
+                  </a>
+                </div>
+                <div class="product-action-1">
+                  <a aria-label="Add To Wishlist" class="action-btn small hover-up wishlist-btn" data-product-id="<%- product._id %>">
+                    <i class="fi-rs-heart"></i>
+                  </a>
+                </div>
+                <div class="product-badges product-badges-position product-badges-mrg">
+                  <span class="new">New</span>
+                </div>
               </div>
-              <div class="product-action-1">
-                <a
-                  aria-label="Quick view"
-                  class="action-btn small hover-up"
-                  data-bs-toggle="modal"
-                  data-bs-target="#quickViewModal"
-                >
-                  <i class="fi-rs-eye"></i
-                ></a>
-                <a
-                  aria-label="Add To Wishlist"
-                  class="action-btn small hover-up"
-                  href="shop-wishlist.html"
-                  tabindex="0"
-                  ><i class="fi-rs-heart"></i
-                ></a>
-                <a
-                  aria-label="Compare"
-                  class="action-btn small hover-up"
-                  href="shop-compare.html"
-                  tabindex="0"
-                  ><i class="fi-rs-shuffle"></i
-                ></a>
-              </div>
-              <div
-                class="product-badges product-badges-position product-badges-mrg"
-              >
-                <span class="hot">Hot</span>
+              <div class="product-content-wrap">
+                <h2><a href="/shop/productDetails/<%- product._id %>"><%= product.productName %></a></h2>
+                <div class="rating-result" title="90%">
+                  <span> </span>
+                </div>
+                <div class="product-price">
+                  <span>₹<%= product.price %></span>
+                  <span class="old-price">₹<%= product.oldPrice %></span>
+                </div>
               </div>
             </div>
-            <div class="product-content-wrap">
-              <h2><a href="shop-product-right.html">Lorem ipsum dolor</a></h2>
-              <div class="rating-result" title="90%">
-                <span> </span>
-              </div>
-              <div class="product-price">
-                <span>$238.85 </span>
-                <span class="old-price">$245.8</span>
-              </div>
-            </div>
-          </div>
-          <!--End product-cart-wrap-2-->
-          <div class="product-cart-wrap small hover-up">
-            <div class="product-img-action-wrap">
-              <div class="product-img product-img-zoom">
-                <a href="shop-product-right.html">
-                  <img
-                    class="default-img"
-                    src="frd/assets/imgs/shop/product-4-1.jpg"
-                    alt=""
-                  />
-                  <img
-                    class="hover-img"
-                    src="frd/assets/imgs/shop/product-4-2.jpg"
-                    alt=""
-                  />
-                </a>
-              </div>
-              <div class="product-action-1">
-                <a
-                  aria-label="Quick view"
-                  class="action-btn small hover-up"
-                  data-bs-toggle="modal"
-                  data-bs-target="#quickViewModal"
-                >
-                  <i class="fi-rs-eye"></i
-                ></a>
-                <a
-                  aria-label="Add To Wishlist"
-                  class="action-btn small hover-up"
-                  href="shop-wishlist.html"
-                  tabindex="0"
-                  ><i class="fi-rs-heart"></i
-                ></a>
-                <a
-                  aria-label="Compare"
-                  class="action-btn small hover-up"
-                  href="shop-compare.html"
-                  tabindex="0"
-                  ><i class="fi-rs-shuffle"></i
-                ></a>
-              </div>
-              <div
-                class="product-badges product-badges-position product-badges-mrg"
-              >
-                <span class="new">New</span>
-              </div>
-            </div>
-            <div class="product-content-wrap">
-              <h2><a href="shop-product-right.html">Aliquam posuere</a></h2>
-              <div class="rating-result" title="90%">
-                <span> </span>
-              </div>
-              <div class="product-price">
-                <span>$173.85 </span>
-                <span class="old-price">$185.8</span>
-              </div>
-            </div>
-          </div>
-          <!--End product-cart-wrap-2-->
-          <div class="product-cart-wrap small hover-up">
-            <div class="product-img-action-wrap">
-              <div class="product-img product-img-zoom">
-                <a href="shop-product-right.html">
-                  <img
-                    class="default-img"
-                    src="frd/assets/imgs/shop/product-15-1.jpg"
-                    alt=""
-                  />
-                  <img
-                    class="hover-img"
-                    src="frd/assets/imgs/shop/product-15-2.jpg"
-                    alt=""
-                  />
-                </a>
-              </div>
-              <div class="product-action-1">
-                <a
-                  aria-label="Quick view"
-                  class="action-btn small hover-up"
-                  data-bs-toggle="modal"
-                  data-bs-target="#quickViewModal"
-                >
-                  <i class="fi-rs-eye"></i
-                ></a>
-                <a
-                  aria-label="Add To Wishlist"
-                  class="action-btn small hover-up"
-                  href="shop-wishlist.html"
-                  tabindex="0"
-                  ><i class="fi-rs-heart"></i
-                ></a>
-                <a
-                  aria-label="Compare"
-                  class="action-btn small hover-up"
-                  href="shop-compare.html"
-                  tabindex="0"
-                  ><i class="fi-rs-shuffle"></i
-                ></a>
-              </div>
-              <div
-                class="product-badges product-badges-position product-badges-mrg"
-              >
-                <span class="sale">Sale</span>
-              </div>
-            </div>
-            <div class="product-content-wrap">
-              <h2><a href="shop-product-right.html">Sed dapibus orci</a></h2>
-              <div class="rating-result" title="90%">
-                <span> </span>
-              </div>
-              <div class="product-price">
-                <span>$215.85 </span>
-                <span class="old-price">$235.8</span>
-              </div>
-            </div>
-          </div>
-          <!--End product-cart-wrap-2-->
-          <div class="product-cart-wrap small hover-up">
-            <div class="product-img-action-wrap">
-              <div class="product-img product-img-zoom">
-                <a href="shop-product-right.html">
-                  <img
-                    class="default-img"
-                    src="frd/assets/imgs/shop/product-3-1.jpg"
-                    alt=""
-                  />
-                  <img
-                    class="hover-img"
-                    src="frd/assets/imgs/shop/product-3-2.jpg"
-                    alt=""
-                  />
-                </a>
-              </div>
-              <div class="product-action-1">
-                <a
-                  aria-label="Quick view"
-                  class="action-btn small hover-up"
-                  data-bs-toggle="modal"
-                  data-bs-target="#quickViewModal"
-                >
-                  <i class="fi-rs-eye"></i
-                ></a>
-                <a
-                  aria-label="Add To Wishlist"
-                  class="action-btn small hover-up"
-                  href="shop-wishlist.html"
-                  tabindex="0"
-                  ><i class="fi-rs-heart"></i
-                ></a>
-                <a
-                  aria-label="Compare"
-                  class="action-btn small hover-up"
-                  href="shop-compare.html"
-                  tabindex="0"
-                  ><i class="fi-rs-shuffle"></i
-                ></a>
-              </div>
-              <div
-                class="product-badges product-badges-position product-badges-mrg"
-              >
-                <span class="hot">.33%</span>
-              </div>
-            </div>
-            <div class="product-content-wrap">
-              <h2><a href="shop-product-right.html">Donec congue</a></h2>
-              <div class="rating-result" title="90%">
-                <span> </span>
-              </div>
-              <div class="product-price">
-                <span>$83.8 </span>
-                <span class="old-price">$125.2</span>
-              </div>
-            </div>
-          </div>
-          <!--End product-cart-wrap-2-->
-          <div class="product-cart-wrap small hover-up">
-            <div class="product-img-action-wrap">
-              <div class="product-img product-img-zoom">
-                <a href="shop-product-right.html">
-                  <img
-                    class="default-img"
-                    src="frd/assets/imgs/shop/product-9-1.jpg"
-                    alt=""
-                  />
-                  <img
-                    class="hover-img"
-                    src="frd/assets/imgs/shop/product-9-2.jpg"
-                    alt=""
-                  />
-                </a>
-              </div>
-              <div class="product-action-1">
-                <a
-                  aria-label="Quick view"
-                  class="action-btn small hover-up"
-                  data-bs-toggle="modal"
-                  data-bs-target="#quickViewModal"
-                >
-                  <i class="fi-rs-eye"></i
-                ></a>
-                <a
-                  aria-label="Add To Wishlist"
-                  class="action-btn small hover-up"
-                  href="shop-wishlist.html"
-                  tabindex="0"
-                  ><i class="fi-rs-heart"></i
-                ></a>
-                <a
-                  aria-label="Compare"
-                  class="action-btn small hover-up"
-                  href="shop-compare.html"
-                  tabindex="0"
-                  ><i class="fi-rs-shuffle"></i
-                ></a>
-              </div>
-              <div
-                class="product-badges product-badges-position product-badges-mrg"
-              >
-                <span class="hot">-25%</span>
-              </div>
-            </div>
-            <div class="product-content-wrap">
-              <h2><a href="shop-product-right.html">Curabitur porta</a></h2>
-              <div class="rating-result" title="90%">
-                <span> </span>
-              </div>
-              <div class="product-price">
-                <span>$1238.85 </span>
-                <span class="old-price">$1245.8</span>
-              </div>
-            </div>
-          </div>
-          <!--End product-cart-wrap-2-->
-          <div class="product-cart-wrap small hover-up">
-            <div class="product-img-action-wrap">
-              <div class="product-img product-img-zoom">
-                <a href="shop-product-right.html">
-                  <img
-                    class="default-img"
-                    src="frd/assets/imgs/shop/product-7-1.jpg"
-                    alt=""
-                  />
-                  <img
-                    class="hover-img"
-                    src="frd/assets/imgs/shop/product-7-2.jpg"
-                    alt=""
-                  />
-                </a>
-              </div>
-              <div class="product-action-1">
-                <a
-                  aria-label="Quick view"
-                  class="action-btn small hover-up"
-                  data-bs-toggle="modal"
-                  data-bs-target="#quickViewModal"
-                >
-                  <i class="fi-rs-eye"></i
-                ></a>
-                <a
-                  aria-label="Add To Wishlist"
-                  class="action-btn small hover-up"
-                  href="shop-wishlist.html"
-                  tabindex="0"
-                  ><i class="fi-rs-heart"></i
-                ></a>
-                <a
-                  aria-label="Compare"
-                  class="action-btn small hover-up"
-                  href="shop-compare.html"
-                  tabindex="0"
-                  ><i class="fi-rs-shuffle"></i
-                ></a>
-              </div>
-              <div
-                class="product-badges product-badges-position product-badges-mrg"
-              >
-                <span class="new">New</span>
-              </div>
-            </div>
-            <div class="product-content-wrap">
-              <h2><a href="shop-product-right.html">Praesent maximus</a></h2>
-              <div class="rating-result" title="90%">
-                <span> </span>
-              </div>
-              <div class="product-price">
-                <span>$123 </span>
-                <span class="old-price">$156</span>
-              </div>
-            </div>
-          </div>
-          <!--End product-cart-wrap-2-->
-          <div class="product-cart-wrap small hover-up">
-            <div class="product-img-action-wrap">
-              <div class="product-img product-img-zoom">
-                <a href="shop-product-right.html">
-                  <img
-                    class="default-img"
-                    src="frd/assets/imgs/shop/product-1-1.jpg"
-                    alt=""
-                  />
-                  <img
-                    class="hover-img"
-                    src="frd/assets/imgs/shop/product-1-2.jpg"
-                    alt=""
-                  />
-                </a>
-              </div>
-              <div class="product-action-1">
-                <a
-                  aria-label="Quick view"
-                  class="action-btn small hover-up"
-                  data-bs-toggle="modal"
-                  data-bs-target="#quickViewModal"
-                >
-                  <i class="fi-rs-eye"></i
-                ></a>
-                <a
-                  aria-label="Add To Wishlist"
-                  class="action-btn small hover-up"
-                  href="shop-wishlist.html"
-                  tabindex="0"
-                  ><i class="fi-rs-heart"></i
-                ></a>
-                <a
-                  aria-label="Compare"
-                  class="action-btn small hover-up"
-                  href="shop-compare.html"
-                  tabindex="0"
-                  ><i class="fi-rs-shuffle"></i
-                ></a>
-              </div>
-            </div>
-            <div class="product-content-wrap">
-              <h2><a href="shop-product-right.html">Vestibulum ante</a></h2>
-              <div class="rating-result" title="90%">
-                <span> </span>
-              </div>
-              <div class="product-price">
-                <span>$238.85 </span>
-                <span class="old-price">$245.8</span>
-              </div>
-            </div>
-          </div>
-          <!--End product-cart-wrap-2-->
+          <% }) %>
         </div>
       </div>
     </div>
   </section>
+  
+  
    <!--end new Arrivals -->
 <!-- Quick view -->
 
@@ -955,7 +562,7 @@
       }).then(data => {
         // Update subtotal for the specific product in the UI
         const subtotalElement = document.querySelector(`#subtotal-${productId}`);
-        subtotalElement.innerText = `$${(data.subtotal).toFixed(2)}`;
+        subtotalElement.innerText = `${(data.subtotal).toFixed(2)}`;
       }).catch(error => {
         console.error('Error updating cart:', error);
         Swal.fire({

@@ -1,3 +1,54 @@
+<style>
+    .status-button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+}
+
+.status-ordered {
+  background-color: #f0ad4e; /* Orange */
+}
+
+.status-shipped {
+  background-color: #5bc0de; /* Light Blue */
+}
+
+.status-out-for-delivery {
+  background-color: #f7c24a; /* Yellow */
+  color: black;
+}
+
+.status-delivered {
+  background-color: #5cb85c; /* Green */
+}
+
+.status-cancelled {
+  background-color: #d9534f; /* Red */
+}
+
+.status-returned {
+  background-color: #d9534f; /* Red */
+}
+
+.status-received {
+  background-color: #337ab7; /* Blue */
+}
+
+.status-refund-issued {
+  background-color: #f0ad4e; /* Orange */
+}
+
+.status-refund-credited {
+  background-color: #5cb85c; /* Green */
+}
+
+</style>
+
+
+<section class="content-main">
+   
 <ol class="breadcrumb">
     <% breadcrumbs.forEach(function(crumb, index) { %>
         <% if (index === breadcrumbs.length - 1) { %>
@@ -14,11 +65,6 @@
         </h2>
     </div>
 </div>
-
-
-<section class="content-main">
-   
-
    <!-- Existing Table Structure -->
 <div class="card mb-4">
     <div class="card-body">
@@ -76,11 +122,12 @@
                                 <% }) %>
                             </td>
                             <td><%= order.totalAmount %></td>
-                            <td class="<%= getStatusClass(order.status) %>">
-                                <button class="btn btn-info" onclick="openStatusModal('<%= order._id %>', '<%= order.return %>', '<%= order.status %>')">
-                                    <%= order.status %>
+                            <td>
+                                <button class="status-button <%= getStatusClass(order.status) %>" onclick="openStatusModal('<%= order._id %>', '<%= order.return %>', '<%= order.status %>')">
+                                  <%= order.status %>
                                 </button>
-                            </td>
+                              </td>
+                              
                             <td>
                                 <!-- Action buttons can be added here -->
                                 <a href="/admin/order/<%= order.orderId %>">View in detail </a>

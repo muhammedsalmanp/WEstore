@@ -8,7 +8,6 @@ const Coupon = require("../model/couponSchema")
 const Order = require("../model/orderSchema")
 
 
-
 const mongoose = require("mongoose");
 
 module.exports = {

@@ -12,30 +12,46 @@ module.exports = {
       title: "Home Page",
     };
     try {
-      const perPage = 7;
+      const perPage = 7; // Number of products per page for regular listing
       const page = parseInt(req.query.page) || 1;
-      const products = await Product.find()
-          .sort({ createdAt: -1 })
-          .populate({ path: 'category',
-            match: { isActive: true }})
-          .skip(perPage * (page - 1))
-          .limit(perPage)
-          .exec();
-      const count = await Product.countDocuments({});
+  
+      // Fetch the latest 8 products marked as active for "New Arrivals"
+      const newArrivals = await Product.find({ isActive: true })
+        .populate({
+          path: "category",
+          match: { isActive: true },
+        })
+        .sort({ createdAt: -1 }) // Sort by creation date (latest first)
+        .limit(8)
+        .exec();
+  
+      // Calculate the total count of active products excluding new arrivals
+      const count = await Product.countDocuments({ isActive: true, _id: { $nin: newArrivals.map(p => p._id) } });
+  
+      // Fetch products for the regular paginated listing, excluding the new arrivals
+      const products = await Product.find({ isActive: true, _id: { $nin: newArrivals.map(p => p._id) } })
+        .populate({
+          path: "category",
+          match: { isActive: true },
+        })
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .exec();
+  
       const nextPage = page + 1;
       const hasNextPage = nextPage <= Math.ceil(count / perPage);
-      // console.log(products);
+  
       res.render("index", {
-        user:req.session.user,
+        user: req.session.user,
         locals,
         success: req.flash("success"),
         error: req.flash("error"),
+        newArrivals, // Pass the new arrivals to the template
         products,
         current: page,
         perPage: perPage,
         pages: Math.ceil(count / perPage),
         nextPage: hasNextPage ? nextPage : null,
-        
       });
     } catch (error) {
       console.log("from userController", error);

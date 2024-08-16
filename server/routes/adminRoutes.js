@@ -23,7 +23,7 @@ router.get(
 );
 3;
 router.get(
-  "/category/editCategory/:id",  
+  "/category/editCategory/:id",
   isAdminLoggedIn,
   categoryController.getEditCategory
 );
@@ -119,8 +119,8 @@ router.delete(
 
 /*orders  */
 
-router.get('/order', isAdminLoggedIn,orderCondroller.getAllOrders)
+router.get('/order', isAdminLoggedIn, orderCondroller.getAllOrders)
 router.post('/order/:orderId/update-status', orderCondroller.updateOrderStatus);
-router.get('/order/:orderId',orderCondroller.getOrderDetils);
+router.get('/order/:orderId', orderCondroller.getOrderDetils);
 
 module.exports = router;

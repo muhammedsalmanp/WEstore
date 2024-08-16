@@ -294,59 +294,62 @@
                                 </thead>
                                 <tbody>
                                     <% if (cart && cart.products && cart.products.length > 0) { %> 
-                                        <% cart.products.forEach(product => { %>
-                                            <tr>
-                                                <td class="image product-thumbnail">
-                                                    <img src="/uploads/products-images/<%= product._id.primaryImages && product._id.primaryImages.length > 0 ? product._id.primaryImages[0].name : 'default-image.jpg' %>"
-                                                        alt="#" />
-                                                </td>
-                                                <td class="product-des product-name">
-                                                    <h5 class="product-name">
-                                                        <a href="/shop/productDetails/<%= product._id._id %>">
-                                                            <%= product._id.productName %>
-                                                        </a>
-                                                    </h5>
-                                                    <span class="product-qty">x <%= product.quantity %></span>
-                                                </td>
-                                                <td>$<%= product.price * product.quantity %></td>
-                                            </tr>
-                                        <% }); %>
+                                      <% cart.products.forEach(product => { %>
                                         <tr>
-                                            <th>SubTotal</th>
-                                            <td class="product-subtotal" colspan="2">
-                                                $<%= cart.totalPrice %>
-                                            </td>
+                                          <td class="image product-thumbnail">
+                                            <img src="/uploads/products-images/<%= product._id.primaryImages && product._id.primaryImages.length > 0 ? product._id.primaryImages[0].name : 'default-image.jpg' %>"
+                                                alt="<%= product._id.productName %>" />
+                                          </td>
+                                          <td class="product-des product-name">
+                                            <h5 class="product-name">
+                                              <a href="/shop/productDetails/<%= product._id._id %>">
+                                                <%= product._id.productName %>
+                                              </a>
+                                            </h5>
+                                            <span class="product-qty">x <%= product.quantity %></span>
+                                          </td>
+                                          <td>₹<%= (product.price * product.quantity).toFixed(2) %></td>
                                         </tr>
+                                      <% }); %>
+                                      <tr>
+                                        <th>SubTotal</th>
+                                        <td class="product-subtotal" colspan="2">
+                                          ₹<%= cart.totalPrice.toFixed(2) %>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <th>Shipping</th>
+                                        <td colspan="2"><em>Free Shipping</em></td>
+                                      </tr>
+                                      <% if (cart.coupon && cart.coupon.code) { %>
                                         <tr>
-                                            <th>Shipping</th>
-                                            <td colspan="2"><em>Free Shipping</em></td>
+                                          <th>Coupon Applied</th>
+                                          <td colspan="2">
+                                            <%= cart.coupon.code %>
+                                          </td>
                                         </tr>
-                                        <% if (cart.coupon && cart.coupon.code) { %>
+                                        <% if (cart.coupon.discountPercentage) { %>
                                         <tr>
-                                            <th>Coupon Applied</th>
-                                            <td colspan="2">
-                                                <%= cart.coupon.code %>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Coupon Discount</th>
-                                            <td colspan="2">
-                                                <%= cart.coupon.discountPercentage %>% Of
-                                            </td>
+                                          <th>Coupon Discount</th>
+                                          <td colspan="2">
+                                            <%= cart.coupon.discountPercentage %>% Off
+                                          </td>
                                         </tr>
                                         <% } %>
-                                        <tr>
-                                            <th>Total</th>
-                                            <td colspan="2" class="product-subtotal">
-                                                <span class="font-xl text-brand fw-900">$<%= cart.offerAppliedTotalAmount %></span>
-                                            </td>
-                                        </tr>
+                                      <% } %>
+                                      <tr>
+                                        <th>Total</th>
+                                        <td colspan="2" class="product-subtotal">
+                                          <span class="font-xl text-brand fw-900">₹<%= cart.offerAppliedTotalAmount.toFixed(2) %></span>
+                                        </td>
+                                      </tr>
                                     <% } else { %>
-                                        <tr>
-                                            <td colspan="3">No products in the cart.</td>
-                                        </tr>
+                                      <tr>
+                                        <td colspan="3">No products in the cart.</td>
+                                      </tr>
                                     <% } %>
-                                </tbody>
+                                  </tbody>
+                                  
                             </table>                            
                         </div>
 
@@ -581,7 +584,7 @@
                             couponList += `
                         <li class="list-group-item">
                             <div class="coupon-text">
-                                <strong>${coupon.code}</strong> - ${coupon.discountPercentage}% off, Min Purchase: $${coupon.minPurchaseAmount}
+                                <strong>${coupon.code}</strong> - ${coupon.discountPercentage}% off, Min Purchase: ${coupon.minPurchaseAmount}
                             </div>
                             <button class="btn btn-sm apply-btn" data-code="${coupon.code}" data-min-purchase="${coupon.minPurchaseAmount}">Apply</button>
                         </li>`;
@@ -937,7 +940,9 @@
 
 <!-- Razorpay -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-   <script>
+
+
+  <script>
     document.querySelector("#payment-form").addEventListener("submit", function (e) {
       e.preventDefault(); // Prevent the form from submitting immediately
   
@@ -945,7 +950,7 @@
         'input[name="paymentoptions"]:checked'
       )?.value;
   
-      const totalPrice = parseFloat("<%= cart.offerAppliedTotalAmount %>");
+      const totalPrice = parseFloat("<%= (cart && cart.offerAppliedTotalAmount) ? cart.offerAppliedTotalAmount : 0 %>");
       const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked').value;
   
       if (!selectedPaymentMethod) {

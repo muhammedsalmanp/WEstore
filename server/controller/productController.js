@@ -30,7 +30,7 @@ module.exports = {
         { name: 'Home', url: '/admin' },
         { name: 'Products', url: '/admin/products' },
         { name: `Page ${page}`, url: `/admin/products?page=${page}` }
-    ];
+      ];
 
       res.render("admin/products/products", {
         locals,
@@ -56,8 +56,8 @@ module.exports = {
     const breadcrumbs = [
       { name: 'Home', url: '/admin' },
       { name: 'Products', url: '/admin/products' },
-      { name: "Add Product",url: "/add-product" }
-  ];
+      { name: "Add Product", url: "/add-product" }
+    ];
     console.log(categories);
 
     res.render("admin/products/addProducts", {
@@ -68,22 +68,22 @@ module.exports = {
     });
   },
 
- addProducts: async (req, res) => {
+  addProducts: async (req, res) => {
     console.log(req.body);
     try {
       const existProduct = await Product.findOne({
         name: req.body.productName.toLowerCase(),
       });
       if (existProduct) {
-        req.flash("error","product alredey exist.")
-        return res.redirect("/admin/add-product")  
+        req.flash("error", "product alredey exist.")
+        return res.redirect("/admin/add-product")
       }
-  
+
       if (!req.files || !req.files.images || !req.files.primaryImage) {
-        req.flash("error","images are required.")
-        return res.redirect("/admin/add-product")      
+        req.flash("error", "images are required.")
+        return res.redirect("/admin/add-product")
       }
-  
+
       let secondaryImages = [];
       req.files.images.forEach((e) => {
         secondaryImages.push({
@@ -91,7 +91,7 @@ module.exports = {
           path: e.path,
         });
       });
-  
+
       secondaryImages.forEach(async (e) => {
         await sharp(
           path.join(__dirname, "../../public/uploads/products-images/") + e.name
@@ -99,10 +99,10 @@ module.exports = {
           .resize(500, 500)
           .toFile(
             path.join(__dirname, "../../public/uploads/products-images/crp/") +
-              e.name
+            e.name
           );
       });
-  
+
       let primaryImage = {};
       req.files.primaryImage.forEach((e) => {
         primaryImage = {
@@ -110,17 +110,17 @@ module.exports = {
           path: e.path,
         };
       });
-  
+
       await sharp(
         path.join(__dirname, "../../public/uploads/products-images/") +
-          primaryImage.name
+        primaryImage.name
       )
         .resize(500, 500)
         .toFile(
           path.join(__dirname, "../../public/uploads/products-images/crp/") +
-            primaryImage.name
+          primaryImage.name
         );
-  
+
       const product = new Product({
         productName: req.body.productName.toLowerCase(),
         category: req.body.categoryName,
@@ -144,7 +144,7 @@ module.exports = {
         primaryImages: primaryImage,
         secondaryImages: secondaryImages,
       });
-  
+
       await product.save();
       req.flash("success", "Product added successfully");
       res.redirect("/admin/products");
@@ -154,7 +154,7 @@ module.exports = {
       return res.redirect("/admin/add-product");
     }
   },
-  
+
   getEditProducts: async (req, res) => {
     const locals = {
       title: "Products",
@@ -165,8 +165,8 @@ module.exports = {
     const breadcrumbs = [
       { name: 'Home', url: '/admin' },
       { name: 'Products', url: '/admin/products' },
-      { name: "Edit Product",url: "/products/editProducts" }
-  ];
+      { name: "Edit Product", url: "/products/editProducts" }
+    ];
     res.render("admin/products/editProducts", {
       locals,
       layout: adminLayout,
@@ -300,8 +300,7 @@ module.exports = {
     const shouldList = req.body.shouldList;
 
     console.log(
-      `Received request to ${
-        shouldList ? "list" : "unlist"
+      `Received request to ${shouldList ? "list" : "unlist"
       } product with ID: ${productId}`
     );
 
@@ -356,40 +355,40 @@ module.exports = {
   },
 
   /*stock mangengment*/
-  
+
   getStocks: async (req, res) => {
     try {
-        const perPage = 15;
-        const page = parseInt(req.query.page) || 1;
-        const products = await Product.find()
-            .sort({ createdAt: -1 })
-            .populate("category")
-            .skip(perPage * (page - 1))
-            .limit(perPage)
-            .exec();
-        const count = await Product.countDocuments({});
-        const nextPage = page + 1;
-        const hasNextPage = nextPage <= Math.ceil(count / perPage);
+      const perPage = 15;
+      const page = parseInt(req.query.page) || 1;
+      const products = await Product.find()
+        .sort({ createdAt: -1 })
+        .populate("category")
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .exec();
+      const count = await Product.countDocuments({});
+      const nextPage = page + 1;
+      const hasNextPage = nextPage <= Math.ceil(count / perPage);
 
-        const breadcrumbs = [
-            { name: 'Home', url: '/admin' },
-            { name: 'Products', url: '/admin/products' },
-            { name: 'Stock', url: '/admin/products/stocks' },
-            { name: `Page ${page}`, url: `/admin/products/stocks?page=${page}` }
-        ];
+      const breadcrumbs = [
+        { name: 'Home', url: '/admin' },
+        { name: 'Products', url: '/admin/products' },
+        { name: 'Stock', url: '/admin/products/stocks' },
+        { name: `Page ${page}`, url: `/admin/products/stocks?page=${page}` }
+      ];
 
-        res.render("admin/products/stock", {
-            products,
-            layout: adminLayout,
-            current: page,
-            perPage: perPage,
-            pages: Math.ceil(count / perPage),
-            nextPage: hasNextPage ? nextPage : null,
-            breadcrumbs,
-        });
+      res.render("admin/products/stock", {
+        products,
+        layout: adminLayout,
+        current: page,
+        perPage: perPage,
+        pages: Math.ceil(count / perPage),
+        nextPage: hasNextPage ? nextPage : null,
+        breadcrumbs,
+      });
     } catch (error) {
-        console.error(error); 
-        res.status(500).json({ message: "Internal server error" });
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
     }
   },
 

@@ -6,5 +6,11 @@ module.exports={
             next();
         }
     },
-    
+    isAdminLoggedOut:(req,res,next)=>{
+        if (req.session && req.session.admin) {
+            res.redirect("/admin");
+        } else {
+            next();
+        }
+    },
 }

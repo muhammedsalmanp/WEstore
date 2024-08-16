@@ -41,8 +41,9 @@
                           </a></h5>
                       </td>
                       <td class="price" data-title="Price">
-                        <span>$<%= productItem.price.toFixed(2) %></span>
+                        <span>₹<%= productItem.price.toFixed(2) %></span>
                       </td>
+                      <!-- Add an error message container in your EJS -->
                       <td class="text-center" data-title="Quantity">
                         <div class="detail-qty border radius m-auto">
                           <a href="#" class="qty-down" data-product-id="<%= product._id %>"><i
@@ -54,9 +55,12 @@
                           <a href="#" class="qty-up" data-product-id="<%= product._id %>"><i
                               class="fi-rs-angle-small-up"></i></a>
                         </div>
+                        <div class="error-message" id="error-<%= product._id %>" style="color: red; display: none;">
+                        </div>
                       </td>
+
                       <td class="text-right" data-title="Subtotal">
-                        <span class="subtotal" data-product-id="<%= product._id %>">$<%= (productItem.price *
+                        <span class="subtotal" data-product-id="<%= product._id %>">₹<%= (productItem.price *
                             productItem.quantity).toFixed(2) %></span>
                       </td>
                       <td class="action" data-title="Remove">
@@ -107,7 +111,7 @@
                   <tr>
                     <td class="cart_total_label">Cart Subtotal</td>
                     <td class="cart_total_amount">
-                      <span class="font-lg fw-900 text-brand" id="cart-subtotal">$<%= cart.totalPrice.toFixed(2) %>
+                      <span class="font-lg fw-900 text-brand" id="cart-subtotal">₹<%= cart.totalPrice.toFixed(2) %>
                       </span>
                     </td>
                   </tr>
@@ -120,7 +124,7 @@
                   <tr>
                     <td class="cart_total_label">Total</td>
                     <td class="cart_total_amount">
-                      <strong><span class="font-xl fw-900 text-brand" id="cart-total">$<%= cart.totalPrice.toFixed(2) %>
+                      <strong><span class="font-xl fw-900 text-brand" id="cart-total">₹<%= cart.totalPrice.toFixed(2) %>
                         </span></strong>
                     </td>
                   </tr>
@@ -264,15 +268,13 @@
 
     function updateQuantity(productId, newQty) {
       const qtyVal = document.querySelector(`.qty-val[data-product-id="${productId}"]`);
-      qtyVal.innerText = newQty;
+      const errorMessage = document.getElementById(`error-${productId}`);
 
-      const price = parseFloat(document.querySelector(`.price[data-title="Price"] span`).innerText.substring(1));
-      const newSubtotal = (price * newQty).toFixed(2);
-      document.querySelector(`.subtotal[data-product-id="${productId}"]`).innerText = `$${newSubtotal}`;
+      // Reset error message
+      errorMessage.style.display = 'none';
+      errorMessage.innerText = '';
 
-      updateCartTotals();
-
-      // Send AJAX request to update quantity in the server
+      // Send AJAX request to update quantity on the server
       fetch('/cart/update', {
         method: 'POST',
         headers: {
@@ -283,17 +285,27 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            // Update the cart totals
-            document.getElementById('cart-subtotal').innerText = `$${data.totalPrice.toFixed(2)}`;
-            document.getElementById('cart-total').innerText = `$${data.totalPrice.toFixed(2)}`;
+            // Update the quantity in the UI
+            qtyVal.innerText = newQty;
+
+            // Update the subtotal and total prices
+            const price = parseFloat(document.querySelector(`.price[data-title="Price"] span`).innerText.substring(1));
+            const newSubtotal = (price * newQty).toFixed(2);
+            document.querySelector(`.subtotal[data-product-id="${productId}"]`).innerText = `₹${newSubtotal}`;
+
+            updateCartTotals();
+            document.getElementById('cart-subtotal').innerText = `₹${data.totalPrice.toFixed(2)}`;
+            document.getElementById('cart-total').innerText = `₹${data.totalPrice.toFixed(2)}`;
           } else {
-            // Handle error
-            alert('Error updating quantity: ' + data.message);
+            // Display error message if there's a stock issue
+            errorMessage.style.display = 'block';
+            errorMessage.innerText = data.message;
           }
         })
         .catch(error => {
-          // Handle error
-          alert('Error updating quantity: ' + error.message);
+          // Handle any other errors
+          errorMessage.style.display = 'block';
+          errorMessage.innerText = 'An error occurred while updating the quantity.';
         });
     }
 
@@ -302,17 +314,17 @@
       document.querySelectorAll('.subtotal').forEach(subtotal => {
         total += parseFloat(subtotal.innerText.substring(1));
       });
-      document.getElementById('cart-subtotal').innerText = `$${total.toFixed(2)}`;
-      document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
+      document.getElementById('cart-subtotal').innerText = `${total.toFixed(2)}`;
+      document.getElementById('cart-total').innerText = `${total.toFixed(2)}`;
     }
   });
 </script>
 
 <script>
-$(document).ready(function() {
-    $('#proceedToCheckOut').click(function() {
-        // Redirect to the server-side route to handle the logic
-        window.location.href = '/cart/check';
+  $(document).ready(function () {
+    $('#proceedToCheckOut').click(function () {
+      // Redirect to the server-side route to handle the logic
+      window.location.href = '/cart/check';
     });
 
     // Check URL parameters for messages
@@ -321,49 +333,49 @@ $(document).ready(function() {
     const exceeded = urlParams.get('exceeded');
 
     if (message) {
-        if (message === 'out_of_stock') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Out of Stock',
-                text: 'Some products in your cart are out of stock.\n We have removed them.',
-            });
-        } else if (message === 'quantity_adjusted') {
-            const exceededProducts = JSON.parse(decodeURIComponent(exceeded));
-            let text = 'Some quantities exceeded available stock. \nThe quantities have been adjusted.';
-
-            exceededProducts.forEach(product => {
-                text += `\nProduct: ${product.name}\nRequested Quantity: ${product.requestedQuantity}\nAvailable Quantity: ${product.availableQuantity}`;
-            });
-
-            Swal.fire({
-                icon: 'warning',
-                title: 'Quantity Adjusted',
-                text: text,
-                confirmButtonText: 'Proceed to Checkout'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '/checkOut';
-                }
-            });
-        } else if (message === 'out_of_stock_quantity_adjusted') {
-            Swal.fire({
-                icon: 'info',
-                title: 'Update Complete',
-                text: 'Out-of-stock products have been removed,\n and quantities of other products have been adjusted.',
-                confirmButtonText: 'Proceed to Checkout'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '/checkOut';
-                }
-            });
-        }
-    } else if (urlParams.get('error')) {
+      if (message === 'out_of_stock') {
         Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'There was an issue checking your cart. Please try again later.',
+          icon: 'error',
+          title: 'Out of Stock',
+          text: 'Some products in your cart are out of stock.\n We have removed them.',
         });
+      } else if (message === 'quantity_adjusted') {
+        const exceededProducts = JSON.parse(decodeURIComponent(exceeded));
+        let text = 'Some quantities exceeded available stock. \nThe quantities have been adjusted.';
+
+        exceededProducts.forEach(product => {
+          text += `\nProduct: ${product.name}\nRequested Quantity: ${product.requestedQuantity}\nAvailable Quantity: ${product.availableQuantity}`;
+        });
+
+        Swal.fire({
+          icon: 'warning',
+          title: 'Quantity Adjusted',
+          text: text,
+          confirmButtonText: 'Proceed to Checkout'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = '/checkOut';
+          }
+        });
+      } else if (message === 'out_of_stock_quantity_adjusted') {
+        Swal.fire({
+          icon: 'info',
+          title: 'Update Complete',
+          text: 'Out-of-stock products have been removed,\n and quantities of other products have been adjusted.',
+          confirmButtonText: 'Proceed to Checkout'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = '/checkOut';
+          }
+        });
+      }
+    } else if (urlParams.get('error')) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'There was an issue checking your cart. Please try again later.',
+      });
     }
-});
+  });
 
 </script>

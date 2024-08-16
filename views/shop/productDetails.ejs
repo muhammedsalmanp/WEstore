@@ -61,7 +61,7 @@
                                             <h2 class="title-detail"><%= product.productName %></h2>
                                             <div class="product-detail-rating">
                                                 <div class="pro-details-brand">
-                                                    <span> Brands: <a href="shop-grid-right.html">Bootstrap</a></span>
+                                                    <span> Brands:<%= product.category.name %></a></span>
                                                 </div>
                                                 <div class="product-rate-cover text-end">
                                                     <div class="product-rate d-inline-block">
@@ -192,7 +192,7 @@
                                                 <tr class="stand-up">
                                                     <th>Brand</th>
                                                     <td>
-                                                        <p>35″L x 24″W x 37-45″H(front to back wheel)</p>
+                                                        <p><%= product.category.name %></p>
                                                     </td>
                                                 </tr>
                                                 <tr class="folded-wo-wheels">
@@ -458,8 +458,8 @@
                                                         </span>
                                                     </div>
                                                     <div class="product-price">
-                                                        <span>$238.85 </span>
-                                                        <span class="old-price">$245.8</span>
+                                                        <span>₹238.85 </span>
+                                                        <span class="old-price">₹245.8</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -489,8 +489,8 @@
                                                         </span>
                                                     </div>
                                                     <div class="product-price">
-                                                        <span>$138.85 </span>
-                                                        <span class="old-price">$145.8</span>
+                                                        <span>₹38.85 </span>
+                                                        <span class="old-price">₹45.8</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -520,8 +520,8 @@
                                                         </span>
                                                     </div>
                                                     <div class="product-price">
-                                                        <span>$738.85 </span>
-                                                        <span class="old-price">$1245.8</span>
+                                                        <span>₹738.85 </span>
+                                                        <span class="old-price">₹245.8</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -551,8 +551,8 @@
                                                         </span>
                                                     </div>
                                                     <div class="product-price">
-                                                        <span>$89.8 </span>
-                                                        <span class="old-price">$98.8</span>
+                                                        <span>₹89.8 </span>
+                                                        <span class="old-price">₹98.8</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -747,7 +747,7 @@
         }).then(data => {
           // Update subtotal for the specific product in the UI
           const subtotalElement = document.querySelector(`#subtotal-${productId}`);
-          subtotalElement.innerText = `$${(data.subtotal).toFixed(2)}`;
+          subtotalElement.innerText = `${(data.subtotal).toFixed(2)}`;
         }).catch(error => {
           console.error('Error updating cart:', error);
           Swal.fire({

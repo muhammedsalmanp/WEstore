@@ -291,15 +291,92 @@
             margin: 10px 0;
         }
     }
+
+    .success-animation {
+        margin: 15px auto;
+    }
+
+    .checkmark {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: block;
+        stroke-width: 2;
+        stroke: #4bb71b;
+        stroke-miterlimit: 10;
+        box-shadow: inset 0px 0px 0px #4bb71b;
+        animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        position: relative;
+        top: 5px;
+        right: 5px;
+        margin: 0 auto;
+    }
+
+    .checkmark__circle {
+        stroke-dasharray: 166;
+        stroke-dashoffset: 166;
+        stroke-width: 2;
+        stroke-miterlimit: 10;
+        stroke: #4bb71b;
+        fill: #fff;
+        animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+
+    }
+
+    .checkmark__check {
+        transform-origin: 50% 50%;
+        stroke-dasharray: 48;
+        stroke-dashoffset: 48;
+        animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+    }
+
+    @keyframes stroke {
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    @keyframes scale {
+
+        0%,
+        100% {
+            transform: none;
+        }
+
+        50% {
+            transform: scale3d(1.1, 1.1, 1);
+        }
+    }
+
+    @keyframes fill {
+        100% {
+            box-shadow: inset 0px 0px 0px 30px #4bb71b;
+        }
+    }
+
+    #progress-cancelled {
+        /* Additional styles specific to the Cancelled status */
+        color: red;
+    }
+
+    .progress-icon-ca {
+        /* Style for the icon */
+        font-size: 50px;
+        margin-bottom: 10px;
+    }
 </style>
 
 <div id="order-summary" class="order-summary">
-    <!-- Animated Checkmark at the Top -->
-    <div id="checkmark-container" class="checkmark-container">
-        <div id="checkmark" class="checkmark">✔</div>
-    </div>
-
-    <!-- Progress Container -->
+    <% if (status!=='Cancelled' ) { %>
+        <!-- Animated Checkmark at the Top -->
+        <div class="success-animation">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+            </svg>
+        </div>
+        <!-- Progress Container -->    
+                    <!-- Progress Container -->
     <% if ( !order.return) { %>
         <div id="progress-container" class="progress-container">
             <div id="progress-ordered"
@@ -347,198 +424,227 @@
                 </div>
             </div>
             <% } %>
+                    <% }else{ %>
+                        <div id="progress-cancelled"
+                            class="progress-step <%= status === 'Cancelled' ? 'completed' : '' %> <%= status === 'Cancelled' ? 'active' : '' %> <%= status === 'Cancelled' ? 'current' : '' %>">
+                            <span class="progress-icon-ca"><i class="fas fa-ban"></i></span>
+                            <p>Cancelled</p>
+                        </div>
+                        <% } %>
 
+                            <!-- Include order ID in a hidden input -->
+                            <input type="hidden" id="order-id" value="<%= order.orderId %>">
 
-                <!-- Include order ID in a hidden input -->
-                <input type="hidden" id="order-id" value="<%= order.orderId %>">
+                            <!-- Product and Offer Details -->
+                            <div id="product-section" class="product-section">
+                                <% if (products && products.length> 0) { %>
+                                    <% products.forEach(product=> { %>
+                                        <div id="product-item-<%= product.id %>" class="product-item">
+                                            <div id="product-details-<%= product.id %>" class="product-details">
+                                                <p>Product Name: <%= product.productName %>
+                                                </p>
 
-                <!-- Product and Offer Details -->
-                <div id="product-section" class="product-section">
-                    <% if (products && products.length> 0) { %>
-                        <% products.forEach(product=> { %>
-                            <div id="product-item-<%= product.id %>" class="product-item">
-                                <div id="product-details-<%= product.id %>" class="product-details">
-                                    <p>Product Name: <%= product.productName %>
+                                                <p>Description: <%= product.description %>
+                                                </p>
+                                                <p>Price: ₹<%= product.price %>
+                                                </p>
+                                                <p>Quantity: <%= product.quantity %>
+                                                </p>
+                                                <% if (status==='Delivered' ) { %>
+                                                    <p>Delivery Date: <%= product.deliveryDate %>
+                                                    </p>
+                                                    <% } %>
+                                            </div>
+                                            <div id="product-image-<%= product.id %>" class="product-image">
+                                                <img src="/uploads/products-images/<%= product.primaryImages.length > 0 ? product.primaryImages[0].name : 'default-image.jpg' %>"
+                                                    alt="Product Image">
+                                            </div>
+                                            <div id="product-cancellation-<%= product._id %>"
+                                                class="product-cancellation">
+                                                <% if (status==='Delivered' ) { %>
+                                                    <% if (order.return) { %>
+                                                        <button id="return-button-<%= product.productId %>"
+                                                            class="return-button">Return</button>
+                                                        <% } else { %>
+                                                            <button id="return-button-<%= product.productId %>"
+                                                                class="return-button">Cancel Return</button>
+                                                            <% } %>
+                                                                <% } else { %>
+                                                                    <input type="hidden"
+                                                                        id="delivered-date-<%= product.productId %>"
+                                                                        value="<%= order.expectedDeliveryDate %>">
+                                                                    <% if (product.isCanceld) { %>
+                                                                        <button class="continue-shipping-button"
+                                                                            data-product-id="<%= product.productId %>">Continue
+                                                                            Shipping</button>
+                                                                        <% } else { %>
+                                                                            <button class="cancel-button"
+                                                                                data-product-id="<%= product.productId %>">Cancel</button>
+                                                                            <% } %>
+                                                                                <% } %>
+                                            </div>
+
+                                        </div>
+                                        <% }) %>
+                                            <% } else { %>
+                                                <p>No products found.</p>
+                                                <% } %>
+                            </div>
+
+                            <!-- Offer Details -->
+                            <div id="offer-details" class="offer-details">
+                                <p>Total Price: ₹<%= order.totalAmount.toFixed(2) %></p>
+                                <p>Coupon: <%= order.coupon && order.coupon.code ? order.coupon.code : 'No Coupon Applied' %></p>
+                              
+                                <% if (order.coupon && order.coupon.code) { %>
+                                  <p>Discount:
+                                    <% if (order.coupon.discountPercentage) { %>
+                                      <%= order.coupon.discountPercentage %>% 
+                                    <% } else if (order.couponDiscount) { %>
+                                      ₹<%= order.couponDiscount.toFixed(2) %>
+                                    <% } else { %>
+                                      Applied
+                                    <% } %>
+                                  </p>
+                                  <p>Discounted Price: ₹<%= (order.totalAmount - order.offerAppliedTotalAmount).toFixed(2) %></p>
+                                <% } %>
+                              
+                                <p>Offer Applied Total Amount: ₹<%= ((order.offerAppliedTotalAmount || order.totalAmount) < 0 ? 0 : (order.offerAppliedTotalAmount || order.totalAmount)).toFixed(2) %></p>
+                              </div>
+                              
+
+                            <!-- Order Details -->
+                            <div id="order-details" class="order-details">
+                                <!-- User Details -->
+                                <div id="user-details" class="delivery-info">
+                                    <td>
+
+                                    </td>
+                                    <p>User Name:<%= user.firstName%>
+                                            <%=user.lastName%>
+                                    </p>
+                                    <p>Email: <%=user.email %>
+                                    </p>
+                                    <p>Phone: <%= shippingAddress.addresses[0].phoneNumber %>
+                                    </p>
+                                </div>
+
+                                <!-- Shipping Address -->
+                                <div id="shipping-address" class="shipping-address">
+                                    <p>Shipping Address:</p>
+                                    <% if (shippingAddress && shippingAddress.addresses &&
+                                        shippingAddress.addresses.length> 0) { %>
+                                        <p>
+                                            <%= shippingAddress.addresses[0].place %>
+                                        </p>
+                                        <p>
+                                            <%= shippingAddress.addresses[0].houseNumber %>
+                                        </p>
+                                        <p>
+                                            <%= shippingAddress.addresses[0].landmark %>, <%=
+                                                    shippingAddress.addresses[0].zipcode %>
+                                        </p>
+                                        <p>
+                                            <%= shippingAddress.addresses[0].street %>
+                                        </p>
+                                        <p>
+                                            <%= shippingAddress.addresses[0].city %>
+                                        </p>
+                                        <p>
+                                            <%= shippingAddress.addresses[0].country %>
+                                        </p>
+                                        <p>
+                                            <%= shippingAddress.addresses[0].phoneNumber %>
+                                        </p>
+                                        <% } else { %>
+                                            <p>No shipping address found.</p>
+                                            <% } %>
+                                </div>
+
+                                <!-- Order Information -->
+                                <div id="order-info" class="order-info">
+                                    <p>Order ID: <%= order.orderId %>
+                                    </p>
+                                    <p>Order Date: <%= new Date(order.createdAt).toLocaleDateString('en-IN') %>
+                                    </p>
+                                    <p>Delivery Date: <%= new
+                                            Date(order.expectedDeliveryDate).toLocaleDateString('en-IN') %>
+                                    </p>
+                                    <p>Payment Method: <%= order.paymentMethod %>
                                     </p>
 
-                                    <p>Description: <%= product.description %>
-                                    </p>
-                                    <p>Price: $<%= product.price %>
-                                    </p>
-                                    <p>Quantity: <%= product.quantity %>
-                                    </p>
-                                    <% if (status==='Delivered' ) { %>
-                                        <p>Delivery Date: <%= product.deliveryDate %>
+                                    <% if (order.paymentMethod==='Razor Pay' && order.paymentId) { %>
+                                        <p>Transaction ID: <%= order.paymentId %>
                                         </p>
                                         <% } %>
                                 </div>
-                                <div id="product-image-<%= product.id %>" class="product-image">
-                                    <img src="/uploads/products-images/<%= product.primaryImages.length > 0 ? product.primaryImages[0].name : 'default-image.jpg' %>"
-                                        alt="Product Image">
-                                </div>
-                                <div id="product-cancellation-<%= product._id %>" class="product-cancellation">
-                                    <% if (status==='Delivered' ) { %>
-                                        <% if (!order.return) { %>
-                                            <button id="return-button-<%= product.productId %>"
-                                                class="return-button">Return</button>
-                                            <% } else { %>
-                                                <button id="return-button-<%= product.productId %>"
-                                                    class="return-button">Cancel Return</button>
-                                                <% } %>
-                                                    <% } else { %>
-                                                        <input type="hidden"
-                                                            id="delivered-date-<%= product.productId %>"
-                                                            value="<%= order.expectedDeliveryDate %>">
-                                                        <% if (product.isCanceld) { %>
-                                                            <button class="continue-shipping-button"
-                                                                data-product-id="<%= product.productId %>">Continue
-                                                                Shipping</button>
-                                                            <% } else { %>
-                                                                <button class="cancel-button"
-                                                                    data-product-id="<%= product.productId %>">Cancel</button>
-                                                                <% } %>
-                                                                    <% } %>
-                                </div>
 
                             </div>
-                            <% }) %>
-                                <% } else { %>
-                                    <p>No products found.</p>
-                                    <% } %>
-                </div>
 
-                <!-- Offer Details -->
-                <div id="offer-details" class="offer-details">
-                    <p>Total Price: $<%= order.totalAmount %>
-                    </p>
-
-                    <p>Offer Applied Total Amount: $<%= (order.offerAppliedTotalAmount || order.totalAmount) < 0 ? 0 :
-                            (order.offerAppliedTotalAmount || order.totalAmount) %>
-                    </p>
-
-                </div>
-
-                <!-- Order Details -->
-                <div id="order-details" class="order-details">
-                    <!-- User Details -->
-                    <div id="user-details" class="delivery-info">
-                        <p>User Name: <%= user.name %>
-                        </p>
-                        <p>Email: <%= user.email %>
-                        </p>
-                        <p>Phone Number: <%= user.phoneNumber %>
-                        </p>
-                    </div>
-
-                    <!-- Shipping Address -->
-                    <div id="shipping-address" class="shipping-address">
-                        <p>Shipping Address:</p>
-                        <% if (shippingAddress && shippingAddress.addresses && shippingAddress.addresses.length> 0) { %>
-                            <p>
-                                <%= shippingAddress.addresses[0].place %>
-                            </p>
-                            <p>
-                                <%= shippingAddress.addresses[0].houseNumber %>
-                            </p>
-                            <p>
-                                <%= shippingAddress.addresses[0].landmark %>, <%= shippingAddress.addresses[0].zipcode
-                                        %>
-                            </p>
-                            <p>
-                                <%= shippingAddress.addresses[0].street %>
-                            </p>
-                            <p>
-                                <%= shippingAddress.addresses[0].city %>
-                            </p>
-                            <p>
-                                <%= shippingAddress.addresses[0].country %>
-                            </p>
-                            <p>
-                                <%= shippingAddress.addresses[0].phoneNumber %>
-                            </p>
-                            <% } else { %>
-                                <p>No shipping address found.</p>
-                                <% } %>
-                    </div>
-
-                    <!-- Order Information -->
-                    <div id="order-info" class="order-info">
-                        <p>Order ID:</p>
-                        <p>
-                            <%= order.orderId %>
-                        </p>
-                        <p>Order Date:</p>
-                        <p>
-                            <%= order.orderDate %>
-                        </p>
-                        <p>Delivery Date:</p>
-                        <p>
-                            <%= order.expectedDeliveryDate %>
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Buttons -->
-                <div id="button-container">
-                    <button id="print-button" onclick="window.print()">Print</button>
-                    <button id="whatsapp-button" class="whatsapp-button">
-                        <a href="/allProducts"><i class="fi-rs-shopping-bag mr-10"></i>Continue
-                            Shopping</a>
-                    </button>
-                </div>
-                <!-- Cancel Reason Modal -->
-                <div class="modal fade" id="cancelReasonModal" tabindex="-1" aria-labelledby="cancelReasonModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="cancelReasonModalLabel">Cancel Product</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                            <!-- Buttons -->
+                            <div id="button-container">
+                                <button id="print-button" onclick="window.print()">Print</button>
+                                <button id="whatsapp-button" class="whatsapp-button">
+                                    <a href="/allProducts"><i class="fi-rs-shopping-bag mr-10"></i>Continue
+                                        Shopping</a>
+                                </button>
                             </div>
-                            <div class="modal-body">
-                                <textarea id="cancelReasonTextarea" class="form-control"
-                                    placeholder="Enter reason for cancellation"></textarea>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" id="confirmCancelBtn" class="btn btn-danger">Cancel
-                                    Product</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Return Reason Modal -->
-                <div class="modal fade" id="returnReasonModal" tabindex="-1" aria-labelledby="returnReasonModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="returnReasonModalLabel">Return Product</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <textarea id="returnReasonTextarea" class="form-control"
-                                    placeholder="Enter reason for return"></textarea>
-                                <div class="mt-3">
-                                    <label for="boxStatusSelect" class="form-label">Was the box opened?</label>
-                                    <select id="boxStatusSelect" class="form-select">
-                                        <option value="" disabled selected>Select an option</option>
-                                        <option value="opened">Yes</option>
-                                        <option value="unopened">No</option>
-                                    </select>
+                            <!-- Cancel Reason Modal -->
+                            <div class="modal fade" id="cancelReasonModal" tabindex="-1"
+                                aria-labelledby="cancelReasonModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="cancelReasonModalLabel">Cancel Product</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <textarea id="cancelReasonTextarea" class="form-control"
+                                                placeholder="Enter reason for cancellation"></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="button" id="confirmCancelBtn" class="btn btn-danger">Cancel
+                                                Product</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" id="confirmReturnBtn" class="btn btn-primary">Return
-                                    Product</button>
+
+                            <!-- Return Reason Modal -->
+                            <div class="modal fade" id="returnReasonModal" tabindex="-1"
+                                aria-labelledby="returnReasonModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="returnReasonModalLabel">Return Product</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <textarea id="returnReasonTextarea" class="form-control"
+                                                placeholder="Enter reason for return"></textarea>
+                                            <div class="mt-3">
+                                                <label for="boxStatusSelect" class="form-label">Was the box
+                                                    opened?</label>
+                                                <select id="boxStatusSelect" class="form-select">
+                                                    <option value="" disabled selected>Select an option</option>
+                                                    <option value="opened">Yes</option>
+                                                    <option value="unopened">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="button" id="confirmReturnBtn" class="btn btn-primary">Return
+                                                Product</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
 
 </div>
 

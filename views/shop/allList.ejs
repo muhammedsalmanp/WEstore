@@ -1,47 +1,47 @@
 <style>
   .custome-checkbox {
-  margin-bottom: 15px;
-}
+    margin-bottom: 15px;
+  }
 
-.custome-checkbox .form-check-input {
-  margin-right: 10px;
-  cursor: pointer;
-}
+  .custome-checkbox .form-check-input {
+    margin-right: 10px;
+    cursor: pointer;
+  }
 
-.custome-checkbox .form-check-label {
-  cursor: pointer;
-  display: inline-block;
-}
+  .custome-checkbox .form-check-label {
+    cursor: pointer;
+    display: inline-block;
+  }
 
-.sidebar-widget h5 {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
+  .sidebar-widget h5 {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
 
-.sidebar-widget .widget-title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
+  .sidebar-widget .widget-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
 
-.sidebar-widget {
-  margin-bottom: 30px;
-}
+  .sidebar-widget {
+    margin-bottom: 30px;
+  }
 
-.sidebar-widget .price-filter-inner {
-  padding: 10px 0;
-}
+  .sidebar-widget .price-filter-inner {
+    padding: 10px 0;
+  }
 
-.price_slider_amount {
-  display: flex;
-  align-items: center;
-}
+  .price_slider_amount {
+    display: flex;
+    align-items: center;
+  }
 
-.price_slider_amount .label-input {
-  flex-grow: 1;
-}
+  .price_slider_amount .label-input {
+    flex-grow: 1;
+  }
 
-.suggestions-list {
+  .suggestions-list {
     position: absolute;
     background: white;
     border: 1px solid #ddd;
@@ -49,462 +49,501 @@
     overflow-y: auto;
     width: 100%;
     z-index: 1000;
-}
+  }
 
-.suggestion-item {
+  .suggestion-item {
     padding: 10px;
     cursor: pointer;
-}
+  }
 
-.suggestion-item:hover {
+  .suggestion-item:hover {
     background: #f0f0f0;
-}
+  }
 </style>
 
 
 </style>
 
-<section class="mt-50 mb-50">
-    <div class="page-header breadcrumb-wrap mb-15">
-        <div class="container">
-          <div class="breadcrumb">
-            <a href="/" rel="nofollow">Home</a>
-            <span></span>
-            <a href="/allProducts" rel="nofollow">Shop</a>
-          </div>
-        </div>
-      </div>
+<section class=" mb-50">
+  <div class="page-header breadcrumb-wrap mb-15">
     <div class="container">
-        <div class="row flex-row-reverse">
-            <div class="col-lg-9">
-                <div class="shop-product-fillter">
-                    <div class="totall-product">
-                        <p> We found <strong class="text-brand"><%= filteredCount %></strong> items for you!</p>
-                    </div>
-                    
-                    <div class="sort-by-product-area">
-                      <div class="sort-by-cover">
-                          <div class="sort-by-product-wrap">
-                              <div class="sort-by">
-                                  <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
-                              </div>
-                              <div class="sort-by-dropdown-wrap">
-                                  <span> Featured <i class="fi-rs-angle-small-down"></i></span>
-                              </div>
-                          </div>
-                          <div class="sort-by-dropdown">
-                              <ul>
-                                  <li><a href="?sort=featured">Featured</a></li>
-                                  <li><a href="?sort=price-asc">Price: Low to High</a></li>
-                                  <li><a href="?sort=price-desc">Price: High to Low</a></li>
-                                  <li><a href="?sort=name-asc">A to Z</a></li>
-                                  <li><a href="?sort=name-desc">Z to A</a></li>
-                              </ul>
-                          </div>
-                      </div>
-                  </div>
-                  
+      <div class="breadcrumb">
+        <a href="/" rel="nofollow">Home</a>
+        <span></span>
+        <a href="/allProducts" rel="nofollow">Shop</a>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row flex-row-reverse">
+      <div class="col-lg-9">
+        <div class="shop-product-fillter">
+          <div class="totall-product">
+            <p> We found <strong class="text-brand">
+                <%= filteredCount %>
+              </strong> items for you!</p>
+          </div>
+
+          <div class="sort-by-product-area">
+            <div class="sort-by-cover">
+              <div class="sort-by-product-wrap">
+                <div class="sort-by">
+                  <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
                 </div>
-                <div class="row product-grid-3">
-                    <% products.filter(product=> product.isActive).forEach (product=>{ %>
-                        <div class="col-lg-4 col-md-4 col-12 col-sm-6">
-                            <div class="product-cart-wrap mb-30">
-                                <div class="product-img-action-wrap">
-                                    <div class="product-img product-img-zoom">
-                                        <a href="/shop/productDetails/<%- product._id %>">
-                                          <img src="/uploads/products-images/crp/<%- product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>" alt="IMG-PRODUCT" />
-                                        </a>
-                                      </div>
-                                    <div class="product-action-1">
-                                        <% if (user && user.wishlist) { %> 
-                                          <% let isInWishlist = user.wishlist.some(item => item.toString() === product._id.toString()); %>
-                                          <% if (isInWishlist) { %>
-                                            <a aria-label="Remove From Wishlist" class="action-btn hover-up wishlist-btn active" data-product-id="<%- product._id %>">
-                                              <i class="fi-rs-heart-filled"></i>
-                                            </a>
-                                          <% } else { %>
-                                            <a aria-label="Add To Wishlist" class="action-btn hover-up wishlist-btn" data-product-id="<%- product._id %>">
-                                              <i class="fi-rs-heart"></i>
-                                            </a>
-                                          <% } %>
-                                        <% } else { %>
-                                          <a aria-label="Add To Wishlist" class="action-btn hover-up wishlist-btn" data-product-id="<%- product._id %>">
-                                            <i class="fi-rs-heart"></i>
-                                          </a>
-                                        <% } %>
-                                      </div>
-                                    <!-- <div class="product-badges product-badges-position product-badges-mrg">
-                                        <span class="hot">Hot</span>
-                                    </div> -->
-                                </div>
-                                <div class="product-content-wrap">
-                                    <div class="product-category">
-                                    <a href="shop-grid-right.html"><%= product.category.name %></a>
-                                    </div>
-                                    <h2>
-                                    <a href="/shop/productDetails/<%- product._id %>"><%= product.productName %></a>
-                                    </h2>
-                                    <div class="rating-result" title="90%">
-                                        <span>
-                                            <span>90%</span>
-                                        </span>
-                                    </div>
-                                    <div class="product-price">
-                                        <span>$<%= product.price %>.00</span>
-                                        <span class="old-price">$<%= product.oldPrice %>.00</span>
-                                      </div>
-                                      <div class="product-action-1 show">
-                                        <% if (product.stock > 0) { %>
-                                          <a aria-label="Add To Cart" class="action-btn hover-up add-to-cart-btn" data-product-id="<%- product._id %>">
-                                            <i class="fi-rs-shopping-bag-add"></i>
-                                          </a>
-                                        <% } else { %>
-                                          <a aria-label="Out of Stock" class="action-btn hover-up out-of-stock-btn" data-product-id="<%- product._id %>">
-                                            <i class="fi-rs-shopping-bag-add"></i>
-                                          </a>
-                                        <% } %>
-                                      </div>
-                                </div>
-                            </div>
-                        </div>
-                    <% }) %>
+                <div class="sort-by-dropdown-wrap">
+                  <span> Featured <i class="fi-rs-angle-small-down"></i></span>
                 </div>
-                <!--pagination-->
-                <% if (products.length > 0 && (nextPage || current == pages)) { %>
-                    <nav aria-label="Dashboard pagination">
-                        <ul class="pagination justify-content-center mt-5">
-                            <% if (current == 1) { %>
-                                <li class="page-item disabled"><a href="#" class="page-link">First</a></li>
-                            <% } else { %>
-                                <li class="page-item"><a href="/allProducts/?page=1" class="page-link">First</a></li>
-                            <% } %>
-                            <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
-                            <% if (i !== 1) { %>
-                                <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
-                            <% } %>
-                            <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
-                                <% if (i == current) { %>
-                                    <li class="page-item disabled"><a href="#" class="page-link"><%= i %></a></li>
-                                <% } else { %>
-                                    <li class="page-item"><a href="/allProducts?page=<%= i %>" class="page-link"><%= i %></a></li>
-                                <% } %>
-                            <% if (i == Number(current) + 4 && i < pages) { %>
-                                <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
-                            <% } %>
-                            <% } %>
-                            <% if (current == pages) { %>
-                                <li class="page-item disabled"><a href="#" class="page-link">Last</a></li>
-                            <% } else { %>
-                                <li class="page-item"><a href="/allProducts/?page=<%= pages %>" class="page-link">Last</a></li>
-                            <% } %>
-                        </ul>
-                    </nav>
-                   <% } %> 
-            </div>
-            <div class="col-lg-3 primary-sidebar sticky-sidebar">
-              <div class="widget-category mb-30">
-                <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
-                <ul class="categories">
-                  <%categories.filter(category=> category.isActive).forEach(category => { %>
-                    <li><a href="/allProducts?category=<%= category._id %>"><%= category.name %></a></li>
-                  <% }) %>
+              </div>
+              <div class="sort-by-dropdown">
+                <ul>
+                  <li><a href="?sort=featured">Featured</a></li>
+                  <li><a href="?sort=price-asc">Price: Low to High</a></li>
+                  <li><a href="?sort=price-desc">Price: High to Low</a></li>
+                  <li><a href="?sort=name-asc">A to Z</a></li>
+                  <li><a href="?sort=name-desc">Z to A</a></li>
                 </ul>
               </div>
-              
-              <form id="filter-form" action="/allProducts" method="GET">
-                <!-- Persisting the category filter -->
-                <% if (category) { %>
-                  <input type="hidden" name="category" value="<%= category %>">
-                <% } %>
-                
-                  <!-- Filter By Processor -->
-                  <div class="sidebar-widget mb-30">
-                    <h5 class="widget-title mb-10">Processor</h5>
-                    <div class="custome-checkbox">
-                      <% ['Intel', 'AMD', 'Apple M1', 'Qualcomm Snapdragon', 'Samsung Exynos'].forEach((processor, index) => { %>
-                        <div style="margin-bottom: 10px;">
-                          <input class="form-check-input" type="checkbox" id="Processor-<%= index %>" name="Processor" value="<%= processor %>" style="margin-right: 5px;">
-                          <label class="form-check-label" for="Processor-<%= index %>"><%= processor %></label>
-                        </div>
-                      <% }) %>
-                    </div>
-                  </div>
-                
-                <!-- Filter By RAM Size -->
-                <div class="sidebar-widget mb-30">
-                  <h5 class="widget-title mb-10">RAM Size</h5>
-                  <div class="custome-checkbox">
-                    <% [4, 8, 16, 32, 64].forEach((ram, index) => { %>
-                      <div style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="checkbox" id="ramSize-<%= index %>" name="ramSize" value="<%= ram %>" style="margin-right: 5px;">
-                        <label class="form-check-label" for="ramSize-<%= index %>"><%= ram %>GB</label>
-                      </div>
-                    <% }) %>
-                  </div>
-                </div>
-                
-                <!-- Filter By Hard Drive Size -->
-                <div class="sidebar-widget mb-30">
-                  <h5 class="widget-title mb-10">Hard Drive Size</h5>
-                  <div class="custome-checkbox">
-                    <% [128, 256, 512, 1024, 2048].forEach((hardDrive, index) => { %>
-                      <div style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="checkbox" id="hardDriveSize-<%= index %>" name="hardDriveSize" value="<%= hardDrive %>" style="margin-right: 5px;">
-                        <label class="form-check-label" for="hardDriveSize-<%= index %>"><%= hardDrive %>GB</label>
-                      </div>
-                    <% }) %>
-                  </div>
-                </div>
-                
-                <!-- Filter By Hard Disk Description -->
-                <div class="sidebar-widget mb-30">
-                  <h5 class="widget-title mb-10">Hard Disk Type</h5>
-                  <div class="custome-checkbox">
-                    <% ['HDD', 'SSD', 'Hybrid', 'NVMe'].forEach((hardDisk, index) => { %>
-                      <div style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="checkbox" id="hardDiskDescription-<%= index %>" name="hardDiskDescription" value="<%= hardDisk %>" style="margin-right: 5px;">
-                        <label class="form-check-label" for="hardDiskDescription-<%= index %>"><%= hardDisk %></label>
-                      </div>
-                    <% }) %>
-                  </div>
-                </div>
-                
-                <!-- Filter By Graphics Chipset -->
-                <div class="sidebar-widget mb-30">
-                  <h5 class="widget-title mb-10">Graphics Chipset</h5>
-                  <div class="custome-checkbox">
-                    <% ['NVIDIA', 'AMD', 'Intel', 'Apple', 'Non-Graphic'].forEach((chipset, index) => { %>
-                      <div style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="checkbox" id="graphicsChipsetBrand-<%= index %>" name="graphicsChipsetBrand" value="<%= chipset %>" style="margin-right: 5px;">
-                        <label class="form-check-label" for="graphicsChipsetBrand-<%= index %>"><%= chipset %></label>
-                      </div>
-                    <% }) %>
-                  </div>
-                </div>
-                
-                <!-- Filter By Operating System -->
-                <div class="sidebar-widget mb-30">
-                  <h5 class="widget-title mb-10">Operating System</h5>
-                  <div class="custome-checkbox">
-                    <% ['Windows', 'macOS', 'Linux', 'Chrome OS', 'Android'].forEach((os, index) => { %>
-                      <div style="margin-bottom: 10px;">
-                        <input class="form-check-input" type="checkbox" id="operatingSystem-<%= index %>" name="operatingSystem" value="<%= os %>" style="margin-right: 5px;">
-                        <label class="form-check-label" for="operatingSystem-<%= index %>"><%= os %></label>
-                      </div>
-                    <% }) %>
-                  </div>
-                </div>
-                
-                <!-- Filter Button -->
-                <button type="submit" class="btn btn-sm btn-default"><i class="fi-rs-filter mr-5"></i> Filter</button>
-              </form>
             </div>
-            
-          
+          </div>
+
         </div>
+        <div class="row product-grid-3">
+          <% products.filter(product=> product.isActive).forEach (product=>{ %>
+            <div class="col-lg-4 col-md-4 col-12 col-sm-6">
+              <div class="product-cart-wrap mb-30">
+                <div class="product-img-action-wrap">
+                  <div class="product-img product-img-zoom">
+                    <a href="/shop/productDetails/<%- product._id %>">
+                      <img
+                        src="/uploads/products-images/crp/<%- product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>"
+                        alt="IMG-PRODUCT" />
+                    </a>
+                  </div>
+                  <div class="product-action-1">
+                    <% if (user && user.wishlist) { %>
+                      <% let isInWishlist=user.wishlist.some(item=> item.toString() === product._id.toString()); %>
+                        <% if (isInWishlist) { %>
+                          <a aria-label="Remove From Wishlist" class="action-btn hover-up wishlist-btn active"
+                            data-product-id="<%- product._id %>">
+                            <i class="fi-rs-heart-filled"></i>
+                          </a>
+                          <% } else { %>
+                            <a aria-label="Add To Wishlist" class="action-btn hover-up wishlist-btn"
+                              data-product-id="<%- product._id %>">
+                              <i class="fi-rs-heart"></i>
+                            </a>
+                            <% } %>
+                              <% } else { %>
+                                <a aria-label="Add To Wishlist" class="action-btn hover-up wishlist-btn"
+                                  data-product-id="<%- product._id %>">
+                                  <i class="fi-rs-heart"></i>
+                                </a>
+                                <% } %>
+                  </div>
+                  <!-- <div class="product-badges product-badges-position product-badges-mrg">
+                                        <span class="hot">Hot</span>
+                                    </div> -->
+                </div>
+                <div class="product-content-wrap">
+                  <div class="product-category">
+                    <a href="shop-grid-right.html">
+                      <%= product.category.name %>
+                    </a>
+                  </div>
+                  <h2>
+                    <a href="/shop/productDetails/<%- product._id %>">
+                      <%= product.productName %>
+                    </a>
+                  </h2>
+                  <div class="rating-result" title="90%">
+                    <span>
+                      <span>90%</span>
+                    </span>
+                  </div>
+                  <div class="product-price">
+                    <span>₹<%= product.price %>.00</span>
+                    <span class="old-price">₹<%= product.oldPrice %>.00</span>
+                  </div>
+                  <div class="product-action-1 show">
+                    <% if (product.stock> 0) { %>
+                      <a aria-label="Add To Cart" class="action-btn hover-up add-to-cart-btn"
+                        data-product-id="<%- product._id %>">
+                        <i class="fi-rs-shopping-bag-add"></i>
+                      </a>
+                      <% } else { %>
+                        <a aria-label="Out of Stock" class="action-btn hover-up out-of-stock-btn"
+                          data-product-id="<%- product._id %>">
+                          <i class="fi-rs-shopping-bag-add"></i>
+                        </a>
+                        <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+        </div>
+        <!--pagination-->
+        <% if (products.length> 0 && (nextPage || current == pages)) { %>
+          <nav aria-label="Dashboard pagination">
+            <ul class="pagination justify-content-center mt-5">
+              <% if (current==1) { %>
+                <li class="page-item disabled"><a href="#" class="page-link">First</a></li>
+                <% } else { %>
+                  <li class="page-item"><a href="/allProducts/?page=1" class="page-link">First</a></li>
+                  <% } %>
+                    <% var i=(Number(current)> 5 ? Number(current) - 4 : 1) %>
+                      <% if (i !==1) { %>
+                        <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
+                        <% } %>
+                          <% for (; i <=(Number(current) + 4) && i <=pages; i++) { %>
+                            <% if (i==current) { %>
+                              <li class="page-item disabled"><a href="#" class="page-link">
+                                  <%= i %>
+                                </a></li>
+                              <% } else { %>
+                                <li class="page-item"><a href="/allProducts?page=<%= i %>" class="page-link">
+                                    <%= i %>
+                                  </a></li>
+                                <% } %>
+                                  <% if (i==Number(current) + 4 && i < pages) { %>
+                                    <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
+                                    <% } %>
+                                      <% } %>
+                                        <% if (current==pages) { %>
+                                          <li class="page-item disabled"><a href="#" class="page-link">Last</a></li>
+                                          <% } else { %>
+                                            <li class="page-item"><a href="/allProducts/?page=<%= pages %>"
+                                                class="page-link">Last</a></li>
+                                            <% } %>
+            </ul>
+          </nav>
+          <% } %>
+      </div>
+      <!-- filter section -->
+      <div class="col-lg-3 primary-sidebar sticky-sidebar">
+        <div class="widget-category mb-30">
+          <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
+          <ul class="categories">
+            <%categories.filter(category=> category.isActive).forEach(category => { %>
+              <li><a href="/allProducts?category=<%= category._id %>">
+                  <%= category.name %>
+                </a></li>
+              <% }) %>
+          </ul>
+        </div>
+
+        <form id="filter-form" action="/allProducts" method="GET">
+          <!-- Persisting the category filter -->
+          <% if (category) { %>
+            <input type="hidden" name="category" value="<%= category %>">
+            <% } %>
+
+              <!-- Filter By Processor -->
+              <div class="sidebar-widget mb-30">
+                <h5 class="widget-title mb-10">Processor</h5>
+                <div class="custome-checkbox">
+                  <% ['Intel', 'AMD' , 'Apple M1' , 'Qualcomm Snapdragon' , 'Samsung Exynos' ].forEach((processor,
+                    index)=> { %>
+                    <div style="margin-bottom: 10px;">
+                      <input class="form-check-input" type="checkbox" id="Processor-<%= index %>" name="Processor"
+                        value="<%= processor %>" style="margin-right: 5px;">
+                      <label class="form-check-label" for="Processor-<%= index %>">
+                        <%= processor %>
+                      </label>
+                    </div>
+                    <% }) %>
+                </div>
+              </div>
+
+              <!-- Filter By RAM Size -->
+              <div class="sidebar-widget mb-30">
+                <h5 class="widget-title mb-10">RAM Size</h5>
+                <div class="custome-checkbox">
+                  <% [4, 8, 16, 32, 64].forEach((ram, index)=> { %>
+                    <div style="margin-bottom: 10px;">
+                      <input class="form-check-input" type="checkbox" id="ramSize-<%= index %>" name="ramSize"
+                        value="<%= ram %>" style="margin-right: 5px;">
+                      <label class="form-check-label" for="ramSize-<%= index %>">
+                        <%= ram %>GB
+                      </label>
+                    </div>
+                    <% }) %>
+                </div>
+              </div>
+
+              <!-- Filter By Hard Drive Size -->
+              <div class="sidebar-widget mb-30">
+                <h5 class="widget-title mb-10">Hard Drive Size</h5>
+                <div class="custome-checkbox">
+                  <% [128, 256, 512, 1024, 2048].forEach((hardDrive, index)=> { %>
+                    <div style="margin-bottom: 10px;">
+                      <input class="form-check-input" type="checkbox" id="hardDriveSize-<%= index %>"
+                        name="hardDriveSize" value="<%= hardDrive %>" style="margin-right: 5px;">
+                      <label class="form-check-label" for="hardDriveSize-<%= index %>">
+                        <%= hardDrive %>GB
+                      </label>
+                    </div>
+                    <% }) %>
+                </div>
+              </div>
+
+              <!-- Filter By Hard Disk Description -->
+              <div class="sidebar-widget mb-30">
+                <h5 class="widget-title mb-10">Hard Disk Type</h5>
+                <div class="custome-checkbox">
+                  <% ['HDD', 'SSD' , 'Hybrid' , 'NVMe' ].forEach((hardDisk, index)=> { %>
+                    <div style="margin-bottom: 10px;">
+                      <input class="form-check-input" type="checkbox" id="hardDiskDescription-<%= index %>"
+                        name="hardDiskDescription" value="<%= hardDisk %>" style="margin-right: 5px;">
+                      <label class="form-check-label" for="hardDiskDescription-<%= index %>">
+                        <%= hardDisk %>
+                      </label>
+                    </div>
+                    <% }) %>
+                </div>
+              </div>
+
+              <!-- Filter By Graphics Chipset -->
+              <div class="sidebar-widget mb-30">
+                <h5 class="widget-title mb-10">Graphics Chipset</h5>
+                <div class="custome-checkbox">
+                  <% ['NVIDIA', 'AMD' , 'Intel' , 'Apple' , 'Non-Graphic' ].forEach((chipset, index)=> { %>
+                    <div style="margin-bottom: 10px;">
+                      <input class="form-check-input" type="checkbox" id="graphicsChipsetBrand-<%= index %>"
+                        name="graphicsChipsetBrand" value="<%= chipset %>" style="margin-right: 5px;">
+                      <label class="form-check-label" for="graphicsChipsetBrand-<%= index %>">
+                        <%= chipset %>
+                      </label>
+                    </div>
+                    <% }) %>
+                </div>
+              </div>
+
+              <!-- Filter By Operating System -->
+              <div class="sidebar-widget mb-30">
+                <h5 class="widget-title mb-10">Operating System</h5>
+                <div class="custome-checkbox">
+                  <% ['Windows', 'macOS' , 'Linux' , 'Chrome OS' , 'Android' ].forEach((os, index)=> { %>
+                    <div style="margin-bottom: 10px;">
+                      <input class="form-check-input" type="checkbox" id="operatingSystem-<%= index %>"
+                        name="operatingSystem" value="<%= os %>" style="margin-right: 5px;">
+                      <label class="form-check-label" for="operatingSystem-<%= index %>">
+                        <%= os %>
+                      </label>
+                    </div>
+                    <% }) %>
+                </div>
+              </div>
+
+              <!-- Filter Button -->
+              <button type="submit" class="btn btn-sm btn-default"><i class="fi-rs-filter mr-5"></i> Filter</button>
+        </form>
+      </div>
+
+
     </div>
+  </div>
 </section>
 
 <script>
-    document.addEventListener("DOMContentLoaded", (event) => {
-        document.querySelectorAll(".wishlist-btn").forEach((button) => {
-          button.addEventListener("click", function (e) {
-            e.preventDefault();
-            const productId = this.getAttribute("data-product-id");
-            const isWished = this.classList.contains("wished");
-            const url = isWished ? "/wishlist/remove" : "/wishlist/add";
-            const confirmMessage = isWished
-              ? "Do you want to remove this product from your wishlist?"
-              : "Do you want to add this product to your wishlist?";
-    
-            // Show confirmation message with SweetAlert2
-            Swal.fire({
-              title: confirmMessage,
-              icon: "question",
-              showCancelButton: true,
-              confirmButtonText: "Yes",
-              cancelButtonText: "No",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                // Send a request to add or remove the product to/from the wishlist
-                fetch(url, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ productId }),
-                })
-                  .then((response) => response.json())
-                  .then((data) => {
-                    if (data.success) {
-                      // Change heart icon color and state
-                      const heartIcon = this.querySelector("i.fi-rs-heart");
-                      if (isWished) {
-                        this.classList.remove("wished");
-                        heartIcon.style.color = ""; // Remove heart icon color
-                      } else {
-                        this.classList.add("wished");
-                        heartIcon.style.color = "red"; // Set heart icon color to red
-                      }
-                      // Show success message
-                      Swal.fire({
-                        title: "Success!",
-                        text: data.message,
-                        icon: "success",
-                        confirmButtonText: "OK",
-                      });
-                    } else {
-                      // Show error message
-                      Swal.fire({
-                        title: "Error!",
-                        text: "Please log in to perform this action.",
-                        icon: "error",
-                        showCancelButton: true,
-                        confirmButtonText: "Login",
-                        cancelButtonText: "Cancel",
-                      }).then((result) => {
-                        if (result.isConfirmed) {
-                          // Redirect to login page
-                          window.location.href = "/login";
-                        }
-                      });
-                    }
-                  })
-                  .catch((error) => {
-                    console.error("Error:", error);
-                    // Show error message
-                    Swal.fire({
-                      title: "Error!",
-                      text: "An error occurred",
-                      icon: "error",
-                      confirmButtonText: "OK",
-                    });
-                  });
-              }
-            });
-          });
-        });
-      });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-        const outOfStockButtons = document.querySelectorAll('.out-of-stock-btn');
-        const quantityInputs = document.querySelectorAll('.qty-val');
-        const subtotalElements = document.querySelectorAll('.subtotal');
-    
-        addToCartButtons.forEach(button => {
-          button.addEventListener('click', function(event) {
-            event.preventDefault();
-            const productId = this.getAttribute('data-product-id');
-    
-            Swal.fire({
-              title: 'Add this item to your cart?',
-              showCancelButton: true,
-              confirmButtonText: 'Add to Cart',
-              cancelButtonText: 'Cancel',
-              icon: 'question'
-            }).then((result) => {
-              if (result.isConfirmed) {
-                addToCart(productId, 1).then(() => {
+  document.addEventListener("DOMContentLoaded", (event) => {
+    document.querySelectorAll(".wishlist-btn").forEach((button) => {
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
+        const productId = this.getAttribute("data-product-id");
+        const isWished = this.classList.contains("wished");
+        const url = isWished ? "/wishlist/remove" : "/wishlist/add";
+        const confirmMessage = isWished
+          ? "Do you want to remove this product from your wishlist?"
+          : "Do you want to add this product to your wishlist?";
+
+        // Show confirmation message with SweetAlert2
+        Swal.fire({
+          title: confirmMessage,
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Send a request to add or remove the product to/from the wishlist
+            fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ productId }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.success) {
+                  // Change heart icon color and state
+                  const heartIcon = this.querySelector("i.fi-rs-heart");
+                  if (isWished) {
+                    this.classList.remove("wished");
+                    heartIcon.style.color = ""; // Remove heart icon color
+                  } else {
+                    this.classList.add("wished");
+                    heartIcon.style.color = "red"; // Set heart icon color to red
+                  }
+                  // Show success message
                   Swal.fire({
-                    title: 'Success!',
-                    text: 'Item added to your cart.',
-                    icon: 'success',
+                    title: "Success!",
+                    text: data.message,
+                    icon: "success",
+                    confirmButtonText: "OK",
+                  });
+                } else {
+                  // Show error message
+                  Swal.fire({
+                    title: "Error!",
+                    text: "Please log in to perform this action.",
+                    icon: "error",
                     showCancelButton: true,
-                    confirmButtonText: 'Go to Cart',
-                    cancelButtonText: 'Continue Shopping'
+                    confirmButtonText: "Login",
+                    cancelButtonText: "Cancel",
                   }).then((result) => {
                     if (result.isConfirmed) {
-                      window.location.href = '/cart';
+                      // Redirect to login page
+                      window.location.href = "/login";
                     }
                   });
-                }).catch((error) => {
-                  let errorMessage = 'There was an issue adding the item to your cart.';
-                  if (error === "Product already in cart.") {
-                    errorMessage = 'This product is already in your cart.';
-                  }
-                  Swal.fire({
-                    title: 'Error!',
-                    text: errorMessage,
-                    icon: 'error'
-                  });
+                }
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+                // Show error message
+                Swal.fire({
+                  title: "Error!",
+                  text: "An error occurred",
+                  icon: "error",
+                  confirmButtonText: "OK",
                 });
-              }
-            });
-          });
+              });
+          }
         });
-    
-        outOfStockButtons.forEach(button => {
-          button.addEventListener('click', function(event) {
-            event.preventDefault();
-            Swal.fire({
-              title: 'Out of Stock',
-              text: 'This product is currently out of stock.',
-              icon: 'error',
-              confirmButtonText: 'OK'
-            });
-          });
-        });
-    
-        quantityInputs.forEach(input => {
-          input.addEventListener('change', function() {
-            const productId = this.getAttribute('data-product-id');
-            const newQuantity = parseInt(this.innerText); // Assuming it's an editable span
-    
-            updateCart(productId, newQuantity);
-          });
-        });
-    
-        function updateCart(productId, newQuantity) {
-          fetch('/cart/update', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ productId, quantity: newQuantity })
-          }).then(response => {
-            if (response.ok) {
-              return response.json();
-            } else {
-              throw new Error('Failed to update cart.');
-            }
-          }).then(data => {
-            // Update subtotal for the specific product in the UI
-            const subtotalElement = document.querySelector(`#subtotal-${productId}`);
-            subtotalElement.innerText = `$${(data.subtotal).toFixed(2)}`;
-          }).catch(error => {
-            console.error('Error updating cart:', error);
-            Swal.fire({
-              title: 'Error!',
-              text: 'Failed to update cart.',
-              icon: 'error'
-            });
-          });
-        }
-    
-        function addToCart(productId, quantity) {
-          return new Promise((resolve, reject) => {
-            fetch('/cart/addToCart', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ productId, quantity })
-            }).then(response => {
-              if (response.ok) {
-                resolve();
-              } else {
-                response.json().then(data => {
-                  reject(data.error);
-                });
-              }
-            }).catch(error => {
-              reject(error);
-            });
-          });
-        }
       });
-    </script>
-    <!-- In your main view or layout file -->
+    });
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+    const outOfStockButtons = document.querySelectorAll('.out-of-stock-btn');
+    const quantityInputs = document.querySelectorAll('.qty-val');
+    const subtotalElements = document.querySelectorAll('.subtotal');
+
+    addToCartButtons.forEach(button => {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        const productId = this.getAttribute('data-product-id');
+
+        Swal.fire({
+          title: 'Add this item to your cart?',
+          showCancelButton: true,
+          confirmButtonText: 'Add to Cart',
+          cancelButtonText: 'Cancel',
+          icon: 'question'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            addToCart(productId, 1).then(() => {
+              Swal.fire({
+                title: 'Success!',
+                text: 'Item added to your cart.',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'Go to Cart',
+                cancelButtonText: 'Continue Shopping'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = '/cart';
+                }
+              });
+            }).catch((error) => {
+              let errorMessage = 'There was an issue adding the item to your cart.';
+              if (error === "Product already in cart.") {
+                errorMessage = 'This product is already in your cart.';
+              }
+              Swal.fire({
+                title: 'Error!',
+                text: errorMessage,
+                icon: 'error'
+              });
+            });
+          }
+        });
+      });
+    });
+
+    outOfStockButtons.forEach(button => {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        Swal.fire({
+          title: 'Out of Stock',
+          text: 'This product is currently out of stock.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      });
+    });
+
+    quantityInputs.forEach(input => {
+      input.addEventListener('change', function () {
+        const productId = this.getAttribute('data-product-id');
+        const newQuantity = parseInt(this.innerText); // Assuming it's an editable span
+
+        updateCart(productId, newQuantity);
+      });
+    });
+
+    function updateCart(productId, newQuantity) {
+      fetch('/cart/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ productId, quantity: newQuantity })
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to update cart.');
+        }
+      }).then(data => {
+        // Update subtotal for the specific product in the UI
+        const subtotalElement = document.querySelector(`#subtotal-${productId}`);
+        subtotalElement.innerText = `${(data.subtotal).toFixed(2)}`;
+      }).catch(error => {
+        console.error('Error updating cart:', error);
+        Swal.fire({
+          title: 'Error!',
+          text: 'Failed to update cart.',
+          icon: 'error'
+        });
+      });
+    }
+
+    function addToCart(productId, quantity) {
+      return new Promise((resolve, reject) => {
+        fetch('/cart/addToCart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ productId, quantity })
+        }).then(response => {
+          if (response.ok) {
+            resolve();
+          } else {
+            response.json().then(data => {
+              reject(data.error);
+            });
+          }
+        }).catch(error => {
+          reject(error);
+        });
+      });
+    }
+  });
+</script>

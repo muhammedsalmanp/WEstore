@@ -171,7 +171,8 @@ module.exports = {
             const order = await Order.findOne({ userId, orderId })
                 .populate('shippingAddress') // Populate the shippingAddress field
                 .populate('products._id') // Populate product details
-                .populate('coupon'); // Populate coupon details if needed
+                .populate('coupon') // Populate coupon details if needed
+                .populate('userId', 'firstName lastName email');
     
             if (!order) {
                 return res.status(404).send('Order not found');
