@@ -1,5 +1,6 @@
 
-    <main class="main">
+
+   <main class="main">
         <div class="page-header breadcrumb-wrap">
             <div class="container">
               <div class="breadcrumb">
@@ -14,45 +15,62 @@
         <section class="mt-50 mb-50">
             <div class="container">         
                 <div class="row">
-                    <div class="col-lg-9">
+                    <div class="col-lg-12">
                         <div class="product-detail accordion-detail">
                             <div class="container">
-                                <div class="row mb-50 justify-content-between text-center">
+                                <div class="row mb-50">
                                     <div class="col-md-6 col-sm-12 col-xs-12">
                                         <div class="detail-gallery pr-3">
                                             <span class="zoom-icon"><i class="fi-rs-search"></i></span>
                                             <!-- MAIN SLIDES -->
-                                            <div class="product-image-slider">
-                                                <figure class="border-radius-10">
-                                                    <img id="zoom1" src="/uploads/products-images/crp/<%-product.primaryImages[0].name%>" alt="IMG-PRODUCT" data-zoom-image="/uploads/products-images/crp/<%-product.primaryImages[0].name%>"/>
-                                                </figure>
-                                                <figure class="border-radius-10">
-                                                    <img id="zoom2" src="/uploads/products-images/crp/<%-product.secondaryImages[0].name %>" alt="IMG-PRODUCT" data-zoom-image="/uploads/products-images/crp/<%-product.secondaryImages[0].name %>"/>
-                                                </figure>
-                                                <figure class="border-radius-10">
-                                                    <img id="zoom3" src="/uploads/products-images/crp/<%-product.secondaryImages[1].name %>" alt="IMG-PRODUCT" data-zoom-image="/uploads/products-images/crp/<%-product.secondaryImages[1].name %>"/>
-                                                </figure>
-                                                <figure class="border-radius-10">
-                                                    <img id="zoom4" src="/uploads/products-images/crp/<%-product.secondaryImages[2].name %>" alt="IMG-PRODUCT" data-zoom-image="/uploads/products-images/crp/<%-product.secondaryImages[2].name %>"/>
-                                                </figure>
+                                            <div class="product-image-slider" style="background-color: white;">
+                                              <% if (product.primaryImages && product.primaryImages.length > 0) { %>
+                                                <% product.primaryImages.forEach((image, index) => { %>
+                                                  <figure class="border-radius-10">
+                                                    <img id="zoom<%= index + 1 %>" 
+                                                        src="/uploads/products-images/crp/<%= image.name %>" 
+                                                        alt="IMG-PRODUCT" 
+                                                        data-zoom-image="/uploads/products-images/crp/<%= image.name %>"/>
+                                                  </figure>
+                                                <% }); %>
+                                              <% } %>
+                                              
+                                              <% if (product.secondaryImages && product.secondaryImages.length > 0) { %>
+                                                <% product.secondaryImages.forEach((image, index) => { %>
+                                                  <figure class="border-radius-10">
+                                                    <img id="zoom<%= index + 1 + product.primaryImages.length %>" 
+                                                        src="/uploads/products-images/crp/<%= image.name %>" 
+                                                        alt="IMG-PRODUCT" 
+                                                        data-zoom-image="/uploads/products-images/crp/<%= image.name %>"/>
+                                                  </figure>
+                                                <% }); %>
+                                              <% } %>
                                             </div>
-                                            
+
                                             <!-- THUMBNAILS -->
                                             <div class="slider-nav-thumbnails pl-15 pr-15">
-                                                <div><img src="/uploads/products-images/crp/<%-product.primaryImages[0].name%>" alt="product image"></div>
-                                                <div><img src="/uploads/products-images/crp/<%-product.secondaryImages[0].name %>" alt="product image"></div>
-                                                <div><img src="/uploads/products-images/crp/<%-product.secondaryImages[1].name %>" alt="product image"></div>
-                                                <div><img src="/uploads/products-images/crp/<%-product.secondaryImages[2].name %>" alt="product image"></div>
+                                              <% if (product.primaryImages && product.primaryImages.length > 0) { %>
+                                                <% product.primaryImages.forEach((image, index) => { %>
+                                                  <div><img src="/uploads/products-images/crp/<%= image.name %>" alt="product image"></div>
+                                                <% }); %>
+                                              <% } %>
+
+                                              <% if (product.secondaryImages && product.secondaryImages.length > 0) { %>
+                                                <% product.secondaryImages.forEach((image, index) => { %>
+                                                  <div><img src="/uploads/products-images/crp/<%= image.name %>" alt="product image"></div>
+                                                <% }); %>
+                                              <% } %>
                                             </div>
+
                                         </div>
                                         <!-- End Gallery -->
                                         <div class="social-icons single-share">
                                             <ul class="text-grey-5 d-inline-block">
                                                 <li><strong class="mr-10">Share this:</strong></li>
-                                                <li class="social-facebook"><a href="#"><img src="//frd/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a></li>
-                                                <li class="social-twitter"><a href="#"><img src="//frd/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a></li>
-                                                <li class="social-instagram"><a href="#"><img src="//frd/assets/imgs/theme/icons/icon-instagram.svg" alt=""></a></li>
-                                                <li class="social-linkedin"><a href="#"><img src="//frd/assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a></li>
+                                                <li class="social-facebook"><a href="#"><img src="/frd/assets/imgs/theme/icons/icon-facebook.svg" alt=""></a></li>
+                                                <li class="social-twitter"><a href="#"><img src="/frd/assets/imgs/theme/icons/icon-twitter.svg" alt=""></a></li>
+                                                <li class="social-instagram"><a href="#"><img src="/frd/assets/imgs/theme/icons/icon-instagram.svg" alt=""></a></li>
+                                                <li class="social-linkedin"><a href="#"><img src="/frd/assets/imgs/theme/icons/icon-pinterest.svg" alt=""></a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -90,43 +108,40 @@
                                                 </ul>
                                             </div>
                                             <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                                            <div class="detail-extralink ">
-                                                <div class="detail-qty border radius">
-                                                    <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                                    <span class="qty-val">1</span>
-                                                    <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                                                </div>
-                                                <div class="product-extra-link2">
-                                                    <div class="product-action-1 show">
+                                            <div class="detail-extralink "> 
+                                                <div class="detail-extralink d-flex justify-content-center align-items-center">
+                                                    <div class="detail-qty border radius mb-0 mr-1">
+                                                        <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
+                                                        <span class="qty-val">1</span>
+                                                        <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
+                                                    </div>
+                                                    <div class="product-extra-link2 d-flex align-items-center">
                                                         <% if (product.stock > 0) { %>
-                                                          <a aria-label="Add To Cart" class="action-btn hover-up add-to-cart-btn" data-product-id="<%- product._id %>">
-                                                            <i class="fi-rs-shopping-bag-add"></i>
-                                                          </a>
+                                                            <button type="button" class="button add-to-cart-btn" data-product-id="<%- product._id %>">Add to Cart</button>
                                                         <% } else { %>
-                                                          <a aria-label="Out of Stock" class="action-btn hover-up out-of-stock-btn" data-product-id="<%- product._id %>">
-                                                            <i class="fi-rs-shopping-bag-add"></i>
-                                                          </a>
+                                                            <button type="button" class="button out-of-stock-btn"data-product-id="<%- product._id %>">Add to Cart</button>
                                                         <% } %>
-                                                      </div>
-                                                      <div class="product-action-1">
                                                         <% if (user && user.wishlist) { %> 
-                                                          <% let isInWishlist = user.wishlist.some(item => item.toString() === product._id.toString()); %>
-                                                          <% if (isInWishlist) { %>
-                                                            <a aria-label="Remove From Wishlist" class="action-btn hover-up wishlist-btn active" data-product-id="<%- product._id %>">
-                                                              <i class="fi-rs-heart-filled"></i>
-                                                            </a>
-                                                          <% } else { %>
-                                                            <a aria-label="Add To Wishlist" class="action-btn hover-up wishlist-btn" data-product-id="<%- product._id %>">
-                                                              <i class="fi-rs-heart"></i>
-                                                            </a>
-                                                          <% } %>
+                                                            <% let isInWishlist = user.wishlist.some(item => item.toString() === product._id.toString()); %>
+                                                            <% if (isInWishlist) { %>
+                                                                <a aria-label="Remove From Wishlist" class="action-btn hover-up wishlist-btn active" data-product-id="<%- product._id %>">
+                                                                    <i class="fi-rs-heart-filled"></i>
+                                                                </a>
+                                                            <% } else { %>
+                                                                <a aria-label="Add To Wishlist" class="action-btn hover-up wishlist-btn" data-product-id="<%- product._id %>">
+                                                                    <i class="fi-rs-heart"></i>
+                                                                </a>
+                                                            <% } %>
                                                         <% } else { %>
-                                                          <a aria-label="Add To Wishlist" class="action-btn hover-up wishlist-btn" data-product-id="<%- product._id %>">
-                                                            <i class="fi-rs-heart"></i>
-                                                          </a>
+                                                            <a aria-label="Add To Wishlist" class="action-btn hover-up wishlist-btn" data-product-id="<%- product._id %>">
+                                                                <i class="fi-rs-heart"></i>
+                                                            </a>
                                                         <% } %>
                                                     </div>
-                                            </div>
+                                                </div>
+                                                
+                                                
+                                                
                                             <ul class="product-meta font-xs color-grey mt-50">
                                                 <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
                                                 <li class="mb-5">Tags: <a href="#" rel="tag">laptop</a>, <a href="#" rel="tag">gaming</a>, <a href="#" rel="tag">windows</a></li>

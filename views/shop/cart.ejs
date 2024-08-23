@@ -44,20 +44,28 @@
                         <span>₹<%= productItem.price.toFixed(2) %></span>
                       </td>
                       <!-- Add an error message container in your EJS -->
-                      <td class="text-center" data-title="Quantity">
-                        <div class="detail-qty border radius m-auto">
-                          <a href="#" class="qty-down" data-product-id="<%= product._id %>"><i
-                              class="fi-rs-angle-small-down"></i></a>
-                          <span class="qty-val" data-quantity="<%= productItem.quantity %>"
-                            data-product-id="<%= product._id %>">
-                            <%= productItem.quantity %>
+                                        <td class="text-center" data-title="Quantity">
+                      <div class="detail-qty border radius m-auto">
+                          <a href="#" class="qty-down" data-product-id="<%= product._id %>"><i class="fi-rs-angle-small-down"></i></a>
+                          <span class="qty-val" data-quantity="<%= productItem.quantity %>" data-product-id="<%= product._id %>">
+                              <%= productItem.quantity %>
                           </span>
-                          <a href="#" class="qty-up" data-product-id="<%= product._id %>"><i
-                              class="fi-rs-angle-small-up"></i></a>
-                        </div>
-                        <div class="error-message" id="error-<%= product._id %>" style="color: red; display: none;">
-                        </div>
-                      </td>
+                          <a href="#" class="qty-up" data-product-id="<%= product._id %>"><i class="fi-rs-angle-small-up"></i></a>
+                      </div>
+                      <div class="stock-info">
+                          <span class="stock-message">
+                              <% if (product.stock === 0) { %>
+                                  Out of Stock
+                              <% } else if (product.stock < productItem.quantity) { %>
+                                  <span style="color: red;">Only <%= product.stock %> left in stock</span>
+                              <% } else { %>
+                                  <span style="color: green;"><%= product.stock %> left in stock</span>
+                              <% } %>
+                          </span>
+                      </div>
+                      <div class="error-message" id="error-<%= product._id %>" style="color: red; display: none;">
+                      </div>
+                  </td>
 
                       <td class="text-right" data-title="Subtotal">
                         <span class="subtotal" data-product-id="<%= product._id %>">₹<%= (productItem.price *
@@ -342,10 +350,6 @@
       } else if (message === 'quantity_adjusted') {
         const exceededProducts = JSON.parse(decodeURIComponent(exceeded));
         let text = 'Some quantities exceeded available stock. \nThe quantities have been adjusted.';
-
-        exceededProducts.forEach(product => {
-          text += `\nProduct: ${product.name}\nRequested Quantity: ${product.requestedQuantity}\nAvailable Quantity: ${product.availableQuantity}`;
-        });
 
         Swal.fire({
           icon: 'warning',

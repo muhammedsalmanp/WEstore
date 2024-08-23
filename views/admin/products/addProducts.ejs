@@ -198,7 +198,7 @@
                                 </div>
                             </div>
                         
-                            <!-- Primary image upload with cropping -->
+                           <!-- Primary image upload with cropping -->
                             <div class="col-lg-12">
                                 <div class="card mb-4">
                                     <div class="card-header">
@@ -209,7 +209,7 @@
                                             <label for="image1" class="form-label">
                                                 <img id="preview1" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
                                             </label>
-                                            <input type="file" class="form-control" id="image1" style="display: none;" name="primaryImage" onchange="previewImage(event, 'preview1')">
+                                            <input type="file" class="form-control" id="image1" style="display: none;" name="primaryImage" onchange="prepareImageForCrop(event, 'preview1')">
                                             <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image1').click();">Upload Image</button>
                                         </div>
                                         <div id="primaryImage_error" class="error-message" style="color: red; display: none;">Primary image is required.</div>
@@ -218,53 +218,61 @@
                             </div>
 
                             <!-- Secondary images upload -->
-                            <div class="col-lg-12">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <h4>Select Secondary Image 1</h4>
+                            <div id="secondary-images-container">
+                                <!-- Predefined Secondary Image Upload Sections -->
+                                <div class="col-lg-12">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h4>Select Secondary Image 1</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="input-upload text-start">
+                                                <label for="image2" class="form-label">
+                                                    <img id="preview2" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                                                </label>
+                                                <input type="file" class="form-control" id="image2" name="images" style="display: none;" onchange="prepareImageForCrop(event, 'preview2')">
+                                                <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image2').click();">Upload Image</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="input-upload text-start">
-                                            <label for="image2" class="form-label">
-                                                <img id="preview2" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
-                                            </label>
-                                            <input type="file" class="form-control" id="image2" name="images" style="display: none;" onchange="previewImage(event, 'preview2')">
-                                            <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image2').click();">Upload Image</button>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h4>Select Secondary Image 2</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="input-upload text-start">
+                                                <label for="image3" class="form-label">
+                                                    <img id="preview3" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                                                </label>
+                                                <input type="file" class="form-control" id="image3" name="images" style="display: none;" onchange="prepareImageForCrop(event, 'preview3')">
+                                                <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image3').click();">Upload Image</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h4>Select Secondary Image 3</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="input-upload text-start">
+                                                <label for="image4" class="form-label">
+                                                    <img id="preview4" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                                                </label>
+                                                <input type="file" class="form-control" id="image4" name="images" style="display: none;" onchange="prepareImageForCrop(event, 'preview4')">
+                                                <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image4').click();">Upload Image</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-12">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <h4>Select Secondary Image 2</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="input-upload text-start">
-                                            <label for="image3" class="form-label">
-                                                <img id="preview3" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
-                                            </label>
-                                            <input type="file" class="form-control" id="image3" name="images" style="display: none;" onchange="previewImage(event, 'preview3')">
-                                            <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image3').click();">Upload Image</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <h4>Select Secondary Image 3</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="input-upload text-start">
-                                            <label for="image4" class="form-label">
-                                                <img id="preview4" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
-                                            </label>
-                                            <input type="file" class="form-control" id="image4" name="images" style="display: none;" onchange="previewImage(event, 'preview4')">
-                                            <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image4').click();">Upload Image</button>
-                                        </div>
-                                    </div>
-                                </div>
+
+                            <!-- Button to add more secondary images -->
+                            <div class="col-lg-12 mb-4">
+                                <button type="button" id="add-more-images" class="btn btn-md rounded font-sm">Add More Images</button>
                             </div>
 
                             <!-- Submit button -->
@@ -307,17 +315,21 @@
     let currentInputId, currentPreviewId, cropper;
     let croppedImages = {};
     let originalFileNames = {};
+    let imageIndex = 5; // Adjust this if you have more predefined images
 
     document.addEventListener("DOMContentLoaded", function () {
+        // Initialize cropping for existing images
         document.getElementById('image1').addEventListener('change', function () { prepareImageForCropping('image1', 'preview1'); });
         document.getElementById('image2').addEventListener('change', function () { prepareImageForCropping('image2', 'preview2'); });
         document.getElementById('image3').addEventListener('change', function () { prepareImageForCropping('image3', 'preview3'); });
         document.getElementById('image4').addEventListener('change', function () { prepareImageForCropping('image4', 'preview4'); });
 
+        // Crop button handler
         document.getElementById('cropImageBtn').addEventListener('click', function () {
             performCropping();
         });
 
+        // Initialize Cropper when modal is shown
         $('#imageCropModal').on('shown.bs.modal', function () {
             let image = document.getElementById('imageToCrop');
             cropper = new Cropper(image, {
@@ -333,14 +345,21 @@
             });
         });
 
+        // Destroy Cropper instance when modal is hidden
         $('#imageCropModal').on('hidden.bs.modal', function () {
             if (cropper) {
                 cropper.destroy();
                 cropper = null;
             }
         });
+
+        // Handle adding new image upload sections
+        document.getElementById('add-more-images').addEventListener('click', function () {
+            addNewImageUploadSection();
+        });
     });
 
+    // Function to prepare an image for cropping
     function prepareImageForCropping(inputId, previewId) {
         currentInputId = inputId;
         currentPreviewId = previewId;
@@ -357,6 +376,7 @@
         reader.readAsDataURL(file);
     }
 
+    // Function to perform the cropping operation
     function performCropping() {
         if (!cropper) {
             console.error("Cropper is not initialized.");
@@ -364,7 +384,6 @@
         }
 
         cropper.getCroppedCanvas().toBlob((blob) => {
-            const previewId = currentPreviewId;
             const file = new File([blob], originalFileNames[currentInputId], { type: 'image/png' });
 
             const dataTransfer = new DataTransfer();
@@ -377,6 +396,32 @@
             croppedImages[currentInputId] = blob;
             $('#imageCropModal').modal('hide');
         }, 'image/png');
+    }
+
+    // Function to add a new image upload section dynamically
+    function addNewImageUploadSection() {
+        const container = document.getElementById('secondary-images-container');
+        const newImageSection = document.createElement('div');
+        newImageSection.classList.add('col-lg-12');
+        newImageSection.innerHTML = `
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Select Secondary Image ${imageIndex - 1}</h4>
+                    <button type="button" class="btn btn-sm btn-danger float-end" onclick="this.closest('.col-lg-12').remove()">Delete</button>
+                </div>
+                <div class="card-body">
+                    <div class="input-upload text-start">
+                        <label for="image${imageIndex}" class="form-label">
+                            <img id="preview${imageIndex}" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                        </label>
+                        <input type="file" class="form-control" id="image${imageIndex}" name="images" style="display: none;" onchange="prepareImageForCropping('image${imageIndex}', 'preview${imageIndex}')">
+                        <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image${imageIndex}').click();">Upload Image</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(newImageSection);
+        imageIndex++;
     }
 </script>
 
@@ -513,3 +558,5 @@
     }
 }
 </script>
+
+

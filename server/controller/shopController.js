@@ -12,23 +12,24 @@ module.exports = {
       title: "Home Page",
     };
     try {
-      const perPage = 7; // Number of products per page for regular listing
+      const perPage = 7; 
       const page = parseInt(req.query.page) || 1;
   
-      // Fetch the latest 8 products marked as active for "New Arrivals"
       const newArrivals = await Product.find({ isActive: true })
         .populate({
           path: "category",
           match: { isActive: true },
         })
-        .sort({ createdAt: -1 }) // Sort by creation date (latest first)
+        .sort({ createdAt: -1 }) 
         .limit(8)
         .exec();
-  
-      // Calculate the total count of active products excluding new arrivals
+        let wishlist = await Wishlist.findOne({ userId: req.session.user}).populate('products');
+        let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
+        const cartCount = cart && cart.products ? cart.products.length : 0;
+        
+
       const count = await Product.countDocuments({ isActive: true, _id: { $nin: newArrivals.map(p => p._id) } });
-  
-      // Fetch products for the regular paginated listing, excluding the new arrivals
+     
       const products = await Product.find({ isActive: true, _id: { $nin: newArrivals.map(p => p._id) } })
         .populate({
           path: "category",
@@ -46,12 +47,14 @@ module.exports = {
         locals,
         success: req.flash("success"),
         error: req.flash("error"),
-        newArrivals, // Pass the new arrivals to the template
+        newArrivals,
         products,
         current: page,
         perPage: perPage,
         pages: Math.ceil(count / perPage),
         nextPage: hasNextPage ? nextPage : null,
+        wishlist,
+        cartCount:cartCount,
       });
     } catch (error) {
       console.log("from userController", error);
@@ -82,11 +85,16 @@ module.exports = {
       title: "Product Details",
     };
     const product = await Product.findById(req.params.id).populate("category");
+    let wishlist = await Wishlist.findOne({ userId: req.session.user}).populate('products');
+        let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
+        const cartCount = cart && cart.products ? cart.products.length : 0;
     try {
       res.render("shop/productDetails",{
         product,
         locals,
         user: req.session.user,
+        wishlist:wishlist,
+        cartCount:cartCount
       })
     } catch (error) {
       console.log(error)
@@ -99,7 +107,10 @@ module.exports = {
   const categories = await Category.find();
   const perPage = 12;
   const page = parseInt(req.query.page) || 1;
-
+  const product = await Product.findById(req.params.id).populate("category");
+  let wishlist = await Wishlist.findOne({ userId: req.session.user}).populate('products');
+      let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
+      const cartCount = cart && cart.products ? cart.products.length : 0;
   let filter = {};
 
   if (category) {
@@ -197,7 +208,9 @@ module.exports = {
       nextPage: hasNextPage ? nextPage : null,
       filteredCount,
       category,
-      search // Pass the search term to the view
+      search,
+      wishlist:wishlist,
+      cartCount:cartCount
     });
   } catch (err) {
     console.error(err);

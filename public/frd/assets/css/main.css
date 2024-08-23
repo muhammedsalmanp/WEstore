@@ -132,7 +132,7 @@ a {
 }
 
 a:hover {
-  color: #c8c371;
+  color: #A4A04E;
 }
 
 /*--- Common Classes---------------------*/
@@ -1518,7 +1518,7 @@ label {
 }
 
 .comment-form button:hover {
-  background-color: #3f81eb !important;
+  background-color: #A4A04E !important;
   border: none !important;
 }
 

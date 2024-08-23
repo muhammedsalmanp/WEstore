@@ -28,12 +28,14 @@ module.exports ={
         products = wishlist.products;
     }
 
+    const cartCount = cart && cart.products ? cart.products.length : 0;
     res.render("user/wishlist", {
         locals,
         products,
         user: req.session.user,
         wishlist: wishlist,
         cart,
+        cartCount:cartCount,
     });
   },
 

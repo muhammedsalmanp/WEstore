@@ -14,12 +14,15 @@ const orderController = require("../controller/orderController")
 router.post('/wishlist/add', wishlistController.addToWishlist);
 router.post('/wishlist/remove', wishlistController.removeFromWishlist);
 router.get('/wishlist', wishlistController.getWishlist);
+
 // user cart
-router.get("/cart", cartController.getCart)
-router.post("/cart/addToCart", cartController.addToCart)
-router.post("/cart/update", cartController.updateCart)
-router.post('/cart/remove', cartController.removeFromCart)
-router.post("/cart/clearCart", cartController.clearCart)
+router.get("/cart",cartController.getCart)
+router.post("/cart/addToCart",cartController.addToCart)
+router.post("/cart/update",cartController.updateCart)
+router.post('/cart/remove',cartController.removeFromCart)
+router.post("/cart/clearCart",cartController.clearCart)
+
+router.get('/cart/check', cartController.getCheckOutC);
 
 //account Details
 router.get("/user/profile", userController.getAccountDetails)
@@ -44,9 +47,6 @@ router.post("/checkOut/addAddress", userController.checkOutaddAddress)
 router.post("/checkOut/address/:addressId/edit", userController.checkOuteditAddress)
 router.delete("/checkOut/address/:addressId/delete", userController.checkOutdeleteAddress)
 router.post("/checkOut/set-default-address/:addressId", userController.checkOutsetDefault)
-
-
-router.get('/cart/check', cartController.getCheckOutC);
 
 router.post("/user/verify-orderpayment",checkOutCondroller.verifyPayment)
 

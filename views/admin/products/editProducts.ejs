@@ -209,107 +209,55 @@
                             </div>
                        </div>
                        <div class="row">
-                          <!-- Primary image upload with cropping -->
-                          <div class="col-lg-4">
-                              <div class="card mb-4">
-                                  <div class="card-header">
-                                      <h4>Primary Image</h4>
-                                  </div>
-                                  <div class="card-body text-center">
-                                      <div class="input-upload">
-                                          <label for="image1" class="form-label">
-                                              <% if (product.primaryImages[0]) { %>
-                                                  <img id="preview1"
-                                                      src="/uploads/products-images/crp/<%- product.primaryImages[0].name %>" alt=""
-                                                      width="150px">
-                                                  <% } else {%>
-                                                      <img id="preview1" src="../../assets/imgs/theme/upload.svg" alt=""
-                                                          width="150px">
-                                                      <% } %>
-                                          </label>
-                                          <input type="file" class="form-control" id="image1" name="primaryImage">
-                                      </div>
-                                      <button type="button" class="btn btn-md rounded font-sm"
-                                          onclick="document.getElementById('image1').click();">Upload Image</button>
-                                  </div>
-                              </div>
-                          </div>
-                          <!-- Secondary images upload -->
-                          <div class="col-lg-4"> 
-                              <div class="card mb-4">
-                                  <div class="card-header">
-                                      <h4>Secondary Image 1</h4>
-                                  </div>
-                                  <div class="card-body text-center">
-                                      <div class="input-upload">
-                                          <label for="image2" class="form-label">
-                                              <% if (product.secondaryImages[0]) { %>
-                                                  <img id="preview2"
-                                                      src="/uploads/products-images/crp/<%-product.secondaryImages[0].name %>" alt=""
-                                                      width="150px">
-                                                  <% } else {%>
-                                                      <img id="preview2" src="../../assets/imgs/theme/upload.svg" alt=""
-                                                          width="150px">
-                                                      <% } %>
-                                          </label>
-                                          <input type="file" class="form-control" id="image2" name="image2">
-                                      </div>
-                                      <button type="button" class="btn btn-md rounded font-sm"
-                                          onclick="document.getElementById('image2').click();">Upload Image</button>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-lg-4">
-                              <div class="card mb-4">
-                                  <div class="card-header">
-                                      <h4>Secondary Image 2</h4>
-                                  </div>
-                                  <div class="card-body text-center">
-                                      <div class="input-upload">
-                                          <label for="image3" class="form-label">
-                                              <% if (product.secondaryImages[1]) { %>
-                                                  <img id="preview3"
-                                                      src="/uploads/products-images/crp/<%-product.secondaryImages[1].name %>" alt=""
-                                                      width="150px">
-                                                  <% } else {%>
-                                                      <img id="preview3" src="../../assets/imgs/theme/upload.svg" alt=""
-                                                          width="150px">
-                                                      <% } %>
-                                          </label>
-                                          
-                                          <input type="file" class="form-control" id="image3" name="image3">
-                                      </div>
-                                      <button type="button" class="btn btn-md rounded font-sm"
-                                          onclick="document.getElementById('image3').click();">Upload Image</button>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-lg-4"> 
-                              <div class="card mb-4">
-                                  <div class="card-header">
-                                      <h4>Secondary Image 3</h4>
-                                  </div>
-                                  <div class="card-body text-center">
-                                      <div class="input-upload">
-                                          <label for="image4" class="form-label">
-                                              <% if (product.secondaryImages[0]) { %>
-                                                  <img id="preview4"
-                                                      src="/uploads/products-images/crp/<%-product.secondaryImages[2].name %>" alt=""
-                                                      width="150px">
-                                                  <% } else {%>
-                                                      <img id="preview4" src="../../assets/imgs/theme/upload.svg" alt=""
-                                                          width="150px">
-                                                      <% } %>
-                                          </label>
-                                          <input type="file" class="form-control" id="image4" name="image4">
-                                      </div>
-                                      <button type="button" class="btn btn-md rounded font-sm"
-                                          onclick="document.getElementById('image4').click();">Upload Image</button>
-                                  </div>
-                              </div>
-                          </div>
-                    </div>
-                    <div class="row">
+                        <!-- Primary image upload with cropping -->
+                        <div class="col-lg-4">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4>Primary Image</h4>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="input-upload">
+                                        <label for="image1" class="form-label">
+                                            <% if (product.primaryImages.length > 0) { %>
+                                                <img id="preview1"
+                                                    src="/uploads/products-images/crp/<%- product.primaryImages[0].name %>" alt=""
+                                                    width="150px">
+                                            <% } else { %>
+                                                <img id="preview1" src="../../assets/imgs/theme/upload.svg" alt="" width="150px">
+                                            <% } %>
+                                        </label>
+                                        <input type="file" class="form-control" id="image1" name="primaryImage">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="secondary-images-container" class="row">
+                            <% product.secondaryImages.forEach((image, index) => { %>
+                                <div class="col-lg-4">
+                                    <div class="card mb-4">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h5>Secondary Image <%= index + 1 %></h5>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteImage(`<%= index %>`)">Delete</button>
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <div class="input-upload">
+                                                <label for="image<%= index + 2 %>" class="form-label">
+                                                    <img id="preview<%= index + 2 %>"
+                                                        src="/uploads/products-images/crp/<%- image.name %>" alt=""
+                                                        width="150px">
+                                                </label>
+                                                <input type="file" class="form-control" id="image<%= index + 2 %>" name="image<%= index + 2 %>">
+                                            </div>
+                                            <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image<%= index + 2 %>').click();">Upload Image</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                            <div class="col-lg-12 mb-4">
+                                <button type="button" id="add-more-images" class="btn btn-md rounded font-sm">Add More Images</button>
+                            </div>
+                        </div>
+                      <div class="row">
                       <div class="col">
                           <button class="btn btn-md rounded font-sm" type="submit">Update</button>
                           <a href="/admin/products" class="btn btn-light rounded font-sm">Cancel</a>
@@ -350,23 +298,33 @@
   
   <!-- Cropper.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.js"></script>
+<!-- 
   <script defer>
     let currentInputId, currentPreviewId, cropper;
     let croppedImages = {};
     let originalFileNames = {};
-  
+
     document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById('image1').addEventListener('change', function () { prepareImageForCropping('image1', 'preview1'); });
-        document.getElementById('image2').addEventListener('change', function () { prepareImageForCropping('image2', 'preview2'); });
-        document.getElementById('image3').addEventListener('change', function () { prepareImageForCropping('image3', 'preview3'); });
-        document.getElementById('image4').addEventListener('change', function () { prepareImageForCropping('image4', 'preview4'); });
-  
-  
-  
+        // Primary image event listener
+        document.getElementById('image1').addEventListener('change', function () { 
+            prepareImageForCropping('image1', 'preview1'); 
+        });
+
+        // Dynamically add event listeners for secondary images based on the count from the database
+        const secondaryImagesCount = `<%= product.secondaryImages.length %>`; // Get the count from the server
+
+        for (let i = 0; i < secondaryImagesCount; i++) {
+            const inputId = `image${i + 2}`;
+            const previewId = `preview${i + 2}`;
+            document.getElementById(inputId).addEventListener('change', function () { 
+                prepareImageForCropping(inputId, previewId); 
+            });
+        }
+
         document.getElementById('cropImageBtn').addEventListener('click', function () {
             performCropping();
         });
-  
+
         $('#imageCropModal').on('shown.bs.modal', function () {
             let image = document.getElementById('imageToCrop');
             cropper = new Cropper(image, {
@@ -381,7 +339,7 @@
                 minCanvasWidth: 500,
             });
         });
-  
+
         $('#imageCropModal').on('hidden.bs.modal', function () {
             if (cropper) {
                 cropper.destroy();
@@ -389,15 +347,15 @@
             }
         });
     });
-  
+
     function prepareImageForCropping(inputId, previewId) {
         currentInputId = inputId;
         currentPreviewId = previewId;
         const input = document.getElementById(inputId);
         const file = input.files[0];
         const newDate = new Date().getTime();
-        originalFileNames[inputId] = `${ file.name }_${ newDate }`
-  
+        originalFileNames[inputId] = `${file.name}_${newDate}`;
+
         const reader = new FileReader();
         reader.onload = function (e) {
             document.getElementById('imageToCrop').src = e.target.result;
@@ -405,48 +363,239 @@
         };
         reader.readAsDataURL(file);
     }
-  
+
     function performCropping() {
         if (!cropper) {
             console.error("Cropper is not initialized.");
             return;
         }
-  
+
         cropper.getCroppedCanvas().toBlob((blob) => {
-  
-  
-            const previewId = currentPreviewId;
             const file = new File([blob], originalFileNames[currentInputId], { type: 'image/png' });
-  
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
             document.getElementById(currentInputId).files = dataTransfer.files;
-  
-  
-            const preview = document.getElementById(currentPreviewId);
-  
-            preview.src = URL.createObjectURL(blob);
-  
-  
+
+            document.getElementById(currentPreviewId).src = URL.createObjectURL(blob);
             croppedImages[currentInputId] = blob;
             $('#imageCropModal').modal('hide');
-  
-  
         }, 'image/png');
-  
     }
-  
-  
-  
-  </script>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+    function deleteImage(index) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const productId = '<%= product._id %>'; 
+            $.ajax({
+                url: 'admim/dlet',
+                type: 'POST',
+                data: {
+                    productId: productId,
+                    imageIndex: index
+                },
+                success: function (response) {
+                    Swal.fire('Deleted!', response.message, 'success');
+                    
+                    // Clear the file input and preview for the deleted image
+                    const inputId = `image${index + 2}`;
+                    const previewId = `preview${index + 2}`;
+                    document.getElementById(inputId).value = "";
+                    document.getElementById(previewId).src = "../../assets/imgs/theme/upload.svg";
+                },
+                error: function (xhr) {
+                    Swal.fire('Error!', 'Failed to delete the image.', 'error');
+                }
+            });
+        }
+    });
+}
+ // Function to add a new image upload section dynamically
+ function addNewImageUploadSection() {
+        const container = document.getElementById('secondary-images-container');
+        const newImageSection = document.createElement('div');
+        newImageSection.classList.add('col-lg-12');
+        newImageSection.innerHTML = `
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Select Secondary Image ${imageIndex - 1}</h4>
+                    <button type="button" class="btn btn-sm btn-danger float-end" onclick="this.closest('.col-lg-12').remove()">Delete</button>
+                </div>
+                <div class="card-body">
+                    <div class="input-upload text-start">
+                        <label for="image${imageIndex}" class="form-label">
+                            <img id="preview${imageIndex}" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                        </label>
+                        <input type="file" class="form-control" id="image${imageIndex}" name="images" style="display: none;" onchange="prepareImageForCropping('image${imageIndex}', 'preview${imageIndex}')">
+                        <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image${imageIndex}').click();">Upload Image</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(newImageSection);
+        imageIndex++;
+    }
+</script> -->
+
+<script defer>
+    let currentInputId, currentPreviewId, cropper;
+    let croppedImages = {};
+    let originalFileNames = {};
+    let imageIndex = `<%= product.secondaryImages.length + 2 %>`; // Start index for new images
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Primary image event listener
+        document.getElementById('image1').addEventListener('change', function () { 
+            prepareImageForCropping('image1', 'preview1'); 
+        });
+
+        // Dynamically add event listeners for existing secondary images
+        const secondaryImagesCount = `<%= product.secondaryImages.length %>`;
+        for (let i = 0; i < secondaryImagesCount; i++) {
+            const inputId = `image${i + 2}`;
+            const previewId = `preview${i + 2}`;
+            document.getElementById(inputId).addEventListener('change', function () { 
+                prepareImageForCropping(inputId, previewId); 
+            });
+        }
+
+        // Attach event listener to the "Add More Images" button
+        document.getElementById('add-more-images').addEventListener('click', function () {
+            addNewImageUploadSection();
+        });
+
+        // Cropper and modal logic
+        document.getElementById('cropImageBtn').addEventListener('click', function () {
+            performCropping();
+        });
+
+        $('#imageCropModal').on('shown.bs.modal', function () {
+            let image = document.getElementById('imageToCrop');
+            cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 1,
+                dragMode: "move",
+                minContainerWidth: 450,
+                minContainerHeight: 500,
+                minCropBoxWidth: 400,
+                minCropBoxHeight: 400,
+                minCanvasHeight: 500,
+                minCanvasWidth: 500,
+            });
+        });
+
+        $('#imageCropModal').on('hidden.bs.modal', function () {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        });
+    });
+
+    function prepareImageForCropping(inputId, previewId) {
+        currentInputId = inputId;
+        currentPreviewId = previewId;
+        const input = document.getElementById(inputId);
+        const file = input.files[0];
+        const newDate = new Date().getTime();
+        originalFileNames[inputId] = `${file.name}_${newDate}`;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('imageToCrop').src = e.target.result;
+            $('#imageCropModal').modal('show');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function performCropping() {
+        if (!cropper) {
+            console.error("Cropper is not initialized.");
+            return;
+        }
+
+        cropper.getCroppedCanvas().toBlob((blob) => {
+            const file = new File([blob], originalFileNames[currentInputId], { type: 'image/png' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            document.getElementById(currentInputId).files = dataTransfer.files;
+
+            document.getElementById(currentPreviewId).src = URL.createObjectURL(blob);
+            croppedImages[currentInputId] = blob;
+            $('#imageCropModal').modal('hide');
+        }, 'image/png');
+    }
+
+    function deleteImage(index) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const productId = '<%= product._id %>'; 
+            $.ajax({
+                url: '/admin/dltiamge',
+                type: 'POST',
+                data: {
+                    productId: productId,
+                    imageIndex: index
+                },
+                success: function (response) {
+                    Swal.fire('Deleted!', response.message, 'success').then(() => {
+                        // Refresh the page after the success message is shown
+                        window.location.reload();
+                    });
+                },
+                error: function (xhr) {
+                    Swal.fire('Error!', 'Failed to delete the image.', 'error');
+                }
+            });
+        }
+    });
+}
+
+    function addNewImageUploadSection() {
+    const container = document.getElementById('secondary-images-container');
+    const newImageSection = document.createElement('div');
+    newImageSection.classList.add('col-lg-12');
+    newImageSection.innerHTML = `
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Select Secondary Image ${imageIndex - 1}</h4>
+                <button type="button" class="btn btn-sm btn-danger float-end" onclick="this.closest('.col-lg-12').remove()">Delete</button>
+            </div>
+            <div class="card-body">
+                <div class="input-upload text-start">
+                    <label for="image${imageIndex}" class="form-label">
+                        <img id="preview${imageIndex}" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                    </label>
+                    <input type="file" class="form-control" id="image${imageIndex}" name="images" style="display: none;" onchange="prepareImageForCropping('image${imageIndex}', 'preview${imageIndex}')">
+                    <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image${imageIndex}').click();">Upload Image</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Insert the new image section after the last existing section
+    const lastImageSection = container.querySelector('.col-lg-12:last-of-type');
+    lastImageSection.insertAdjacentElement('afterend', newImageSection);
+
+    imageIndex++;
+}
+
+
+</script>
+
+
+
+

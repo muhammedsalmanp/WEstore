@@ -462,7 +462,7 @@
                                             <div id="product-cancellation-<%= product._id %>"
                                                 class="product-cancellation">
                                                 <% if (status==='Delivered' ) { %>
-                                                    <% if (order.return) { %>
+                                                    <% if (!order.return) { %>
                                                         <button id="return-button-<%= product.productId %>"
                                                             class="return-button">Return</button>
                                                         <% } else { %>
@@ -819,6 +819,7 @@
     });
 
 </script>
+
 <script>
     // Add event listener for "Continue Shipping" button
     document.querySelectorAll('.continue-shipping-button').forEach(button => {

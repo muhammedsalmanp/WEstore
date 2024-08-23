@@ -6,11 +6,13 @@ const adminLayout = "./layouts/adminLayouts";
 const Coupon = require("../model/couponSchema")
 const crypto = require("crypto");
 const razorpayInstance = require("../config/razorPay");
+const Wishlist = require("../model/wishlistSchema");
+const Cart = require("../model/cartSchema");
 
    
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
-// Helper function to generate a unique return ID
+
 function generateReturnId(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
@@ -20,23 +22,19 @@ function generateReturnId(length) {
     return result;
 }
 
-// Helper function to calculate expected return amount
 function calculateReturnAmount(order, productId) {
-    // Find the product in the order and calculate the return amount
     const product = order.products.find(p => p._id.toString() === productId);
-
     if (!product) {
-        return 0; // Product not found
+        return 0; 
     }
-
-    // Calculate the return amount based on product price and quantity
     const returnAmount = product.price * product.quantity;
-
     return returnAmount;
 }
 
 module.exports = {
+
     //admin side 
+    
    getAllOrders:async(req,res)=>{
     const locals = {
         title: "Order ",
@@ -50,7 +48,9 @@ module.exports = {
     const count = await  Order.find().countDocuments({});
     const nextPage = parseInt(page)+1;
     const hasNextPage = nextPage <= Math.ceil(count / perPage);
-
+    let wishlist = await Wishlist.findOne({ userId: req.session.user}).populate('products');
+    let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
+    const cartCount = cart && cart.products ? cart.products.length : 0;
     const breadcrumbs = [
     { name: 'Home', url: '/admin' },
     { name: 'order', url: '/admin/order' },
@@ -65,7 +65,8 @@ module.exports = {
         pages: Math.ceil(count / perPage),
         nextPage: hasNextPage ? nextPage : null,
         breadcrumbs,
-        
+        wishlist,
+        cartCount:cartCount,
       });
 
    },
@@ -75,19 +76,14 @@ module.exports = {
         const { status } = req.body;
 
         try {
-            // Validate status
             const validStatuses = ['Ordered', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled', 'Returned', 'Received', 'Refund Issued', 'Refund Credited'];
             if (!validStatuses.includes(status)) {
                 return res.status(400).json({ success: false, message: 'Invalid status' });
             }
-
-            // Find and update the order status
             const order = await Order.findById(orderId);
             if (!order) {
                 return res.status(404).json({ success: false, message: 'Order not found' });
             }
-
-            // Check if the status can be updated based on the return condition
             if (order.return) {
                 const returnStatuses = ['Returned', 'Received', 'Refund Issued', 'Refund Credited'];
                 if (!returnStatuses.includes(status)) {
@@ -115,7 +111,9 @@ module.exports = {
         const locals = {
             title: "Order Detils",
         };
-
+        let wishlist = await Wishlist.findOne({ userId: req.session.user}).populate('products');
+        let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
+        const cartCount = cart && cart.products ? cart.products.length : 0;
         const breadcrumbs = [
             { name: 'Home', url: '/admin' },
             { name: 'order', url: '/admin/order' },
@@ -123,9 +121,9 @@ module.exports = {
             ]; 
         const { orderId } = req.params
         const order = await Order.findOne({orderId:orderId })
-        .populate('shippingAddress') // Populate the shippingAddress field
-        .populate('products._id') // Populate product details
-        .populate('coupon') // Populate coupon details if needed
+        .populate('shippingAddress') 
+        .populate('products._id')
+        .populate('coupon') 
         .populate('userId', 'firstName lastName email');
 
         if (!order) {
@@ -133,14 +131,13 @@ module.exports = {
         }
         const shippingAddress = order.shippingAddress ? order.shippingAddress : null;
     
-        // Prepare products data
         const products = order.products.map(product => ({
             productName: product._id.productName,
             price: product._id.price,
             productId: product._id._id,
             description: product._id.description,
             quantity: product.quantity,
-            primaryImages: product._id.primaryImages // Assuming this field exists
+            primaryImages: product._id.primaryImages 
         }));
         res.render('admin/orders/viewOrdes', {
             locals,
@@ -153,6 +150,8 @@ module.exports = {
             offerAppliedTotalAmount: order.offerAppliedTotalAmount,
             layout: adminLayout,
             breadcrumbs,
+            wishlist,
+           cartCount:cartCount,
         });
 
        } catch (error) {
@@ -162,25 +161,26 @@ module.exports = {
     },
 
     //user side 
+
     getOrder:  async (req, res) => {
         try {
             const userId = req.session.user;
-            const { orderId } = req.params; // Get orderId from request parameters
+            const { orderId } = req.params;
             const user = await User.findOne(req.session.user)
-            // Find the order by userId and orderId, and populate the shippingAddress and products references
             const order = await Order.findOne({ userId, orderId })
-                .populate('shippingAddress') // Populate the shippingAddress field
-                .populate('products._id') // Populate product details
-                .populate('coupon') // Populate coupon details if needed
+                .populate('shippingAddress') 
+                .populate('products._id') 
+                .populate('coupon') 
                 .populate('userId', 'firstName lastName email');
     
             if (!order) {
                 return res.status(404).send('Order not found');
             }
-    
+
+        let wishlist = await Wishlist.findOne({ userId: req.session.user}).populate('products');
+        let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
+        const cartCount = cart && cart.products ? cart.products.length : 0;
             const shippingAddress = order.shippingAddress ? order.shippingAddress : null;
-    
-            // Prepare products data
             const products = order.products.map(product => ({
                 productName: product._id.productName,
                 price: product._id.price,
@@ -198,9 +198,11 @@ module.exports = {
                 shippingAddress: shippingAddress,
                 products: products,
                 status: order.status,
-                coupon: order.coupon, // Include coupon details if needed
-                couponDiscount: order.couponDiscount, // Include coupon discount
-                offerAppliedTotalAmount: order.offerAppliedTotalAmount // Include offer applied total amount
+                coupon: order.coupon, 
+                couponDiscount: order.couponDiscount,
+                offerAppliedTotalAmount: order.offerAppliedTotalAmount ,
+                wishlist,
+                cartCount:cartCount,
             });
         } catch (error) {
             console.error("Error fetching order details:", error);
@@ -212,10 +214,9 @@ module.exports = {
         const { orderId, productId, reason } = req.body;
     
         try {
-            // Fetch the order, populate product and coupon details
             const order = await Order.findOne({ orderId })
                 .populate('products._id')
-                .populate('coupon'); // Populate coupon details
+                .populate('coupon');
     
             console.log('Fetched Order:', order);
             console.log('Requested Product ID:', productId);
@@ -236,35 +237,28 @@ module.exports = {
             if (order.status === 'Delivered' || order.status === 'Out for delivery') {
                 return res.status(400).json({ message: 'You can only cancel products from delivered orders' });
             }
-    
-           
+     
             product.isCanceld = true;
     
-           
             const updatedProduct = await Product.findById(productId);
             if (updatedProduct) {
                 updatedProduct.stock += product.quantity;
                 await updatedProduct.save();
             }
     
-           
             order.totalAmount -= product.price * product.quantity;
     
-           
             let applicableCouponDiscount = 0;
+
             if (order.coupon) {
-                if (order.totalAmount >= order.coupon.minPurchaseAmount) {
-                    
+                if (order.totalAmount >= order.coupon.minPurchaseAmount) {   
                     applicableCouponDiscount = (order.totalAmount * order.coupon.discountPercentage) / 100;
-                } else {
-                    
+                } else { 
                     order.couponMessage = 'You can no longer use the coupon because the order total is below the minimum purchase amount required.';
                 }
             }
-    
 
             order.offerAppliedTotalAmount = order.totalAmount - applicableCouponDiscount;
-    
 
             const allProductsCanceled = order.products.every(p => p.isCanceld);
             if (allProductsCanceled) {
@@ -287,7 +281,6 @@ module.exports = {
         const { orderId, productId } = req.body;
     
         try {
-            // Fetch the order and populate product and coupon details
             const order = await Order.findOne({ orderId })
                 .populate('products._id')
                 .populate('coupon');
@@ -345,11 +338,8 @@ module.exports = {
     returnProduct: async (req, res) => {
         try {
             const { orderId, productId, reason, boxStatus, damageStatus } = req.body;
-    
-            // Log the received IDs
             console.log('Received Order ID:', orderId);
             console.log('Received Product ID:', productId);
-    
     
             const returnId = generateReturnId(8);
     
@@ -381,7 +371,5 @@ module.exports = {
             res.status(500).json({ success: false, message: 'Internal server error.' });
         }
     },
-
-
 
 };

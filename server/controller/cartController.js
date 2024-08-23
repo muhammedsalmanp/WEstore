@@ -21,12 +21,14 @@ module.exports = {
       if (!cart) {
         cart = { products: [], totalPrice: 0, totalProduct: 0 };
       }
-  
+      const cartCount = cart && cart.products ? cart.products.length : 0;
       res.render("shop/cart", {
         user: req.session.user,
         cart,
         wishlist,
         coupon,
+        wishlist:wishlist,
+      cartCount:cartCount
       });
     } catch (error) {
       console.error("Error fetching cart:", error);
@@ -223,39 +225,50 @@ module.exports = {
             return res.status(401).json({ error: 'User not authenticated' });
         }
 
-        // Fetch cart and populate product details
         const cart = await Cart.findOne({ userId: userId }).populate('products._id');
 
         if (!cart || cart.products.length === 0) {
-            return res.redirect('/cart?error=empty'); 
+            return res.redirect('/cart?error=empty');
         }
 
         let outOfStockRemoved = false;
         let quantityAdjusted = false;
         let stockExceeded = false;
         let exceededProducts = [];
+        let newTotalPrice = 0;
+        let newTotalProduct = 0;
 
+        // Filter out out-of-stock products and adjust quantities
         cart.products = cart.products.filter(product => {
             const item = product._id;
             if (item.stock === 0) {
                 outOfStockRemoved = true;
-                return false; // Remove out-of-stock items
+                return false;
             } else if (product.quantity > item.stock) {
                 stockExceeded = true;
                 exceededProducts.push({
-                    name: item.name, // Assuming `name` is a field in the product schema
+                    name: item.name,
                     requestedQuantity: product.quantity,
                     availableQuantity: item.stock
                 });
-                product.quantity = item.stock; // Adjust quantity to available stock
+                product.quantity = item.stock;
                 quantityAdjusted = true;
             }
-            return true; // Keep products that are in stock and quantities are valid
+
+            // Update totals for remaining products
+            newTotalPrice += product.quantity * product.price;
+            newTotalProduct += product.quantity;
+
+            return true;
         });
+
+        // Update cart totals
+        cart.totalPrice = newTotalPrice;
+        cart.totalProduct = newTotalProduct;
+        cart.offerAppliedTotalAmount = cart.totalPrice - cart.couponDiscount;
 
         await cart.save();
 
-        // Respond with appropriate message based on the status
         if (outOfStockRemoved && quantityAdjusted) {
             return res.redirect('/cart?message=out_of_stock_quantity_adjusted');
         } else if (outOfStockRemoved) {
@@ -270,4 +283,5 @@ module.exports = {
         return res.redirect('/cart?error=server');
     }
 }
+
 }

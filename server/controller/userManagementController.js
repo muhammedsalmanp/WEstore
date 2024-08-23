@@ -43,6 +43,7 @@ module.exports = {
       res.status(500).send("Internal Server Error");
     }
   },
+
   toggleBlock: async (req, res) => {
     try {
       let user = await User.findOne({ _id: req.params.id, isAdmin: false });
@@ -61,4 +62,5 @@ module.exports = {
       res.status(500).json({ message: "Server error" });
     }
   },
+  
 }

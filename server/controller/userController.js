@@ -15,36 +15,6 @@ module.exports = {
 
   /*user account details*/
 
-  // getAccountDetails: async (req, res) => {
-  //   try {
-  //     const user = await User.findById(req.session.user);
-  //     const wishlist = await Wishlist.findOne({
-  //       userId: req.session.user,
-  //     }).populate("products");
-  //     const cart = await Cart.findOne({ userId: req.session.user });
-  //     const userAddress = await UserAddress.findOne({
-  //       userId: req.session.user,
-  //     });
-  //     const order = await Order.find({ userId: req.session.user })
-  //     if (!user) {
-  //       req.flash("error", "You need to log in!");
-  //       return res.redirect("/login");
-  //     }
-
-  //     res.render("user/profile", {
-  //       user,
-  //       wishlist,
-  //       cart,
-  //       addresses: userAddress ? userAddress.addresses : [],
-  //       orders :order 
-  //     });
-  //   } catch (error) {
-  //     console.error("Error fetching account details:", error);
-  //     req.flash("error", "An error occurred while fetching details.");
-  //     res.redirect("/user/profile");
-  //   }
-  // },
-
   getAccountDetails: async (req, res) => {
     try {
       const user = await User.findById(req.session.user);
@@ -59,11 +29,13 @@ module.exports = {
         req.flash("error", "You need to log in!");
         return res.redirect("/login");
       }
-  
+      
+      const cartCount = cart && cart.products ? cart.products.length : 0;
       res.render("user/profile", {
         user,
         wishlist,
         cart,
+        cartCount:cartCount,
         addresses: userAddress ? userAddress.addresses : [],
         orders
       });
@@ -73,7 +45,6 @@ module.exports = {
       res.redirect("/user/profile");
     }
   },
-  
   
   updateUser: async (req, res) => {
     try {
@@ -391,6 +362,7 @@ module.exports = {
       res.redirect("/checkOut");
     }
   },
+
   checkOuteditAddress: async (req, res) => {
     try {
       const userId = req.session.user;
@@ -444,6 +416,7 @@ module.exports = {
       });
     }
   },
+
   checkOutdeleteAddress: async (req, res) => {
     try {
       const userId = req.session.user;
@@ -497,6 +470,7 @@ module.exports = {
       });
     }
   },
+
   checkOutsetDefault: async (req, res) => {
     try {
       const { addressId } = req.params;

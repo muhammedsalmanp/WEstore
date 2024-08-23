@@ -227,7 +227,9 @@ module.exports = {
   },
 
   /*-- user side --*/
+
   /*get coupons and appy coupons */
+  
   getAllCoupons: async (req, res) => {
     try {
       const coupons = await Coupon.find({

@@ -94,7 +94,7 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-app.listen(8080,() => {
-  console.log("http://localhost:8080");
+app.listen(process.env.APP_PORT,() => {
+  console.log(`http://localhost:${process.env.APP_PORT}`);
 });
 
