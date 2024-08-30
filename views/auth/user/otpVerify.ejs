@@ -1,41 +1,5 @@
-<style>
-  .otp-field {
-    flex-direction: row;
-    column-gap: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .otp-field input {
-    height: 45px;
-    width: 42px;
-    border-radius: 6px;
-    outline: none;
-    font-size: 1.125rem;
-    text-align: center;
-    border: 1px solid #ddd;
-  }
-
-  .otp-field input:focus {
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-  }
-
-  .otp-field input::-webkit-inner-spin-button,
-  .otp-field input::-webkit-outer-spin-button {
-    display: none;
-  }
-
-  .resend {
-    font-size: 16px;
-  }
-</style>
-
 <section>
-  <div
-    class="px-4 py-5 px-md-5 text-center text-lg-start"
-    style="background-color: hsl(0, 0%, 96%)"
-  >
+  <div class="px-4 py-5 px-md-5 text-center text-lg-start" style="background-color: hsl(0, 0%, 96%)">
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
@@ -47,31 +11,38 @@
           <div class="card">
             <div class="card-body py-5 px-md-5">
               <form action="/verifyotp" method="POST">
-                <div class="form-group mb-4">
-                  <input type="text" name="otp" id="otp" class="form-control" />
+                <div class="otp-input d-flex justify-content-between mb-4">
+                  <div class="otp-input-box">
+                    <input type="text" name="otp1" id="otp1" class="form-control otp-box" maxlength="1" />
+                  </div>
+                  <div class="otp-input-box">
+                    <input type="text" name="otp2" id="otp2" class="form-control otp-box" maxlength="1" />
+                  </div>
+                  <div class="otp-input-box">
+                    <input type="text" name="otp3" id="otp3" class="form-control otp-box" maxlength="1" />
+                  </div>
+                  <div class="otp-input-box">
+                    <input type="text" name="otp4" id="otp4" class="form-control otp-box" maxlength="1" />
+                  </div>
+                  <div class="otp-input-box">
+                    <input type="text" name="otp5" id="otp5" class="form-control otp-box" maxlength="1" />
+                  </div>
+                  <div class="otp-input-box">
+                    <input type="text" name="otp6" id="otp6" class="form-control otp-box" maxlength="1" />
+                  </div>
                 </div>
                 <!-- Verify button -->
                 <div class="my-3 flex-c-m">
-                  <button
-                    type="submit"
-                    class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04"
-                  >
+                  <button type="submit" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
                     Verify
                   </button>
                 </div>
               </form>
 
-                <p class="lead">
-                  Request again in:
-                  <span id="timer" class="text-danger"></span>
-                  <a
-                    href="javascript:void(0)"
-                    id="resend-btn"
-                    class="text-primary d-none"
-                  >
-                    Resend OTP</a
-                  >
-                </p>
+              <p class="lead">
+                Request again in: <span id="timer" class="text-danger"></span>
+                <a href="javascript:void(0)" id="resend-btn" class="text-primary d-none">Resend OTP</a>
+              </p>
             </div>
           </div>
         </div>
@@ -80,9 +51,33 @@
   </div>
 </section>
 
+<style>
+  .otp-input-box {
+    flex: 1;
+    margin: 0 5px;
+  }
+  .otp-box {
+    border: 2px solid #000;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .otp-box.valid {
+    border-color: green;
+  }
+  .otp-box.invalid {
+    border-color: red;
+  }
+</style>
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     let timerOn = true;
+    const timerKey = "otpTimerRemaining";
+
+    let remainingTime = parseInt(localStorage.getItem(timerKey), 10);
+    if (isNaN(remainingTime) || remainingTime <= 0) {
+      remainingTime = 59; 
+    }
 
     const timer = (remaining) => {
       let min = Math.floor(remaining / 60);
@@ -94,37 +89,37 @@
 
       remaining -= 1;
       if (remaining >= 0 && timerOn) {
+        localStorage.setItem(timerKey, remaining); 
         setTimeout(() => {
           timer(remaining);
         }, 1000);
+      } else if (!timerOn) {
         return;
+      } else {
+        localStorage.removeItem(timerKey); 
+        document.getElementById("timer").classList.add("d-none");
+        document.getElementById("resend-btn").classList.remove("d-none");
       }
-      if (!timerOn) {
-        return;
-      }
-      document.getElementById("timer").classList.add("d-none");
-      document.getElementById("resend-btn").classList.remove("d-none");
     };
 
-    timer(20);
+    timer(remainingTime);
 
     const resendBtn = document.getElementById("resend-btn");
     resendBtn.addEventListener("click", async () => {
       try {
         let response = await fetch("/resendotp");
-        console.log(response);
         if (!response.ok) {
           throw new Error(response.statusText);
         }
         let data = await response.json();
-        console.log(data);
         if (data.success) {
           Swal.fire({
             icon: "success",
             title: "Success",
             text: data.message,
           }).then(() => {
-            location.reload();
+            localStorage.removeItem(timerKey); 
+            location.reload(); 
           });
         } else {
           throw new Error(data.message);
@@ -137,6 +132,43 @@
           text: error.message,
         });
       }
+    });
+
+    document.querySelectorAll('.otp-input input').forEach((input, index, inputs) => {
+      input.addEventListener('input', function () {
+        
+        if (this.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        } else if (this.value.length === 0 && index > 0) {
+          inputs[index - 1].focus();
+        }
+
+        
+        if (this.value.length === 1) {
+          this.classList.add('valid');
+          this.classList.remove('invalid');
+        } else if (this.value.length === 0) {
+          this.classList.remove('valid');
+          this.classList.add('invalid');
+        }
+      });
+
+    
+      input.addEventListener('paste', function (e) {
+        const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+        const otpDigits = pastedData.split('');
+
+        if (otpDigits.length === inputs.length) {
+          otpDigits.forEach((digit, idx) => {
+            inputs[idx].value = digit;
+            inputs[idx].classList.add('valid');
+            if (idx < inputs.length - 1) {
+              inputs[idx + 1].focus();
+            }
+          });
+          e.preventDefault();
+        }
+      });
     });
   });
 </script>

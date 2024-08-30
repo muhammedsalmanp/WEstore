@@ -61,11 +61,15 @@ module.exports ={
 
       res.json({ success: true });
     } catch (error) {
-      console.error(error);
-      res.json({ success: false });
+      console.error("Error adding to wishlist:", error);
+      res
+        .status(500)
+        .json({
+          success: false,
+          error: "An error occurred while adding the product to the wishlist.",
+        });
     }
   },
-
   removeFromWishlist: async (req, res) => {
     const userId = req.session.user;
     const productId = req.body.productId;
@@ -116,5 +120,5 @@ module.exports ={
           "An error occurred while removing the product from your wishlist.",
       });
     }
-  },
-}
+ },
+};

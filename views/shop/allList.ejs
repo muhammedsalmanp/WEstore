@@ -88,7 +88,7 @@
             <div class="sort-by-cover">
               <div class="sort-by-product-wrap">
                 <div class="sort-by">
-                  <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
+                  <span><i class="fi-rs-apps-sort"></i> Sort by:</span>
                 </div>
                 <div class="sort-by-dropdown-wrap">
                   <span> Featured <i class="fi-rs-angle-small-down"></i></span>
@@ -96,15 +96,17 @@
               </div>
               <div class="sort-by-dropdown">
                 <ul>
-                  <li><a href="?sort=featured">Featured</a></li>
-                  <li><a href="?sort=price-asc">Price: Low to High</a></li>
-                  <li><a href="?sort=price-desc">Price: High to Low</a></li>
-                  <li><a href="?sort=name-asc">A to Z</a></li>
-                  <li><a href="?sort=name-desc">Z to A</a></li>
+                  <li><a href="?sort=featured<%= category ? '&category=' + category : '' %>">Featured</a></li>
+                  <li><a href="?sort=price-asc<%= category ? '&category=' + category : '' %>">Price: Low to High</a></li>
+                  <li><a href="?sort=price-desc<%= category ? '&category=' + category : '' %>">Price: High to Low</a></li>
+                  <li><a href="?sort=name-asc<%= category ? '&category=' + category : '' %>">A to Z</a></li>
+                  <li><a href="?sort=name-desc<%= category ? '&category=' + category : '' %>">Z to A</a></li>
+                  <li><a href="?outOfStock=true<%= category ? '&category=' + category : '' %>">Out of Stock</a></li>
                 </ul>
               </div>
             </div>
           </div>
+          
 
         </div>
         <div class="row product-grid-3">
@@ -146,10 +148,11 @@
                 </div>
                 <div class="product-content-wrap">
                   <div class="product-category">
-                    <a href="shop-grid-right.html">
-                      <%= product.category.name %>
+                    <a>
+                        <%= product.brand && product.brand.name ? product.brand.name : 'No Brand' %> <!-- Handle missing brand -->
                     </a>
-                  </div>
+                </div>
+                                
                   <h2>
                     <a href="/shop/productDetails/<%- product._id %>">
                       <%= product.productName %>
@@ -222,124 +225,140 @@
       <!-- filter section -->
       <div class="col-lg-3 primary-sidebar sticky-sidebar">
         <div class="widget-category mb-30">
-          <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
-          <ul class="categories">
-            <%categories.filter(category=> category.isActive).forEach(category => { %>
-              <li><a href="/allProducts?category=<%= category._id %>">
-                  <%= category.name %>
-                </a></li>
-              <% }) %>
-          </ul>
+            <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
+            <ul class="categories">
+                <% categories.filter(category => category.isActive).forEach(category => { %>
+                    <li><a href="/allProducts?category=<%= category._id %>">
+                        <%= category.name %>
+                    </a></li>
+                <% }) %>
+            </ul>
         </div>
-
+    
         <form id="filter-form" action="/allProducts" method="GET">
-          <!-- Persisting the category filter -->
-          <% if (category) { %>
-            <input type="hidden" name="category" value="<%= category %>">
+            <!-- Persisting the category filter -->
+            <% if (category) { %>
+                <input type="hidden" name="category" value="<%= category %>">
             <% } %>
-
-              <!-- Filter By Processor -->
-              <div class="sidebar-widget mb-30">
+    
+            <!-- Filter By Brand -->
+            <div class="sidebar-widget mb-30">
+              <h5 class="widget-title mb-10">Brand</h5>
+              <div class="custome-checkbox">
+                  <% brands.forEach((brand, index) => { %>
+                      <div style="margin-bottom: 10px;">
+                          <input class="form-check-input" type="checkbox" id="brand-<%= brand._id %>" name="brand"
+                              value="<%= brand._id %>" style="margin-right: 5px;">
+                          <label class="form-check-label" for="brand-<%= brand._id %>">
+                              <%= brand.name %>
+                          </label>
+                      </div>
+                  <% }) %>
+              </div>
+          </div>
+          
+    
+            <!-- Filter By Processor -->
+            <div class="sidebar-widget mb-30">
                 <h5 class="widget-title mb-10">Processor</h5>
                 <div class="custome-checkbox">
-                  <% ['Intel', 'AMD' , 'Apple M1' , 'Qualcomm Snapdragon' , 'Samsung Exynos' ].forEach((processor,
-                    index)=> { %>
-                    <div style="margin-bottom: 10px;">
-                      <input class="form-check-input" type="checkbox" id="Processor-<%= index %>" name="Processor"
-                        value="<%= processor %>" style="margin-right: 5px;">
-                      <label class="form-check-label" for="Processor-<%= index %>">
-                        <%= processor %>
-                      </label>
-                    </div>
+                    <% ['Intel', 'AMD', 'Apple M1', 'Qualcomm Snapdragon', 'Samsung Exynos'].forEach((processor, index) => { %>
+                        <div style="margin-bottom: 10px;">
+                            <input class="form-check-input" type="checkbox" id="Processor-<%= index %>" name="Processor"
+                                value="<%= processor %>" style="margin-right: 5px;">
+                            <label class="form-check-label" for="Processor-<%= index %>">
+                                <%= processor %>
+                            </label>
+                        </div>
                     <% }) %>
                 </div>
-              </div>
-
-              <!-- Filter By RAM Size -->
-              <div class="sidebar-widget mb-30">
+            </div>
+    
+            <!-- Filter By RAM Size -->
+            <div class="sidebar-widget mb-30">
                 <h5 class="widget-title mb-10">RAM Size</h5>
                 <div class="custome-checkbox">
-                  <% [4, 8, 16, 32, 64].forEach((ram, index)=> { %>
-                    <div style="margin-bottom: 10px;">
-                      <input class="form-check-input" type="checkbox" id="ramSize-<%= index %>" name="ramSize"
-                        value="<%= ram %>" style="margin-right: 5px;">
-                      <label class="form-check-label" for="ramSize-<%= index %>">
-                        <%= ram %>GB
-                      </label>
-                    </div>
+                    <% [4, 8, 16, 32, 64].forEach((ram, index) => { %>
+                        <div style="margin-bottom: 10px;">
+                            <input class="form-check-input" type="checkbox" id="ramSize-<%= index %>" name="ramSize"
+                                value="<%= ram %>" style="margin-right: 5px;">
+                            <label class="form-check-label" for="ramSize-<%= index %>">
+                                <%= ram %>GB
+                            </label>
+                        </div>
                     <% }) %>
                 </div>
-              </div>
-
-              <!-- Filter By Hard Drive Size -->
-              <div class="sidebar-widget mb-30">
+            </div>
+    
+            <!-- Filter By Hard Drive Size -->
+            <div class="sidebar-widget mb-30">
                 <h5 class="widget-title mb-10">Hard Drive Size</h5>
                 <div class="custome-checkbox">
-                  <% [128, 256, 512, 1024, 2048].forEach((hardDrive, index)=> { %>
-                    <div style="margin-bottom: 10px;">
-                      <input class="form-check-input" type="checkbox" id="hardDriveSize-<%= index %>"
-                        name="hardDriveSize" value="<%= hardDrive %>" style="margin-right: 5px;">
-                      <label class="form-check-label" for="hardDriveSize-<%= index %>">
-                        <%= hardDrive %>GB
-                      </label>
-                    </div>
+                    <% [128, 256, 512, 1024, 2048].forEach((hardDrive, index) => { %>
+                        <div style="margin-bottom: 10px;">
+                            <input class="form-check-input" type="checkbox" id="hardDriveSize-<%= index %>"
+                                name="hardDriveSize" value="<%= hardDrive %>" style="margin-right: 5px;">
+                            <label class="form-check-label" for="hardDriveSize-<%= index %>">
+                                <%= hardDrive %>GB
+                            </label>
+                        </div>
                     <% }) %>
                 </div>
-              </div>
-
-              <!-- Filter By Hard Disk Description -->
-              <div class="sidebar-widget mb-30">
+            </div>
+    
+            <!-- Filter By Hard Disk Description -->
+            <div class="sidebar-widget mb-30">
                 <h5 class="widget-title mb-10">Hard Disk Type</h5>
                 <div class="custome-checkbox">
-                  <% ['HDD', 'SSD' , 'Hybrid' , 'NVMe' ].forEach((hardDisk, index)=> { %>
-                    <div style="margin-bottom: 10px;">
-                      <input class="form-check-input" type="checkbox" id="hardDiskDescription-<%= index %>"
-                        name="hardDiskDescription" value="<%= hardDisk %>" style="margin-right: 5px;">
-                      <label class="form-check-label" for="hardDiskDescription-<%= index %>">
-                        <%= hardDisk %>
-                      </label>
-                    </div>
+                    <% ['HDD', 'SSD', 'Hybrid', 'NVMe'].forEach((hardDisk, index) => { %>
+                        <div style="margin-bottom: 10px;">
+                            <input class="form-check-input" type="checkbox" id="hardDiskDescription-<%= index %>"
+                                name="hardDiskDescription" value="<%= hardDisk %>" style="margin-right: 5px;">
+                            <label class="form-check-label" for="hardDiskDescription-<%= index %>">
+                                <%= hardDisk %>
+                            </label>
+                        </div>
                     <% }) %>
                 </div>
-              </div>
-
-              <!-- Filter By Graphics Chipset -->
-              <div class="sidebar-widget mb-30">
+            </div>
+    
+            <!-- Filter By Graphics Chipset -->
+            <div class="sidebar-widget mb-30">
                 <h5 class="widget-title mb-10">Graphics Chipset</h5>
                 <div class="custome-checkbox">
-                  <% ['NVIDIA', 'AMD' , 'Intel' , 'Apple' , 'Non-Graphic' ].forEach((chipset, index)=> { %>
-                    <div style="margin-bottom: 10px;">
-                      <input class="form-check-input" type="checkbox" id="graphicsChipsetBrand-<%= index %>"
-                        name="graphicsChipsetBrand" value="<%= chipset %>" style="margin-right: 5px;">
-                      <label class="form-check-label" for="graphicsChipsetBrand-<%= index %>">
-                        <%= chipset %>
-                      </label>
-                    </div>
+                    <% ['NVIDIA', 'AMD', 'Intel', 'Apple', 'Non-Graphic'].forEach((chipset, index) => { %>
+                        <div style="margin-bottom: 10px;">
+                            <input class="form-check-input" type="checkbox" id="graphicsChipsetBrand-<%= index %>"
+                                name="graphicsChipsetBrand" value="<%= chipset %>" style="margin-right: 5px;">
+                            <label class="form-check-label" for="graphicsChipsetBrand-<%= index %>">
+                                <%= chipset %>
+                            </label>
+                        </div>
                     <% }) %>
                 </div>
-              </div>
-
-              <!-- Filter By Operating System -->
-              <div class="sidebar-widget mb-30">
+            </div>
+    
+            <!-- Filter By Operating System -->
+            <div class="sidebar-widget mb-30">
                 <h5 class="widget-title mb-10">Operating System</h5>
                 <div class="custome-checkbox">
-                  <% ['Windows', 'macOS' , 'Linux' , 'Chrome OS' , 'Android' ].forEach((os, index)=> { %>
-                    <div style="margin-bottom: 10px;">
-                      <input class="form-check-input" type="checkbox" id="operatingSystem-<%= index %>"
-                        name="operatingSystem" value="<%= os %>" style="margin-right: 5px;">
-                      <label class="form-check-label" for="operatingSystem-<%= index %>">
-                        <%= os %>
-                      </label>
-                    </div>
+                    <% ['Windows', 'macOS', 'Linux', 'Chrome OS', 'Android'].forEach((os, index) => { %>
+                        <div style="margin-bottom: 10px;">
+                            <input class="form-check-input" type="checkbox" id="operatingSystem-<%= index %>"
+                                name="operatingSystem" value="<%= os %>" style="margin-right: 5px;">
+                            <label class="form-check-label" for="operatingSystem-<%= index %>">
+                                <%= os %>
+                            </label>
+                        </div>
                     <% }) %>
                 </div>
-              </div>
-
-              <!-- Filter Button -->
-              <button type="submit" class="btn btn-sm btn-default"><i class="fi-rs-filter mr-5"></i> Filter</button>
+            </div>
+    
+            <!-- Filter Button -->
+            <button type="submit" class="btn btn-sm btn-default"><i class="fi-rs-filter mr-5"></i> Filter</button>
         </form>
-      </div>
-
+    </div>
+    
 
     </div>
   </div>

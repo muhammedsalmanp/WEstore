@@ -364,288 +364,284 @@
         font-size: 50px;
         margin-bottom: 10px;
     }
+
 </style>
 
 <div id="order-summary" class="order-summary">
-    <% if (status!=='Cancelled' ) { %>
-        <!-- Animated Checkmark at the Top -->
-        <div class="success-animation">
-            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
-                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-            </svg>
-        </div>
-        <!-- Progress Container -->    
-                    <!-- Progress Container -->
-    <% if ( !order.return) { %>
-        <div id="progress-container" class="progress-container">
-            <div id="progress-ordered"
-                class="progress-step <%= status === 'Ordered' || status === 'Shipped' || status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Ordered' ? 'active' : '' %> <%= status === 'Ordered' ? 'current' : '' %>">
-                <span class="progress-icon"><i class="fas fa-shopping-cart"></i></span>
-                <p>Ordered</p>
+   
+        <% if (status!=='Cancelled' ) { %>
+            <!-- Animated Checkmark at the Top -->
+            <% if (status!=='Failed' ) { %>
+            <div class="success-animation">
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
             </div>
-            <div id="progress-shipped"
-                class="progress-step <%= status === 'Shipped' || status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Shipped' ? 'active' : '' %> <%= status === 'Shipped' ? 'current' : '' %>">
-                <span class="progress-icon"><i class="fas fa-shipping-fast"></i></span>
-                <p>Shipped</p>
-            </div>
-            <div id="progress-out-for-delivery"
-                class="progress-step <%= status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Out for delivery' ? 'active' : '' %> <%= status === 'Out for delivery' ? 'current' : '' %>">
-                <span class="progress-icon"><i class="fas fa-truck"></i></span>
-                <p>Out for Delivery</p>
-            </div>
-            <div id="progress-delivered"
-                class="progress-step <%= status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Delivered' ? 'active' : '' %> <%= status === 'Delivered' ? 'current' : '' %>">
-                <span class="progress-icon"><i class="fas fa-box-open"></i></span>
-                <p>Delivered</p>
-            </div>
-        </div>
-        <% } else {%>
-            <div id="progress-container" class="progress-container">
-                <div id="progress-returned"
-                    class="progress-step <%= status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Returned' ? 'active' : '' %> <%= status === 'Returned' ? 'current' : '' %>">
-                    <span class="progress-icon"><i class="fas fa-undo"></i></span>
-                    <p>Returned</p>
+            <% }else { %>
+                <h1 class="mb-6" style="color: #c0392b; ">Order Failed</h1>
+             <% } %>
+            <!-- Progress Container -->
+            <% if ( !order.return) { %>
+                <div id="progress-container" class="progress-container">
+                    <div id="progress-ordered"
+                        class="progress-step <%= status === 'Ordered' || status === 'Shipped' || status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Ordered' ? 'active' : '' %> <%= status === 'Ordered' ? 'current' : '' %>">
+                        <span class="progress-icon"><i class="fas fa-shopping-cart"></i></span>
+                        <p>Ordered</p>
+                    </div>
+                    <div id="progress-shipped"
+                        class="progress-step <%= status === 'Shipped' || status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Shipped' ? 'active' : '' %> <%= status === 'Shipped' ? 'current' : '' %>">
+                        <span class="progress-icon"><i class="fas fa-shipping-fast"></i></span>
+                        <p>Shipped</p>
+                    </div>
+                    <div id="progress-out-for-delivery"
+                        class="progress-step <%= status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Out for delivery' ? 'active' : '' %> <%= status === 'Out for delivery' ? 'current' : '' %>">
+                        <span class="progress-icon"><i class="fas fa-truck"></i></span>
+                        <p>Out for Delivery</p>
+                    </div>
+                    <div id="progress-delivered"
+                        class="progress-step <%= status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Delivered' ? 'active' : '' %> <%= status === 'Delivered' ? 'current' : '' %>">
+                        <span class="progress-icon"><i class="fas fa-box-open"></i></span>
+                        <p>Delivered</p>
+                    </div>
                 </div>
-                <div id="progress-received"
-                    class="progress-step <%= status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Received' ? 'active' : '' %> <%= status === 'Received' ? 'current' : '' %>">
-                    <span class="progress-icon"><i class="fas fa-clipboard-check"></i></span>
-                    <p>Received</p>
+            <% } else {%>
+                <div id="progress-container" class="progress-container">
+                    <div id="progress-returned"
+                        class="progress-step <%= status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Returned' ? 'active' : '' %> <%= status === 'Returned' ? 'current' : '' %>">
+                        <span class="progress-icon"><i class="fas fa-undo"></i></span>
+                        <p>Returned</p>
+                    </div>
+                    <div id="progress-received"
+                        class="progress-step <%= status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Received' ? 'active' : '' %> <%= status === 'Received' ? 'current' : '' %>">
+                        <span class="progress-icon"><i class="fas fa-clipboard-check"></i></span>
+                        <p>Received</p>
+                    </div>
+                    <div id="progress-refund-issued"
+                        class="progress-step <%= status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Refund Issued' ? 'active' : '' %> <%= status === 'Refund Issued' ? 'current' : '' %>">
+                        <span class="progress-icon"><i class="fas fa-credit-card"></i></span>
+                        <p>Refund Issued</p>
+                    </div>
+                    <div id="progress-refund-credited"
+                        class="progress-step <%= status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Refund Credited' ? 'active' : '' %> <%= status === 'Refund Credited' ? 'current' : '' %>">
+                        <span class="progress-icon"><i class="fas fa-money-bill-wave"></i></span>
+                        <p>Refund Credited</p>
+                    </div>
                 </div>
-                <div id="progress-refund-issued"
-                    class="progress-step <%= status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Refund Issued' ? 'active' : '' %> <%= status === 'Refund Issued' ? 'current' : '' %>">
-                    <span class="progress-icon"><i class="fas fa-credit-card"></i></span>
-                    <p>Refund Issued</p>
-                </div>
-                <div id="progress-refund-credited"
-                    class="progress-step <%= status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Refund Credited' ? 'active' : '' %> <%= status === 'Refund Credited' ? 'current' : '' %>">
-                    <span class="progress-icon"><i class="fas fa-money-bill-wave"></i></span>
-                    <p>Refund Credited</p>
-                </div>
-            </div>
             <% } %>
-                    <% }else{ %>
-                        <div id="progress-cancelled"
-                            class="progress-step <%= status === 'Cancelled' ? 'completed' : '' %> <%= status === 'Cancelled' ? 'active' : '' %> <%= status === 'Cancelled' ? 'current' : '' %>">
-                            <span class="progress-icon-ca"><i class="fas fa-ban"></i></span>
-                            <p>Cancelled</p>
-                        </div>
+        <% }else{ %>
+            <div id="progress-cancelled"
+                class="progress-step <%= status === 'Cancelled' ? 'completed' : '' %> <%= status === 'Cancelled' ? 'active' : '' %> <%= status === 'Cancelled' ? 'current' : '' %>">
+                <span class="progress-icon-ca"><i class="fas fa-ban"></i></span>
+                <p>Cancelled</p>
+            </div>
+        <% } %>
+   
+    <!-- Include order ID in a hidden input -->
+    <input type="hidden" id="order-id" value="<%= order.orderId %>">
+
+    <!-- Product and Offer Details -->
+    <div id="product-section" class="product-section">
+        <% if (products && products.length> 0) { %>
+            <% products.forEach(product=> { %>
+                <div id="product-item-<%= product.id %>" class="product-item">
+                    <div id="product-details-<%= product.id %>" class="product-details">
+                        <p>Product Name: <%= product.productName %></p>
+                        <p>Description: <%= product.description %></p>
+                        <p>Price: ₹<%= product.price %></p>
+                        <p>Quantity: <%= product.quantity %></p>
+                        <% if (status==='Delivered' ) { %>
+                            <p>Delivery Date: <%= product.deliveryDate %></p>
                         <% } %>
+                    </div>
+                    <div id="product-image-<%= product.id %>" class="product-image">
+                        <img src="/uploads/products-images/<%= product.primaryImages.length > 0 ? product.primaryImages[0].name : 'default-image.jpg' %>"alt="Product Image">
+                    </div>
+                    <div id="product-cancellation-<%= product._id %>"class="product-cancellation">
+                        <% if (status!=="Failed") { %>                        
+                        <% if (status==='Delivered' ) { %>
+                            <% if (!order.return) { %>
+                                <button id="return-button-<%= product.productId %>"class="return-button">Return</button>
+                            <% } else { %>
+                                <button id="return-button-<%= product.productId %>" class="return-button">Cancel Return</button>
+                            <% } %>
+                        <% } else { %>
+                            <input type="hidden"id="delivered-date-<%= product.productId %>" value="<%= order.expectedDeliveryDate %>">
+                            <% if (product.isCanceld) { %>
+                                <button class="continue-shipping-button"data-product-id="<%= product.productId %>">Continue Shipping</button>
+                            <% } else { %>
+                                <button class="cancel-button"data-product-id="<%= product.productId %>">Cancel</button>
+                            <% } %>
+                        <% } %>
+                        <% } %>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>No products found.</p>
+        <% } %>
+    </div>
 
-                            <!-- Include order ID in a hidden input -->
-                            <input type="hidden" id="order-id" value="<%= order.orderId %>">
+    <!-- Offer Details -->
+    <div id="offer-details" class="offer-details">
+        <p>Total Price: ₹<%= order.totalAmount.toFixed(2) %>
+        </p>
+        <p>Coupon: <%= order.coupon && order.coupon.code ? order.coupon.code
+                : 'No Coupon Applied' %>
+        </p>
 
-                            <!-- Product and Offer Details -->
-                            <div id="product-section" class="product-section">
-                                <% if (products && products.length> 0) { %>
-                                    <% products.forEach(product=> { %>
-                                        <div id="product-item-<%= product.id %>" class="product-item">
-                                            <div id="product-details-<%= product.id %>" class="product-details">
-                                                <p>Product Name: <%= product.productName %>
-                                                </p>
-
-                                                <p>Description: <%= product.description %>
-                                                </p>
-                                                <p>Price: ₹<%= product.price %>
-                                                </p>
-                                                <p>Quantity: <%= product.quantity %>
-                                                </p>
-                                                <% if (status==='Delivered' ) { %>
-                                                    <p>Delivery Date: <%= product.deliveryDate %>
-                                                    </p>
-                                                    <% } %>
-                                            </div>
-                                            <div id="product-image-<%= product.id %>" class="product-image">
-                                                <img src="/uploads/products-images/<%= product.primaryImages.length > 0 ? product.primaryImages[0].name : 'default-image.jpg' %>"
-                                                    alt="Product Image">
-                                            </div>
-                                            <div id="product-cancellation-<%= product._id %>"
-                                                class="product-cancellation">
-                                                <% if (status==='Delivered' ) { %>
-                                                    <% if (!order.return) { %>
-                                                        <button id="return-button-<%= product.productId %>"
-                                                            class="return-button">Return</button>
-                                                        <% } else { %>
-                                                            <button id="return-button-<%= product.productId %>"
-                                                                class="return-button">Cancel Return</button>
-                                                            <% } %>
-                                                                <% } else { %>
-                                                                    <input type="hidden"
-                                                                        id="delivered-date-<%= product.productId %>"
-                                                                        value="<%= order.expectedDeliveryDate %>">
-                                                                    <% if (product.isCanceld) { %>
-                                                                        <button class="continue-shipping-button"
-                                                                            data-product-id="<%= product.productId %>">Continue
-                                                                            Shipping</button>
-                                                                        <% } else { %>
-                                                                            <button class="cancel-button"
-                                                                                data-product-id="<%= product.productId %>">Cancel</button>
-                                                                            <% } %>
-                                                                                <% } %>
-                                            </div>
-
-                                        </div>
-                                        <% }) %>
-                                            <% } else { %>
-                                                <p>No products found.</p>
-                                                <% } %>
-                            </div>
-
-                            <!-- Offer Details -->
-                            <div id="offer-details" class="offer-details">
-                                <p>Total Price: ₹<%= order.totalAmount.toFixed(2) %></p>
-                                <p>Coupon: <%= order.coupon && order.coupon.code ? order.coupon.code : 'No Coupon Applied' %></p>
-                              
-                                <% if (order.coupon && order.coupon.code) { %>
-                                  <p>Discount:
-                                    <% if (order.coupon.discountPercentage) { %>
-                                      <%= order.coupon.discountPercentage %>% 
-                                    <% } else if (order.couponDiscount) { %>
-                                      ₹<%= order.couponDiscount.toFixed(2) %>
-                                    <% } else { %>
-                                      Applied
+        <% if (order.coupon && order.coupon.code) { %>
+            <p>Discount:
+                <% if (order.coupon.discountPercentage) { %>
+                    <%= order.coupon.discountPercentage %>%
+                        <% } else if (order.couponDiscount) { %>
+                            ₹<%= order.couponDiscount.toFixed(2) %>
+                                <% } else { %>
+                                    Applied
                                     <% } %>
-                                  </p>
-                                  <p>Discounted Price: ₹<%= (order.totalAmount - order.offerAppliedTotalAmount).toFixed(2) %></p>
-                                <% } %>
-                              
-                                <p>Offer Applied Total Amount: ₹<%= ((order.offerAppliedTotalAmount || order.totalAmount) < 0 ? 0 : (order.offerAppliedTotalAmount || order.totalAmount)).toFixed(2) %></p>
-                              </div>
-                              
+            </p>
+            <p>Discounted Price: ₹<%= (order.totalAmount -
+                    order.offerAppliedTotalAmount).toFixed(2) %>
+            </p>
+            <% } %>
 
-                            <!-- Order Details -->
-                            <div id="order-details" class="order-details">
-                                <!-- User Details -->
-                                <div id="user-details" class="delivery-info">
-                                    <td>
+                <p>Offer Applied Total Amount: ₹<%= ((order.offerAppliedTotalAmount ||
+                        order.totalAmount) < 0 ? 0 : (order.offerAppliedTotalAmount ||
+                        order.totalAmount)).toFixed(2) %>
+                </p>
+    </div>
 
-                                    </td>
-                                    <p>User Name:<%= user.firstName%>
-                                            <%=user.lastName%>
-                                    </p>
-                                    <p>Email: <%=user.email %>
-                                    </p>
-                                    <p>Phone: <%= shippingAddress.addresses[0].phoneNumber %>
-                                    </p>
-                                </div>
 
-                                <!-- Shipping Address -->
-                                <div id="shipping-address" class="shipping-address">
-                                    <p>Shipping Address:</p>
-                                    <% if (shippingAddress && shippingAddress.addresses &&
-                                        shippingAddress.addresses.length> 0) { %>
-                                        <p>
-                                            <%= shippingAddress.addresses[0].place %>
-                                        </p>
-                                        <p>
-                                            <%= shippingAddress.addresses[0].houseNumber %>
-                                        </p>
-                                        <p>
-                                            <%= shippingAddress.addresses[0].landmark %>, <%=
-                                                    shippingAddress.addresses[0].zipcode %>
-                                        </p>
-                                        <p>
-                                            <%= shippingAddress.addresses[0].street %>
-                                        </p>
-                                        <p>
-                                            <%= shippingAddress.addresses[0].city %>
-                                        </p>
-                                        <p>
-                                            <%= shippingAddress.addresses[0].country %>
-                                        </p>
-                                        <p>
-                                            <%= shippingAddress.addresses[0].phoneNumber %>
-                                        </p>
-                                        <% } else { %>
-                                            <p>No shipping address found.</p>
-                                            <% } %>
-                                </div>
+    <!-- Order Details -->
+    <div id="order-details" class="order-details">
+        <!-- User Details -->
+        <div id="user-details" class="delivery-info">
+            <td>
 
-                                <!-- Order Information -->
-                                <div id="order-info" class="order-info">
-                                    <p>Order ID: <%= order.orderId %>
-                                    </p>
-                                    <p>Order Date: <%= new Date(order.createdAt).toLocaleDateString('en-IN') %>
-                                    </p>
-                                    <p>Delivery Date: <%= new
-                                            Date(order.expectedDeliveryDate).toLocaleDateString('en-IN') %>
-                                    </p>
-                                    <p>Payment Method: <%= order.paymentMethod %>
-                                    </p>
+            </td>
+            <p>User Name:<%= user.firstName%>
+                    <%=user.lastName%>
+            </p>
+            <p>Email: <%=user.email %>
+            </p>
+            <p>Phone: <%= shippingAddress.addresses[0].phoneNumber %>
+            </p>
+        </div>
 
-                                    <% if (order.paymentMethod==='Razor Pay' && order.paymentId) { %>
-                                        <p>Transaction ID: <%= order.paymentId %>
-                                        </p>
-                                        <% } %>
-                                </div>
+        <!-- Shipping Address -->
+        <div id="shipping-address" class="shipping-address">
+            <p>Shipping Address:</p>
+            <% if (shippingAddress && shippingAddress.addresses &&shippingAddress.addresses.length> 0) { %>
+                <p>
+                    <%= shippingAddress.addresses[0].place %>
+                </p>
+                <p>
+                    <%= shippingAddress.addresses[0].houseNumber %>
+                </p>
+                <p>
+                    <%= shippingAddress.addresses[0].landmark %>, <%=
+                            shippingAddress.addresses[0].zipcode %>
+                </p>
+                <p>
+                    <%= shippingAddress.addresses[0].street %>
+                </p>
+                <p>
+                    <%= shippingAddress.addresses[0].city %>
+                </p>
+                <p>
+                    <%= shippingAddress.addresses[0].country %>
+                </p>
+                <p>
+                    <%= shippingAddress.addresses[0].phoneNumber %>
+                </p>
+                <% } else { %>
+                    <p>No shipping address found.</p>
+                    <% } %>
+        </div>
 
-                            </div>
+        <div id="order-info" class="order-info">
+            <p>Order ID: <%= order.orderId %></p>
+            <p>Order Date: <%= new Date(order.createdAt).toLocaleDateString('en-IN') %></p>
+            <p>Delivery Date: <%= new Date(order.expectedDeliveryDate).toLocaleDateString('en-IN') %></p>
+            <p>Payment Method: <%= order.paymentMethod %></p>
+            <p>Payment Status: <%= order.paymentStatus %></p>
+            <% if (order.paymentMethod === 'Razor Pay' && order.paymentId) { %>
+                <p>Transaction ID: <%= order.paymentId %></p>
+            <% } %>
+            <% if (order.paymentStatus === 'Failed') { %>
+                <button id="payNowButton" class="btn btn-primary">Pay Now</button>
+            <% } %>
+        </div>
+        
 
-                            <!-- Buttons -->
-                            <div id="button-container">
-                                <button id="print-button" onclick="window.print()">Print</button>
-                                <button id="whatsapp-button" class="whatsapp-button">
-                                    <a href="/allProducts"><i class="fi-rs-shopping-bag mr-10"></i>Continue
-                                        Shopping</a>
-                                </button>
-                            </div>
-                            <!-- Cancel Reason Modal -->
-                            <div class="modal fade" id="cancelReasonModal" tabindex="-1"
-                                aria-labelledby="cancelReasonModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="cancelReasonModalLabel">Cancel Product</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <textarea id="cancelReasonTextarea" class="form-control"
-                                                placeholder="Enter reason for cancellation"></textarea>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <button type="button" id="confirmCancelBtn" class="btn btn-danger">Cancel
-                                                Product</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Return Reason Modal -->
-                            <div class="modal fade" id="returnReasonModal" tabindex="-1"
-                                aria-labelledby="returnReasonModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="returnReasonModalLabel">Return Product</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <textarea id="returnReasonTextarea" class="form-control"
-                                                placeholder="Enter reason for return"></textarea>
-                                            <div class="mt-3">
-                                                <label for="boxStatusSelect" class="form-label">Was the box
-                                                    opened?</label>
-                                                <select id="boxStatusSelect" class="form-select">
-                                                    <option value="" disabled selected>Select an option</option>
-                                                    <option value="opened">Yes</option>
-                                                    <option value="unopened">No</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <button type="button" id="confirmReturnBtn" class="btn btn-primary">Return
-                                                Product</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+    </div>
 
+    <!-- Buttons -->
+    <div id="button-container">
+        <button id="print-button" onclick="window.print()">Print</button>
+        <button id="whatsapp-button" class="whatsapp-button">
+            <a href="/allProducts"><i class="fi-rs-shopping-bag mr-10"></i>Continue
+                Shopping</a>
+        </button>
+    </div>
+    <!-- Cancel Reason Modal -->
+    <div class="modal fade" id="cancelReasonModal" tabindex="-1"
+        aria-labelledby="cancelReasonModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelReasonModalLabel">Cancel Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea id="cancelReasonTextarea" class="form-control"
+                        placeholder="Enter reason for cancellation"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="confirmCancelBtn" class="btn btn-danger">Cancel
+                        Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Return Reason Modal -->
+    <div class="modal fade" id="returnReasonModal" tabindex="-1"
+        aria-labelledby="returnReasonModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="returnReasonModalLabel">Return Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea id="returnReasonTextarea" class="form-control"
+                        placeholder="Enter reason for return"></textarea>
+                    <div class="mt-3">
+                        <label for="boxStatusSelect" class="form-label">Was the box
+                            opened?</label>
+                        <select id="boxStatusSelect" class="form-select">
+                            <option value="" disabled selected>Select an option</option>
+                            <option value="opened">Yes</option>
+                            <option value="unopened">No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="confirmReturnBtn" class="btn btn-primary">Return
+                        Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  
 </div>
 
 <script>
@@ -869,3 +865,206 @@
     });
 
 </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Include Razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const payNowButton = document.getElementById("payNowButton");
+    
+        if (payNowButton) {
+            payNowButton.addEventListener("click", function() {
+                Swal.fire({
+                    title: 'Select Payment Method',
+                    html: `
+                        <div style="display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
+                            <div style="text-align: center;">
+                                <input type="radio" name="paymentMethod" value="wallet" id="walletOption" style="display: none;">
+                                <i class="fas fa-wallet" id="walletIcon" style="font-size: 2rem; cursor: pointer; color: #4CAF50;" title="Wallet"></i>
+                                <div style="color: #4CAF50;">Wallet</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <input type="radio" name="paymentMethod" value="cod" id="codOption" style="display: none;">
+                                <i class="fas fa-money-bill" id="codIcon" style="font-size: 2rem; cursor: pointer; color: #FFC107;" title="Cash on Delivery"></i>
+                                <div style="color: #FFC107;">Cash on Delivery</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <input type="radio" name="paymentMethod" value="razorPay" id="razorPayOption" style="display: none;">
+                                <i class="fas fa-credit-card" id="razorPayIcon" style="font-size: 2rem; cursor: pointer; color: #2196F3;" title="Razor Pay"></i>
+                                <div style="color: #2196F3;">Razor Pay</div>
+                            </div>
+                        </div>
+                    `,
+                    showConfirmButton: false, // Hide the confirm button
+                    showCancelButton: true,
+                    cancelButtonText: 'Cancel',
+                    didOpen: () => {
+                        document.getElementById('walletIcon').addEventListener('click', function() {
+                            handlePayment('wallet');
+                        });
+                        document.getElementById('codIcon').addEventListener('click', function() {
+                            handlePayment('cod');
+                        });
+                        document.getElementById('razorPayIcon').addEventListener('click', function() {
+                            handlePayment('razorPay');
+                        });
+                    }
+                });
+            });
+        }
+    
+        function handlePayment(paymentMethod) {
+            const orderId = '<%= order.orderId %>'; 
+            const totalAmount = '<%= order.totalAmount %>'; 
+    
+            if (paymentMethod === 'wallet') {
+                // Handle Wallet Payment
+                fetch('/order/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        orderId: orderId,
+                        paymentMethod: 'Wallet'
+                    })
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire({
+                            title: 'Order Placed',
+                            text: 'Your order will be processed using Wallet payment.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.reload(); // Reload or redirect as needed
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to process payment. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while processing the payment.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+            } else if (paymentMethod === 'cod') {
+                // Handle Cash on Delivery
+                fetch('/order/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        orderId: orderId,
+                        paymentMethod: 'COD'
+                    })
+                }).then(response => {
+                    if (response.ok) {
+                        Swal.fire({
+                            title: 'Order Placed',
+                            text: 'Your order will be processed with Cash on Delivery.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.reload(); 
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to process payment. Please try again.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while processing the payment.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+            } else if (paymentMethod === 'razorPay') {
+                // Razorpay Payment Gateway
+                var options = {
+                    key: "<%= process.env.RAZOR_PAY_KEY_ID %>", // Your Razorpay Key ID
+                    amount: totalAmount * 100, // Amount in paise
+                    currency: "INR",
+                    name: "Order Payment",
+                    description: "Payment for order",
+                    handler: function (response) {
+                        fetch("/user/verify-orderpayment", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                paymentId: response.razorpay_payment_id,
+                                orderId: orderId
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(verifyData => {
+                            if (verifyData.success) {
+                                showPurchaseSuccessDialog(orderId);
+                            } else {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'Payment verification failed. Please try again.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error verifying payment:', error);
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'An error occurred while verifying the payment.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        });
+                    },
+                    theme: {
+                        color: "#3399cc"
+                    }
+                };
+    
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+            }
+        }
+    
+        function showPurchaseSuccessDialog(orderId) {
+            Swal.fire({
+                title: 'Purchase Successful',
+                html: `Your order has been placed successfully!<br>Your order ID is ${orderId}`,
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'Continue Shopping',
+                cancelButtonText: 'Show Order Details'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/allProducts';
+                } else {
+                    window.location.href = `/order/details/${orderId}`;
+                }
+            });
+        }
+    });
+    </script>
+    

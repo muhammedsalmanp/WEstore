@@ -17,13 +17,13 @@ const userSchema = new Schema({
     firstName: {
         type: String,
         required: function() {
-            return !this.googleId && !this.facebookId; // Required if not a Google or Facebook user
+            return !this.googleId && !this.facebookId; 
         },
     },
     lastName: {
         type: String,
         required: function() {
-            return !this.googleId && !this.facebookId; // Required if not a Google or Facebook user
+            return !this.googleId && !this.facebookId; 
         },
     },
     email: {
@@ -34,7 +34,7 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: function() {
-            return !this.googleId && !this.facebookId; // Required if not a Google or Facebook user
+            return !this.googleId && !this.facebookId; 
         },
     },
     isAdmin: {

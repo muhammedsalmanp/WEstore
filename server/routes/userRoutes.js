@@ -9,7 +9,7 @@ const checkOutCondroller = require("../controller/checkOutCondroller");
 const couponController = require("../controller/CouponCondroller");
 const orderController = require("../controller/orderController")
 
-
+const Product = require("../model/productSchema");
 // user Wishlist 
 router.post('/wishlist/add', wishlistController.addToWishlist);
 router.post('/wishlist/remove', wishlistController.removeFromWishlist);
@@ -31,7 +31,7 @@ router.post("/user/addAddress", userController.addAddress)
 router.post("/user/address/:addressId/edit", userController.editAddress)
 router.delete("/user/address/:addressId/delete", userController.deleteAddress)
 router.post("/set-default-address/:addressId", userController.setDefault)
-
+router.get("/api/getAddressDetails/:zipcode",userController.confirmZipCode)
 // coupon 
 
 router.get('/coupons/available', couponController.getAllCoupons);
@@ -57,8 +57,19 @@ router.post('/order/cancel', orderController.cancelOrder);
 router.post("/order/continueShipping", orderController.restoreProduct);
 router.post('/return-product', orderController.returnProduct);
 
+router.post("/order/create",orderController.reOrder)
 
 
+
+
+router.get('/product-stock/:productId', async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.productId);
+        res.json({ stock: product.stock });
+    } catch (error) {
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+});
 
 
 

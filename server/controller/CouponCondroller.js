@@ -229,13 +229,10 @@ module.exports = {
   /*-- user side --*/
 
   /*get coupons and appy coupons */
-  
+
   getAllCoupons: async (req, res) => {
     try {
-      const coupons = await Coupon.find({
-        isActive: true,
-        expirationDate: { $gte: new Date() },
-      });
+      const coupons = await Coupon.find({ isActive: true, expirationDate: { $gte: new Date() }, });
       res.json(coupons);
     } catch (error) {
       console.error("Error fetching coupons:", error);
@@ -248,38 +245,38 @@ module.exports = {
       const { couponCode } = req.body;
       const userId = req.session.user._id;
 
-      // Fetch the coupon
+
       const coupon = await Coupon.findOne({ code: couponCode, isActive: true });
       if (!coupon) {
         return res.status(400).json({ message: "Invalid or expired coupon" });
       }
 
-      // Fetch the user's cart
       const cart = await Cart.findOne({ userId });
       if (!cart) {
         return res.status(400).json({ message: "Cart not found" });
       }
 
-      // Check if total price meets the minimum purchase amount
+      console.log(`Total Amount Before Discount: ${cart.totalPrice}`);
       if (cart.totalPrice < coupon.minPurchaseAmount) {
-        return res
-          .status(400)
-          .json({
-            message: `You need minimum purchase amount : ${coupon.minPurchaseAmount}`,
-          });
+        return res.status(400).json({
+          message: `Minimum purchase amount is ${coupon.minPurchaseAmount}`,
+        });
       }
 
-      // Calculate the discount amount based on percentage
-      const discountAmount =
-        (cart.totalPrice * coupon.discountPercentage) / 100;
+      const discountAmount = (cart.totalPrice * coupon.discountPercentage) / 100;
       const newTotalPrice = cart.totalPrice - discountAmount;
 
-      // Update the cart with new total price, coupon details, and applied coupons
+      console.log(`Discount Percentage: ${coupon.discountPercentage}%`);
+      console.log(`Discount Amount: ${discountAmount}`);
+      console.log(`New Total Amount After Discount: ${newTotalPrice}`);
+
       cart.coupon = coupon._id;
       cart.couponDiscount = discountAmount;
       cart.offerAppliedTotalAmount = newTotalPrice;
 
       await cart.save();
+
+      console.log('Coupon applied and cart updated successfully.');
 
       res.json({
         success: "Coupon applied successfully",
@@ -290,9 +287,7 @@ module.exports = {
       });
     } catch (error) {
       console.error("Error applying coupon:", error);
-      res
-        .status(500)
-        .json({ message: "Failed to apply coupon", details: error.message });
+      res.status(500).json({ message: "Failed to apply coupon", details: error.message });
     }
   },
 

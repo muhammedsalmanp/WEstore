@@ -1,28 +1,19 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <style>
-    .input-group {
-        position: relative;
-    }
-    .input-group-append {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-    }
-    .input-group-append i {
-        font-size: 1.2em;
-    }
-    .is-invalid {
-        border-color: red;
-    }
-    .invalid-feedback {
-        display: none;
-        color: red;
-    }
-    .is-invalid + .invalid-feedback {
-        display: block;
-    }
+ .form-control {
+  border: 2px solid #ced4da;
+  transition: border-color 0.3s;
+}
+.form-control.valid {
+  border-color: green;
+}
+.form-control.invalid {
+  border-color: red;
+}
+.input-group-text {
+  cursor: pointer;
+}
+
 </style>
 
 <section>
@@ -42,38 +33,42 @@
                                 <div class="form-outline mb-4">
                                     <label for="password" class="form-label text-left">New Password</label>
                                     <div class="input-group">
-                                      <input
-                                        name="password"
-                                        type="password"
-                                        class="form-control"
-                                        id="password"
-                                        required
-                                      />
-                                      <div class="input-group-append">
-                                        <span
-                                          class="input-group-text"
-                                          onclick="togglePasswordVisibility('password')"
-                                          ><i class="fa fa-eye"></i
-                                        ></span>
-                                      </div>
-                                     </div>
-                                    <div class="invalid-feedback" id="passwordError">Password must be at least 8 characters long, include 1 lowercase, 1 uppercase, 1 number, and 1 special character.</div>
+                                        <input name="password" type="password" class="form-control" id="password"
+                                            required oninput="validatePassword()" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text"
+                                                onclick="togglePasswordVisibility('password')"><i
+                                                    class="fa fa-eye"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback" id="passwordError">
+                                        Password must be at least 8 characters long, include 1 lowercase, 1 uppercase, 1
+                                        number, and 1 special character.
+                                    </div>
                                 </div>
                                 <div class="form-outline mb-4">
                                     <label for="confirmPassword" class="form-label text-left">Confirm Password</label>
                                     <div class="input-group">
-                                        <input name="confirmPassword" type="password" class="form-control" id="confirmPassword" required />
+                                        <input name="confirmPassword" type="password" class="form-control"
+                                            id="confirmPassword" required oninput="validateConfirmPassword()" />
                                         <div class="input-group-append">
-                                            <span class="input-group-text" onclick="togglePasswordVisibility('confirmPassword')"><i class="fa fa-eye"></i></span>
+                                            <span class="input-group-text"
+                                                onclick="togglePasswordVisibility('confirmPassword')"><i
+                                                    class="fa fa-eye"></i></span>
                                         </div>
                                     </div>
-                                    <div class="invalid-feedback" id="confirmPasswordError">Passwords do not match.</div>
+                                    <div class="invalid-feedback" id="confirmPasswordError">
+                                        Passwords do not match.
+                                    </div>
                                 </div>
                                 <!-- Verify button -->
                                 <div class="flex-c-m">
-                                    <button type="submit" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">Confirm</button>
+                                    <button type="submit"
+                                        class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04"
+                                        id="submitBtn">Confirm</button>
                                 </div>
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -83,92 +78,85 @@
 </section>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const form = document.getElementById("resetForm");
-        const password = document.getElementById("password");
-        const confirmPassword = document.getElementById("confirmPassword");
-        const passwordError = document.getElementById("passwordError");
-        const confirmPasswordError = document.getElementById("confirmPasswordError");
-
-        const showError = (element, message) => {
-            element.classList.add("is-invalid");
-            element.nextElementSibling.textContent = message;
-        };
-
-        const clearError = (element) => {
-            element.classList.remove("is-invalid");
-            element.nextElementSibling.textContent = "";
-        };
-
-        const togglePasswordVisibility = (fieldId) => {
-            const field = document.getElementById(fieldId);
-            const icon = field.nextElementSibling.querySelector('i');
-            if (field.type === 'password') {
-                field.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                field.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        };
-
-        form.addEventListener("submit", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            let isValid = true;
-
-            const passwordValue = password.value;
-            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-            if (!passwordRegex.test(passwordValue)) {
-                showError(password, "Password must be at least 8 characters, include 1 lowercase, 1 uppercase, 1 number, and 1 special character.");
-                isValid = false;
-            } else {
-                clearError(password);
-            }
-
-            if (passwordValue !== confirmPassword.value) {
-                showError(confirmPassword, "Passwords do not match.");
-                isValid = false;
-            } else {
-                clearError(confirmPassword);
-            }
-
-            if (isValid) {
-                form.submit();
-            }
-        });
-
-        document.querySelectorAll('input[type="password"]').forEach(function (input) {
-            input.addEventListener("input", function () {
-                clearError(input);
-            });
-        });
-
-        form.addEventListener("input", function (event) {
-            if (event.target.checkValidity()) {
-                event.target.classList.add("is-valid");
-                event.target.classList.remove("is-invalid");
-            } else {
-                event.target.classList.add("is-invalid");
-                event.target.classList.remove("is-valid");
-            }
-        });
-    });
-    function togglePasswordVisibility(fieldId) {
-        const field = document.getElementById(fieldId);
-        const icon = field.nextElementSibling.querySelector('i');
-        if (field.type === 'password') {
-            field.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            field.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
+    const togglePasswordVisibility = (fieldId) => {
+      const field = document.getElementById(fieldId);
+      const icon = field.nextElementSibling.querySelector('i');
+      if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    };
+  
+    function validatePassword() {
+      const password = document.getElementById('password').value;
+      const passwordField = document.getElementById('password');
+      const passwordError = document.getElementById('passwordError');
+      
+      if (!password) {
+        passwordField.classList.remove('valid');
+        passwordField.classList.add('invalid');
+        passwordError.textContent = 'Password cannot be empty.';
+        passwordError.style.display = 'block';
+        return false;
+      }
+      
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      
+      if (passwordRegex.test(password)) {
+        passwordField.classList.remove('invalid');
+        passwordField.classList.add('valid');
+        passwordError.style.display = 'none';
+        return true;
+      } else {
+        passwordField.classList.remove('valid');
+        passwordField.classList.add('invalid');
+        passwordError.textContent = 'Password must be at least 8 characters long, include 1 lowercase, 1 uppercase, 1 number, and 1 special character.';
+        passwordError.style.display = 'block';
+        return false;
+      }
     }
-</script>
+  
+    function validateConfirmPassword() {
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const confirmPasswordField = document.getElementById('confirmPassword');
+      const confirmPasswordError = document.getElementById('confirmPasswordError');
+      
+      if (!confirmPassword) {
+        confirmPasswordField.classList.remove('valid');
+        confirmPasswordField.classList.add('invalid');
+        confirmPasswordError.textContent = 'Confirm Password cannot be empty.';
+        confirmPasswordError.style.display = 'block';
+        return false;
+      }
+      
+      if (password === confirmPassword) {
+        confirmPasswordField.classList.remove('invalid');
+        confirmPasswordField.classList.add('valid');
+        confirmPasswordError.style.display = 'none';
+        return true;
+      } else {
+        confirmPasswordField.classList.remove('valid');
+        confirmPasswordField.classList.add('invalid');
+        confirmPasswordError.textContent = 'Passwords do not match.';
+        confirmPasswordError.style.display = 'block';
+        return false;
+      }
+    }
+  
+    document.getElementById('resetForm').addEventListener('submit', function(event) {
+      const isPasswordValid = validatePassword();
+      const isConfirmPasswordValid = validateConfirmPassword();
+  
+      if (!isPasswordValid || !isConfirmPasswordValid) {
+        event.preventDefault(); // Prevent form submission if validations fail
+      }
+    });
+  </script>
+  
+  

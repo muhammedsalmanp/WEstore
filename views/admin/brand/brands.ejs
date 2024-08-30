@@ -1,0 +1,46 @@
+<section class="content-main">
+    <ol class="breadcrumb">
+        <% breadcrumbs.forEach(function(crumb, index) { %>
+            <% if (index === breadcrumbs.length - 1) { %>
+                <li class="breadcrumb-item active"><%= crumb.name %></li>
+            <% } else { %>
+                <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.name %></a></li>
+            <% } %>
+        <% }); %>
+    </ol>
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Brands</h2>
+            <p>Brand and vendor management</p>
+        </div>
+        <div>
+            <a href="/admin/brands/addBrands" class="btn btn-primary">
+                <i class="text-muted material-icons md-post_add"></i>Add New Brand
+            </a>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row gx-3">
+                <% if (brand.length === 0) { %>
+                    <div class="col-12 text-center">
+                        <p>No brands found. Please add some brands to display here.</p>
+                    </div>
+                <% } else { %>
+                    <% brand.forEach(function(b) { %>
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                            <figure class="card border-1">
+                                <div class="card-header bg-white text-center">
+                                    <img height="76" src="/uploads/brand-logos/<%= b.logo.name %>" class="img-fluid" alt="Logo">
+                                </div>
+                                <figcaption class="card-body text-center">
+                                    <p class="card-title m-0"><%= b.name %></p>
+                                </figcaption>
+                            </figure>
+                        </div>
+                    <% }); %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</section>

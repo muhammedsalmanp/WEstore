@@ -44,8 +44,23 @@ const productStorage = multer.diskStorage({
 
 const productUpload = multer({
     storage: productStorage
-}).any(); // .any() allows any number of files with any field name
+}).any(); 
+
+const logoStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, '../../public/uploads/brand-logos/'));
+    },
+    filename: (req, file, cb) => {
+        const uniqueFileName = Date.now() + '-' + file.originalname;
+        cb(null, uniqueFileName);
+    }
+});
+
+const brandLogoUpload = multer({
+    storage: logoStorage
+}).single('brandLogo');
 
 module.exports = {
-    productUpload: productUpload
+    productUpload: productUpload,
+    brandLogoUpload:brandLogoUpload,
 };

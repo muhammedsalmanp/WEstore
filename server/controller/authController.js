@@ -14,6 +14,72 @@ module.exports={
     res.render("auth/user/login");
   },
 
+  userLogin: async (req, res) => {
+    const { email, password } = req.body;
+  
+    // Basic validation
+    if (!email || !password) {
+      req.flash("error", "Please provide both email and password.");
+      return res.render("auth/user/login", { email, errors: { email: "Email is required", password: "Password is required" } });
+    }
+  
+    try {
+      // Check if the user is an admin
+      const admin = await User.findOne({ email, isAdmin: true });
+  
+      if (admin) {
+        const isPassValid = await bcrypt.compare(password, admin.password);
+  
+        if (!isPassValid) {
+          req.flash("error", "Password is incorrect");
+          return res.render("auth/user/login", { email, errors: { password: "Password is incorrect" } });
+        }
+  
+        req.session.admin = admin;
+        req.flash("success", "Admin successfully logged in");
+        return res.redirect("/admin");
+      }
+  
+      // Check if the user is a regular user
+      const user = await User.findOne({ email, isAdmin: false });
+  
+      if (!user) {
+        req.flash("error", "Invalid email or password. Please register if you don't have an account.");
+        return res.render("auth/user/login", { email, errors: { email: "Invalid email or password" } });
+      }
+  
+      if (user.isBlocked) {
+        req.flash("error", "Your account is blocked. Please contact admin.");
+        return res.render("auth/user/login", { email, errors: { email: "Account is blocked" } });
+      }
+  
+      if (user.googleId || user.facebookId) {
+        // User authenticated via Google or Facebook
+        req.session.user = user;
+        req.flash("info", "Create a new password to complete your registration.");
+        return res.redirect("/resetPass");
+      }
+  
+      // Check if password is valid for non-social login users
+      const isValid = await bcrypt.compare(password, user.password);
+  
+      if (!isValid) {
+        req.flash("error", "Password is incorrect");
+        return res.render("auth/user/login", { email, errors: { password: "Password is incorrect" } });
+      }
+  
+      req.session.user = user;
+      req.flash("success", "User successfully logged in");
+      return res.redirect("/");
+  
+    } catch (error) {
+      console.error(error);
+      req.flash("error", "Internal server error. Please try again later.");
+      return res.render("auth/user/login", { email, errors: { general: "Internal server error" } });
+    }
+  },
+  
+
   /*-----getRegister------ */
 
   getUserRegister: async (req, res) => {
@@ -26,8 +92,6 @@ module.exports={
       error: req.flash("error"),
     });
   },
-
-  /*-----Register------ */
 
   uerRegister: async (req, res) => {
     const { firstName, lastName, email, password, confirmPassword } = req.body;
@@ -75,45 +139,6 @@ module.exports={
     }
   },
 
-  /*---login----*/
-
-  userLogin: async (req, res) => {
-    const { email, password } = req.body;
-
-    /*--checking is admin or not--*/
-
-    const user = await User.findOne({ email, isAdmin: false });
-   
-    if (!user) {
-      req.flash(
-        "error",
-        "User does not exist or invalid credentials, please register!!!"
-      );
-      return res.redirect("/login");
-    }
-    if (user.isBlocked){
-      req.flash(
-        "error",
-        "your blocked by admin,plese contact with admin"
-      );
-      return res.redirect("/login");
-    }
-
-    /*--checking password--*/
-
-    const isValid = await bcrypt.compare(password, user.password);
-
-    if (!isValid) {
-      req.flash("error", "passwoerd not matech");
-      console.log("passwoerd not matech");
-      return res.redirect("/login");
-    }
-    req.session.user = user;
-    console.log(req.session);
-    console.log(user);
-    req.flash("success", "user successfully logged in");
-    return res.redirect("/");
-  },
 
   /*--OTP verification--*/
 
@@ -124,45 +149,44 @@ module.exports={
     res.render("auth/user/otpVerify");
   },
 
-  /*--otpVerifying--*/
-
   otpVerify: async (req, res) => {
     console.log(req.body);
     try {
-      // Check if verifyToken exists in session
-
       if (!req.session.verifyToken) {
         req.flash("error", "Verification token not found");
         return res.redirect("/");
       }
-
+  
       const userId = req.session.verifyToken;
       const otpData = await OTP.findOne({ userId: userId });
-
-      // Check if OTP data exists
+  
+     
       if (!otpData) {
         req.flash("error", "OTP data not found");
         return res.redirect("/verifyOtp");
       }
-
-      // Compare OTP
-      const validOtp = await bcrypt.compare(req.body.otp, otpData.otp);
-
-      // Check if OTP is valid
+  
+      
+      const otp = `${req.body.otp1}${req.body.otp2}${req.body.otp3}${req.body.otp4}${req.body.otp5}${req.body.otp6}`;
+  
+      
+      const validOtp = await bcrypt.compare(otp, otpData.otp);
+  
+      
       if (!validOtp) {
         req.flash("error", "Invalid OTP");
         return res.redirect("/verifyOtp");
       }
-
-      // Update user verification status
+  
+      
       let user = await User.findOne({ _id: otpData.userId });
       user.isVerified = true;
       await user.save();
-
-      // Success response
+  
+      
       req.flash("success", "User verification successful");
-      delete req.session.verifyToken; // Clear the verification token from session
-      return res.redirect("/login"); // Redirect to login page after successful OTP verification
+      delete req.session.verifyToken; 
+      return res.redirect("/login"); 
     } catch (error) {
       console.error(error);
       req.flash("error", "Internal server error");
@@ -251,7 +275,8 @@ module.exports={
         req.flash("error", "OTP not found");
         return res.redirect("/forgetOtpVerify");
       }
-      const validOtp = await bcrypt.compare(req.body.otp, otpData.otp);
+      const otp = `${req.body.otp1}${req.body.otp2}${req.body.otp3}${req.body.otp4}${req.body.otp5}${req.body.otp6}`;
+      const validOtp = await bcrypt.compare(otp, otpData.otp);
       if (!validOtp) {
         req.flash("error", "invalid OTP");
         return res.redirect("/forgetOtpVerify");

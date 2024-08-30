@@ -1,18 +1,21 @@
-<!-- Breadcrumb navigation -->
-
-
-<!-- Main content section -->
 <section class="content-main">
+    <!-- breadcrumb -->
     <ol class="breadcrumb">
         <% breadcrumbs.forEach(function(crumb, index) { %>
-            <% if (index === breadcrumbs.length - 1) { %>
-                <li class="breadcrumb-item active"><%= crumb.name %></li>
-            <% } else { %>
-                <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.name %></a></li>
-            <% } %>
-        <% }); %>
+            <% if (index===breadcrumbs.length - 1) { %>
+                <li class="breadcrumb-item active">
+                    <%= crumb.name %>
+                </li>
+                <% } else { %>
+                    <li class="breadcrumb-item"><a href="<%= crumb.url %>">
+                            <%= crumb.name %>
+                        </a></li>
+                    <% } %>
+                        <% }); %>
     </ol>
-    <form id="addProductForm" action="/admin/add-product" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+    <!-- addProductForm -->
+    <form id="addProductForm" action="/admin/add-product" method="post" enctype="multipart/form-data"
+        onsubmit="return validateForm()">
         <div class="row">
             <div class="col-9">
                 <div class="content-header">
@@ -25,64 +28,86 @@
                         <!-- Product title input -->
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Product title</label>
-                            <input type="text" placeholder="Type here" name="productName" class="form-control" id="product_name" oninput="checkInput(this)">
-                            <div id="product_name_error" class="error-message" style="color: red; display: none;">Product title cannot be empty.</div>
+                            <input type="text" placeholder="Type here" name="productName" class="form-control"
+                                id="product_name" oninput="checkInput(this)">
+                            <div id="product_name_error" class="error-message" style="color: red; display: none;">
+                                Product title cannot be empty.</div>
                         </div>
-    
+                
                         <!-- Category selection -->
                         <div class="mb-4">
                             <label class="form-label">Category</label>
                             <select class="form-select" name="categoryName">
-                                <% categories.forEach(category => { %>
+                                <% categories.forEach(category=> { %>
                                     <option value="<%- category._id %>"><%- category.name %></option>
-                                <% }) %>
+                                    <% }) %>
                             </select>
                         </div>
-    
+                        <!-- brarnd  selection -->
+                        <div class="mb-4">
+                            <label class="form-label">brand</label>
+                            <select class="form-select" name="brandName">
+                                <% brands.forEach(brand=> { %>
+                                    <option value="<%- brand._id %>"><%- brand.name %></option>
+                                    <% }) %>
+                            </select>
+                        </div>
                         <!-- Stock and price inputs -->
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Add Stock</label>
-                                    <input placeholder="1" name="productStock" type="number" class="form-control" min="1" oninput="checkInput(this)">
-                                    <div id="productStock_error" class="error-message" style="color: red; display: none;">Stock must be at least 1.</div>
+                                    <input placeholder="1" name="productStock" type="number" class="form-control"
+                                        min="1" oninput="checkInput(this)">
+                                    <div id="productStock_error" class="error-message"
+                                        style="color: red; display: none;">Stock must be at least 1.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Price</label>
-                                    <input placeholder="₹" type="number" class="form-control" name="price" min="0" oninput="checkInput(this)">
-                                    <div id="price_error" class="error-message" style="color: red; display: none;">Price cannot be negative.</div>
+                                    <input placeholder="₹" type="number" class="form-control" name="price" min="0"
+                                        oninput="checkInput(this)">
+                                    <div id="price_error" class="error-message" style="color: red; display: none;">Price
+                                        cannot be negative.</div>
                                 </div>
-                            </div>                      
+                            </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Old Price</label>
-                                    <input placeholder="₹" type="number" class="form-control" name="oldPrice" min="0" oninput="checkInput(this)">
-                                    <div id="oldPrice_error" class="error-message" style="color: red; display: none;">Old price cannot be negative.</div>
+                                    <input placeholder="₹" type="number" class="form-control" name="oldPrice" min="0"
+                                        oninput="checkInput(this)">
+                                    <div id="oldPrice_error" class="error-message" style="color: red; display: none;">
+                                        Old price cannot be negative.</div>
                                 </div>
                             </div>
 
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Display Size</label>
-                                    <input placeholder="Display Size" type="number" class="form-control" name="displaySize" oninput="checkInput(this)">
-                                    <div id="displaySize_error" class="error-message" style="color: red; display: none;">Display Size cannot be empty.</div>
+                                    <input placeholder="Display Size" type="number" class="form-control"
+                                        name="displaySize" oninput="checkInput(this)">
+                                    <div id="displaySize_error" class="error-message"
+                                        style="color: red; display: none;">Display Size cannot be empty.</div>
                                 </div>
                             </div>
-                        
+
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Resolution</label>
-                                    <input placeholder="Resolution" type="text" class="form-control" name="resolution" oninput="checkInput(this)">
-                                    <div id="resolution_error" class="error-message" style="color: red; display: none;">Resolution cannot be empty.</div>
+                                    <input placeholder="Resolution" type="text" class="form-control" name="resolution"
+                                        oninput="checkInput(this)">
+                                    <div id="resolution_error" class="error-message" style="color: red; display: none;">
+                                        Resolution cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Colour</label>
-                                    <input placeholder="" type="text" class="form-control" name="colour" oninput="checkInput(this)">
-                                    <div id="colour_error" class="error-message" style="color: red; display: none;">Colour cannot be empty.</div>
+                                    <input placeholder="" type="text" class="form-control" name="colour"
+                                        oninput="checkInput(this)">
+                                    <div id="colour_error" class="error-message" style="color: red; display: none;">
+                                        Colour cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -95,7 +120,8 @@
                                         <option value="Qualcomm Snapdragon">Qualcomm Snapdragon</option>
                                         <option value="Samsung Exynos">Samsung Exynos</option>
                                     </select>
-                                    <div id="processor_error" class="error-message" style="color: red; display: none;">Processor cannot be empty.</div>
+                                    <div id="processor_error" class="error-message" style="color: red; display: none;">
+                                        Processor cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -108,7 +134,8 @@
                                         <option value="32">32 GB</option>
                                         <option value="64">64 GB</option>
                                     </select>
-                                    <div id="ramSize_error" class="error-message" style="color: red; display: none;">RAM size cannot be empty.</div>
+                                    <div id="ramSize_error" class="error-message" style="color: red; display: none;">RAM
+                                        size cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -121,7 +148,8 @@
                                         <option value="1024">1 TB</option>
                                         <option value="2048">2 TB</option>
                                     </select>
-                                    <div id="hardDriveSize_error" class="error-message" style="color: red; display: none;">Hard drive size cannot be empty.</div>
+                                    <div id="hardDriveSize_error" class="error-message"
+                                        style="color: red; display: none;">Hard drive size cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -133,7 +161,8 @@
                                         <option value="Hybrid">Hybrid</option>
                                         <option value="NVMe">NVMe</option>
                                     </select>
-                                    <div id="hardDiskDescription_error" class="error-message" style="color: red; display: none;">Hard disk description cannot be empty.</div>
+                                    <div id="hardDiskDescription_error" class="error-message"
+                                        style="color: red; display: none;">Hard disk description cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -146,7 +175,8 @@
                                         <option value="Apple">Apple</option>
                                         <option value="Non-Graphic">Non-Graphic</option>
                                     </select>
-                                    <div id="graphicsChipsetBrand_error" class="error-message" style="color: red; display: none;">Graphics chipset brand cannot be empty.</div>
+                                    <div id="graphicsChipsetBrand_error" class="error-message"
+                                        style="color: red; display: none;">Graphics chipset brand cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -159,46 +189,56 @@
                                         <option value="Chrome OS">Chrome OS</option>
                                         <option value="Android">Android</option>
                                     </select>
-                                    <div id="operatingSystem_error" class="error-message" style="color: red; display: none;">Operating system cannot be empty.</div>
+                                    <div id="operatingSystem_error" class="error-message"
+                                        style="color: red; display: none;">Operating system cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Number of USB 3.0 Ports</label>
-                                    <input placeholder="1" type="number" class="form-control" name="numberofUSB" min="0" oninput="checkInput(this)">
-                                    <div id="numberofUSB_error" class="error-message" style="color: red; display: none;">Number of USB ports cannot be negative.</div>
+                                    <input placeholder="1" type="number" class="form-control" name="numberofUSB" min="0"
+                                        oninput="checkInput(this)">
+                                    <div id="numberofUSB_error" class="error-message"
+                                        style="color: red; display: none;">Number of USB ports cannot be negative.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Audio Details</label>
-                                    <input type="text" class="form-control" name="audioDetails" oninput="checkInput(this)">
-                                    <div id="audioDetails_error" class="error-message" style="color: red; display: none;">Audio details cannot be empty.</div>
+                                    <input type="text" class="form-control" name="audioDetails"
+                                        oninput="checkInput(this)">
+                                    <div id="audioDetails_error" class="error-message"
+                                        style="color: red; display: none;">Audio details cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Country of Origin</label>
-                                    <input type="text" class="form-control" name="countryofOrigin" oninput="checkInput(this)">
-                                    <div id="countryofOrigin_error" class="error-message" style="color: red; display: none;">Country of origin cannot be empty.</div>
+                                    <input type="text" class="form-control" name="countryofOrigin"
+                                        oninput="checkInput(this)">
+                                    <div id="countryofOrigin_error" class="error-message"
+                                        style="color: red; display: none;">Country of origin cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Item Weight</label>
-                                    <input type="text" class="form-control" name="itemWeight" oninput="checkInput(this)">
-                                    <div id="itemWeight_error" class="error-message" style="color: red; display: none;">Item weight cannot be empty.</div>
+                                    <input type="text" class="form-control" name="itemWeight"
+                                        oninput="checkInput(this)">
+                                    <div id="itemWeight_error" class="error-message" style="color: red; display: none;">
+                                        Item weight cannot be empty.</div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
-                                    <input placeholder="Description" type="text" class="form-control" name="productDespt" oninput="checkInput(this)">
-                                    <div id="description_error" class="error-message" style="color: red; display: none;">Description cannot be empty.</div>
+                                    <input placeholder="Description" type="text" class="form-control"
+                                        name="productDespt" oninput="checkInput(this)">
+                                    <div id="description_error" class="error-message"
+                                        style="color: red; display: none;">Description cannot be empty.</div>
                                 </div>
                             </div>
-                        
-                           <!-- Primary image upload with cropping -->
+                            <!-- Primary image upload with cropping -->
                             <div class="col-lg-12">
                                 <div class="card mb-4">
                                     <div class="card-header">
@@ -207,19 +247,23 @@
                                     <div class="card-body">
                                         <div class="input-upload text-start">
                                             <label for="image1" class="form-label">
-                                                <img id="preview1" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                                                <img id="preview1" src="../assets/imgs/theme/upload.svg" alt=""
+                                                    width="150px">
                                             </label>
-                                            <input type="file" class="form-control" id="image1" style="display: none;" name="primaryImage" onchange="prepareImageForCrop(event, 'preview1')">
-                                            <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image1').click();">Upload Image</button>
+                                            <input type="file" class="form-control" id="image1" style="display: none;"
+                                                name="primaryImage" accept="image/*"
+                                                onchange="validateAndPrepareImage('image1', 'preview1')">
+                                            <button type="button" class="btn btn-md rounded font-sm"
+                                                onclick="document.getElementById('image1').click();">Upload
+                                                Image</button>
                                         </div>
-                                        <div id="primaryImage_error" class="error-message" style="color: red; display: none;">Primary image is required.</div>
+                                        <div id="image1-error" class="error-message"
+                                            style="color: red; font-size: 0.875em; display: none;"></div>
                                     </div>
                                 </div>
                             </div>
-
                             <!-- Secondary images upload -->
                             <div id="secondary-images-container">
-                                <!-- Predefined Secondary Image Upload Sections -->
                                 <div class="col-lg-12">
                                     <div class="card mb-4">
                                         <div class="card-header">
@@ -228,11 +272,18 @@
                                         <div class="card-body">
                                             <div class="input-upload text-start">
                                                 <label for="image2" class="form-label">
-                                                    <img id="preview2" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                                                    <img id="preview2" src="../assets/imgs/theme/upload.svg" alt=""
+                                                        width="150px">
                                                 </label>
-                                                <input type="file" class="form-control" id="image2" name="images" style="display: none;" onchange="prepareImageForCrop(event, 'preview2')">
-                                                <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image2').click();">Upload Image</button>
+                                                <input type="file" class="form-control" id="image2" name="images"
+                                                    style="display: none;" accept="image/*"
+                                                    onchange="validateAndPrepareImage('image2', 'preview2')">
+                                                <button type="button" class="btn btn-md rounded font-sm"
+                                                    onclick="document.getElementById('image2').click();">Upload
+                                                    Image</button>
                                             </div>
+                                            <div id="image2-error" class="error-message"
+                                                style="color: red; font-size: 0.875em; display: none;"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -244,11 +295,18 @@
                                         <div class="card-body">
                                             <div class="input-upload text-start">
                                                 <label for="image3" class="form-label">
-                                                    <img id="preview3" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                                                    <img id="preview3" src="../assets/imgs/theme/upload.svg" alt=""
+                                                        width="150px">
                                                 </label>
-                                                <input type="file" class="form-control" id="image3" name="images" style="display: none;" onchange="prepareImageForCrop(event, 'preview3')">
-                                                <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image3').click();">Upload Image</button>
+                                                <input type="file" class="form-control" id="image3" name="images"
+                                                    style="display: none;" accept="image/*"
+                                                    onchange="validateAndPrepareImage('image3', 'preview3')">
+                                                <button type="button" class="btn btn-md rounded font-sm"
+                                                    onclick="document.getElementById('image3').click();">Upload
+                                                    Image</button>
                                             </div>
+                                            <div id="image3-error" class="error-message"
+                                                style="color: red; font-size: 0.875em; display: none;"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -260,19 +318,28 @@
                                         <div class="card-body">
                                             <div class="input-upload text-start">
                                                 <label for="image4" class="form-label">
-                                                    <img id="preview4" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
+                                                    <img id="preview4" src="../assets/imgs/theme/upload.svg" alt=""
+                                                        width="150px">
                                                 </label>
-                                                <input type="file" class="form-control" id="image4" name="images" style="display: none;" onchange="prepareImageForCrop(event, 'preview4')">
-                                                <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image4').click();">Upload Image</button>
+                                                <input type="file" class="form-control" id="image4" name="images"
+                                                    style="display: none;" accept="image/*"
+                                                    onchange="validateAndPrepareImage('image4', 'preview4')">
+                                                <button type="button" class="btn btn-md rounded font-sm"
+                                                    onclick="document.getElementById('image4').click();">Upload
+                                                    Image</button>
                                             </div>
+                                            <div id="image4-error" class="error-message"
+                                                style="color: red; font-size: 0.875em; display: none;"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
+
                             <!-- Button to add more secondary images -->
                             <div class="col-lg-12 mb-4">
-                                <button type="button" id="add-more-images" class="btn btn-md rounded font-sm">Add More Images</button>
+                                <button type="button" id="add-more-images" class="btn btn-md rounded font-sm">Add More
+                                    Images</button>
                             </div>
 
                             <!-- Submit button -->
@@ -281,14 +348,9 @@
                     </div>
                 </div>
             </div>
-        </div>    
+        </div>
     </form>
-</section>   
-
-
-
-    
-
+</section>
 
 <!-- Image Crop Modal -->
 <div class="modal fade" id="imageCropModal" tabindex="-1" aria-labelledby="imageCropModalLabel" aria-hidden="true">
@@ -311,25 +373,26 @@
 
 <!-- Cropper.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.js"></script>
+
+<!-- imgeuploadandcrop -->
+
 <script defer>
     let currentInputId, currentPreviewId, cropper;
     let croppedImages = {};
     let originalFileNames = {};
-    let imageIndex = 5; // Adjust this if you have more predefined images
+    let imageIndex = 5;
 
     document.addEventListener("DOMContentLoaded", function () {
-        // Initialize cropping for existing images
+
         document.getElementById('image1').addEventListener('change', function () { prepareImageForCropping('image1', 'preview1'); });
         document.getElementById('image2').addEventListener('change', function () { prepareImageForCropping('image2', 'preview2'); });
         document.getElementById('image3').addEventListener('change', function () { prepareImageForCropping('image3', 'preview3'); });
         document.getElementById('image4').addEventListener('change', function () { prepareImageForCropping('image4', 'preview4'); });
 
-        // Crop button handler
         document.getElementById('cropImageBtn').addEventListener('click', function () {
             performCropping();
         });
 
-        // Initialize Cropper when modal is shown
         $('#imageCropModal').on('shown.bs.modal', function () {
             let image = document.getElementById('imageToCrop');
             cropper = new Cropper(image, {
@@ -345,7 +408,6 @@
             });
         });
 
-        // Destroy Cropper instance when modal is hidden
         $('#imageCropModal').on('hidden.bs.modal', function () {
             if (cropper) {
                 cropper.destroy();
@@ -353,18 +415,23 @@
             }
         });
 
-        // Handle adding new image upload sections
         document.getElementById('add-more-images').addEventListener('click', function () {
             addNewImageUploadSection();
         });
     });
 
-    // Function to prepare an image for cropping
     function prepareImageForCropping(inputId, previewId) {
         currentInputId = inputId;
         currentPreviewId = previewId;
         const input = document.getElementById(inputId);
         const file = input.files[0];
+
+        if (!file.type.startsWith("image/")) {
+            alert("Please select an image file.");
+            input.value = "";
+            return;
+        }
+
         const newDate = new Date().getTime();
         originalFileNames[inputId] = `${file.name}_${newDate}`;
 
@@ -375,8 +442,6 @@
         };
         reader.readAsDataURL(file);
     }
-
-    // Function to perform the cropping operation
     function performCropping() {
         if (!cropper) {
             console.error("Cropper is not initialized.");
@@ -397,8 +462,6 @@
             $('#imageCropModal').modal('hide');
         }, 'image/png');
     }
-
-    // Function to add a new image upload section dynamically
     function addNewImageUploadSection() {
         const container = document.getElementById('secondary-images-container');
         const newImageSection = document.createElement('div');
@@ -414,7 +477,7 @@
                         <label for="image${imageIndex}" class="form-label">
                             <img id="preview${imageIndex}" src="../assets/imgs/theme/upload.svg" alt="" width="150px">
                         </label>
-                        <input type="file" class="form-control" id="image${imageIndex}" name="images" style="display: none;" onchange="prepareImageForCropping('image${imageIndex}', 'preview${imageIndex}')">
+                        <input type="file" class="form-control" id="image${imageIndex}" name="images" style="display: none;" accept="image/*" onchange="prepareImageForCropping('image${imageIndex}', 'preview${imageIndex}')">
                         <button type="button" class="btn btn-md rounded font-sm" onclick="document.getElementById('image${imageIndex}').click();">Upload Image</button>
                     </div>
                 </div>
@@ -425,138 +488,205 @@
     }
 </script>
 
+<!-- formvlidation -->
 <script>
     function validateForm() {
         let isValid = true;
 
-        // Product title validation
-        const productName = document.getElementById('product_name').value;
-        if (productName.trim() === "") {
-            document.getElementById('product_name_error').style.display = 'block';
-            document.getElementById('product_name').style.borderColor = 'red';
+        // Check Product Name
+        const productName = document.getElementById('product_name');
+        const productNameError = document.getElementById('product_name_error');
+        if (productName.value.trim() === '') {
+            productNameError.style.display = 'block';
             isValid = false;
         } else {
-            document.getElementById('product_name_error').style.display = 'none';
-            document.getElementById('product_name').style.borderColor = 'green';
+            productNameError.style.display = 'none';
         }
 
-        // Stock validation
-        const productStock = document.querySelector('input[name="productStock"]').value;
-        if (productStock <= 0) {
-            document.getElementById('productStock_error').style.display = 'block';
-            document.querySelector('input[name="productStock"]').style.borderColor = 'red';
+        // Check Stock
+        const productStock = document.querySelector('input[name="productStock"]');
+        const productStockError = document.getElementById('productStock_error');
+        if (productStock.value.trim() === '' || parseInt(productStock.value) < 1) {
+            productStockError.style.display = 'block';
             isValid = false;
         } else {
-            document.getElementById('productStock_error').style.display = 'none';
-            document.querySelector('input[name="productStock"]').style.borderColor = 'green';
+            productStockError.style.display = 'none';
         }
 
-        // Price validation
-        const price = document.querySelector('input[name="price"]').value;
-        if (price < 0) {
-            document.getElementById('price_error').style.display = 'block';
-            document.querySelector('input[name="price"]').style.borderColor = 'red';
+        // Check Price
+        const price = document.querySelector('input[name="price"]');
+        const priceError = document.getElementById('price_error');
+        if (price.value.trim() === '' || parseFloat(price.value) < 0) {
+            priceError.style.display = 'block';
             isValid = false;
         } else {
-            document.getElementById('price_error').style.display = 'none';
-            document.querySelector('input[name="price"]').style.borderColor = 'green';
+            priceError.style.display = 'none';
         }
 
-        // Old price validation
-        const oldPrice = document.querySelector('input[name="oldPrice"]').value;
-        if (oldPrice < 0) {
-            document.getElementById('oldPrice_error').style.display = 'block';
-            document.querySelector('input[name="oldPrice"]').style.borderColor = 'red';
+        // Check Old Price
+        const oldPrice = document.querySelector('input[name="oldPrice"]');
+        const oldPriceError = document.getElementById('oldPrice_error');
+        if (oldPrice.value.trim() === '' || parseFloat(oldPrice.value) < 0) {
+            oldPriceError.style.display = 'block';
             isValid = false;
         } else {
-            document.getElementById('oldPrice_error').style.display = 'none';
-            document.querySelector('input[name="oldPrice"]').style.borderColor = 'green';
+            oldPriceError.style.display = 'none';
         }
 
-        // Other fields validation
-        const fields = [
-            { name: 'colour', error: 'colour_error' },
-            { name: 'displaySize', error: 'displaySize_error' },
-            { name: 'resolution', error: 'resolution_error' },
-            { name: 'processor', error: 'processor_error' },
-            { name: 'ramSize', error: 'ramSize_error' },
-            { name: 'hdSize', error: 'hdSize_error' },
-            { name: 'hdDescription', error: 'hdDescription_error' },
-            { name: 'graphics', error: 'graphics_error' },
-            { name: 'os', error: 'os_error' },
-            { name: 'usbPort', error: 'usbPort_error' },
-            { name: 'audioDetails', error: 'audioDetails_error' },
-            { name: 'countryofOrigin', error: 'countryofOrigin_error' },
-            { name: 'weight', error: 'weight_error' },
-            { name: 'productDespt', error: 'productDespt_error' }
-        ];
-
-        fields.forEach(field => {
-            const value = document.querySelector(`input[name="${field.name}"], textarea[name="${field.name}"]`).value;
-            if (value.trim() === "") {
-                document.getElementById(field.error).style.display = 'block';
-                document.querySelector(`input[name="${field.name}"], textarea[name="${field.name}"]`).style.borderColor = 'red';
-                isValid = false;
-            } else {
-                document.getElementById(field.error).style.display = 'none';
-                document.querySelector(`input[name="${field.name}"], textarea[name="${field.name}"]`).style.borderColor = 'green';
-            }
-        });
-
-        // Primary image validation
-        const primaryImage = document.getElementById('image1').files.length;
-        if (primaryImage === 0) {
-            document.getElementById('primaryImage_error').style.display = 'block';
+        // Check Display Size
+        const displaySize = document.querySelector('input[name="displaySize"]');
+        const displaySizeError = document.getElementById('displaySize_error');
+        if (displaySize.value.trim() === '') {
+            displaySizeError.style.display = 'block';
             isValid = false;
         } else {
-            document.getElementById('primaryImage_error').style.display = 'none';
+            displaySizeError.style.display = 'none';
+        }
+
+        // Check Resolution
+        const resolution = document.querySelector('input[name="resolution"]');
+        const resolutionError = document.getElementById('resolution_error');
+        if (resolution.value.trim() === '') {
+            resolutionError.style.display = 'block';
+            isValid = false;
+        } else {
+            resolutionError.style.display = 'none';
+        }
+
+        // Check Colour
+        const colour = document.querySelector('input[name="colour"]');
+        const colourError = document.getElementById('colour_error');
+        if (colour.value.trim() === '') {
+            colourError.style.display = 'block';
+            isValid = false;
+        } else {
+            colourError.style.display = 'none';
+        }
+
+        // Check Processor
+        const processor = document.querySelector('select[name="processor"]');
+        const processorError = document.getElementById('processor_error');
+        if (processor.value === '') {
+            processorError.style.display = 'block';
+            isValid = false;
+        } else {
+            processorError.style.display = 'none';
+        }
+
+        // Check RAM Size
+        const ramSize = document.querySelector('select[name="ramSize"]');
+        const ramSizeError = document.getElementById('ramSize_error');
+        if (ramSize.value === '') {
+            ramSizeError.style.display = 'block';
+            isValid = false;
+        } else {
+            ramSizeError.style.display = 'none';
+        }
+
+        // Check Hard Drive Size
+        const hardDriveSize = document.querySelector('select[name="hardDriveSize"]');
+        const hardDriveSizeError = document.getElementById('hardDriveSize_error');
+        if (hardDriveSize.value === '') {
+            hardDriveSizeError.style.display = 'block';
+            isValid = false;
+        } else {
+            hardDriveSizeError.style.display = 'none';
+        }
+
+        // Check Hard Disk Description
+        const hardDiskDescription = document.querySelector('select[name="hardDiskDescription"]');
+        const hardDiskDescriptionError = document.getElementById('hardDiskDescription_error');
+        if (hardDiskDescription.value === '') {
+            hardDiskDescriptionError.style.display = 'block';
+            isValid = false;
+        } else {
+            hardDiskDescriptionError.style.display = 'none';
+        }
+
+        // Check Graphics Chipset Brand
+        const graphicsChipsetBrand = document.querySelector('select[name="graphicsChipsetBrand"]');
+        const graphicsChipsetBrandError = document.getElementById('graphicsChipsetBrand_error');
+        if (graphicsChipsetBrand.value === '') {
+            graphicsChipsetBrandError.style.display = 'block';
+            isValid = false;
+        } else {
+            graphicsChipsetBrandError.style.display = 'none';
+        }
+
+        // Check Operating System
+        const operatingSystem = document.querySelector('select[name="operatingSystem"]');
+        const operatingSystemError = document.getElementById('operatingSystem_error');
+        if (operatingSystem.value === '') {
+            operatingSystemError.style.display = 'block';
+            isValid = false;
+        } else {
+            operatingSystemError.style.display = 'none';
+        }
+
+        // Check Number of USB Ports
+        const numberofUSB = document.querySelector('input[name="numberofUSB"]');
+        const numberofUSBError = document.getElementById('numberofUSB_error');
+        if (numberofUSB.value.trim() === '' || parseInt(numberofUSB.value) < 0) {
+            numberofUSBError.style.display = 'block';
+            isValid = false;
+        } else {
+            numberofUSBError.style.display = 'none';
+        }
+
+        // Check Audio Details
+        const audioDetails = document.querySelector('input[name="audioDetails"]');
+        const audioDetailsError = document.getElementById('audioDetails_error');
+        if (audioDetails.value.trim() === '') {
+            audioDetailsError.style.display = 'block';
+            isValid = false;
+        } else {
+            audioDetailsError.style.display = 'none';
+        }
+
+        // Check Country of Origin
+        const countryofOrigin = document.querySelector('input[name="countryofOrigin"]');
+        const countryofOriginError = document.getElementById('countryofOrigin_error');
+        if (countryofOrigin.value.trim() === '') {
+            countryofOriginError.style.display = 'block';
+            isValid = false;
+        } else {
+            countryofOriginError.style.display = 'none';
+        }
+
+        // Check Item Weight
+        const itemWeight = document.querySelector('input[name="itemWeight"]');
+        const itemWeightError = document.getElementById('itemWeight_error');
+        if (itemWeight.value.trim() === '') {
+            itemWeightError.style.display = 'block';
+            isValid = false;
+        } else {
+            itemWeightError.style.display = 'none';
+        }
+
+        // Check Description
+        const description = document.querySelector('input[name="productDespt"]');
+        const descriptionError = document.getElementById('description_error');
+        if (description.value.trim() === '') {
+            descriptionError.style.display = 'block';
+            isValid = false;
+        } else {
+            descriptionError.style.display = 'none';
+        }
+
+        // Check Primary Image
+        const primaryImage = document.getElementById('image1');
+        const primaryImageError = document.getElementById('image1-error');
+        if (primaryImage.files.length === 0) {
+            primaryImageError.style.display = 'block';
+            isValid = false;
+        } else {
+            primaryImageError.style.display = 'none';
         }
 
         return isValid;
     }
 
     function checkInput(input) {
-        if (input.value.trim() === "") {
-            input.style.borderColor = 'red';
-            document.getElementById(`${input.name}_error`).style.display = 'block';
-        } else {
-            input.style.borderColor = 'green';
-            document.getElementById(`${input.name}_error`).style.display = 'none';
-        }
+        // Custom validation logic if needed
     }
-
-    function previewImage(event, previewId) {
-        const reader = new FileReader();
-        reader.onload = function() {
-            const output = document.getElementById(previewId);
-            output.src = reader.result;
-        }
-        reader.readAsDataURL(event.target.files[0]);
-    }
-
-    document.getElementById('addProductForm').addEventListener('submit', function(event) {
-        if (!validateForm()) {
-            event.preventDefault();
-        }
-    });
-    function checkInput(input) {
-    const value = input.value.trim();
-    const errorId = input.name + "_error";
-
-    if (input.type === "number") {
-        if (value < 0) {
-            document.getElementById(errorId).style.display = "block";
-        } else {
-            document.getElementById(errorId).style.display = "none";
-        }
-    } else {
-        if (value === "") {
-            document.getElementById(errorId).style.display = "block";
-        } else {
-            document.getElementById(errorId).style.display = "none";
-        }
-    }
-}
 </script>
-
-

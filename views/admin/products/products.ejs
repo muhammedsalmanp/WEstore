@@ -35,66 +35,71 @@
             <table class="table text-capitalize table-hover">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>no</th>
                         <th>Image</th>
                         <th>Name</th>
                         <th>Category</th>
+                        <th>Brand</th>
                         <th>Price</th>
                         <th>Stocks</th>
                         <th>Status</th>
                         <th>Edit Product</th>
-                        <th class="text-center">Actions</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% if (product && product.length > 0) { %>
                         <% product.forEach((product, index) => { %>
                             <tr>
-                                <td>
+                                <td class="align-middle text-center">
                                     <%= (current - 1) * perPage + index + 1 %>
                                 </td>
-                                <td>
-                                    <img class="img-fluid img-thumbnail" src="/uploads/products-images/crp/<%= product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>" width="70rem" alt="">
+                                <td class="align-middle text-center">
+                                    <% const imageUrl = product.primaryImages[0]?.name || product.secondaryImages[0]?.name; %>
+                                    <img class="img-fluid img-thumbnail" src="/uploads/products-images/crp/<%= imageUrl ? imageUrl : 'default-image.jpg' %>" width="70rem" alt="Product Image">
                                 </td>
-                                <td>
+                                <td class="align-middle">
                                     <%= product.productName %>
                                 </td>
-                                <td>
-                                    <%= product.category.name %>
+                                <td class="align-middle">
+                                    <%= product.category && product.category.name ? product.category.name : 'No Category' %>
                                 </td>
-                                <td>
+                                <td class="align-middle">
+                                    <%= product.brand && product.brand.name ? product.brand.name : 'No Brand' %>
+                                </td>
+                                <td class="align-middle">
                                     <%= product.price %>
                                 </td>
-                                <td>
-                                    <% if (product.stock === 0 || product.stock < 0) { %>
+                                <td class="align-middle text-center">
+                                    <% if (product.stock <= 0) { %>
                                         <span class="text text-danger">Out Of Stock</span>
                                     <% } else { %>
                                         <%= product.stock %>
                                     <% } %>
                                 </td>
-                                <td>
+                                <td class="align-middle text-center">
                                     <% if (product.isActive) { %>
                                         <span class="badge rounded-pill alert-success">Listed</span>
                                     <% } else { %>
                                         <span class="badge rounded-pill alert-danger">Unlisted</span>
                                     <% } %>
                                 </td>
-                                <td>
+                                <td class="align-middle text-center">
                                     <a href="/admin/edit-product/<%= product._id %>" class="btn btn-sm font-sm rounded btn-brand">
                                         <i class="material-icons md-edit"></i> Edit
                                     </a>
                                 </td>
-                                <td class="text-center">
+                                <td class="align-middle text-center">
                                     <% if (product.isActive) { %>
-                                        <button class="btn btn-danger btn-sm rounded" onclick="confirmAction('<%= product._id %>', 'unlist', '<%= product.name %>')">
-                                            <i class="material-icons"></i> Unlist
+                                        <button class="btn btn-danger btn-sm rounded" onclick="confirmAction('<%= product._id %>', 'unlist', '<%= product.productName %>')">
+                                            <i class="material-icons md-remove_circle"></i> Unlist
                                         </button>
                                     <% } else { %>
-                                        <button class="btn btn-warning btn-sm rounded" onclick="confirmAction('<%= product._id %>', 'list', '<%= product.name %>')">
-                                            <i class="material-icons"></i> List
+                                        <button class="btn btn-warning btn-sm rounded" onclick="confirmAction('<%= product._id %>', 'list', '<%= product.productName %>')">
+                                            <i class="material-icons md-add_circle"></i> List
                                         </button>
                                     <% } %>
-                                    <button class="btn btn-danger" onclick="confirmAction('<%= product._id %>', 'delete', '<%= product.name %>')">
+                                    <button class="btn btn-danger btn-sm rounded" onclick="confirmAction('<%= product._id %>', 'delete', '<%= product.productName %>')">
                                         <i class="material-icons md-delete_forever"></i> Delete
                                     </button>
                                 </td>
@@ -102,7 +107,7 @@
                         <% }) %>
                     <% } else { %>
                         <tr>
-                            <td colspan="9" class="text-center">No products found</td>
+                            <td colspan="10" class="align-middle text-center">No products found</td>
                         </tr>
                     <% } %>
                 </tbody>
@@ -110,6 +115,8 @@
         </div>
     </div>
 </div>
+
+
 <% if (product.length > 0 && (nextPage || current == pages)) { %>
     <nav aria-label="Dashboard pagination">
         <ul class="pagination justify-content-center mt-5">

@@ -8,6 +8,9 @@ const Coupon = require("../model/couponSchema")
 const Order = require("../model/orderSchema")
 
 
+const axios = require('axios'); 
+
+
 const mongoose = require("mongoose");
 
 module.exports = {
@@ -161,6 +164,34 @@ module.exports = {
       console.error("Error adding address:", error);
       req.flash("error", "Address addition unsuccessful");
       res.redirect("/user/profile");
+    }
+  },
+  
+  confirmZipCode:  async (req, res) => {
+    try {
+      const { zipcode } = req.params;
+  
+      // Validate the ZIP code
+      if (!zipcode || isNaN(zipcode) || zipcode.length !== 6) {
+        return res.status(400).json({ success: false, message: 'Invalid ZIP code.' });
+      }
+  
+      // Replace this URL with the actual API endpoint that provides postal code details in India
+      const apiUrl = `https://api.example.com/india/postalcode/${zipcode}`;
+  
+      // Fetch postal code details from external API (replace with actual API request)
+      const response = await axios.get(apiUrl);
+  
+      // Check if the response from the external API is valid
+      if (response.data && response.data.success) {
+        const { city, state } = response.data;
+        res.json({ success: true, city, state });
+      } else {
+        res.json({ success: false, message: 'Postal code not found.' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Server error.' });
     }
   },
 

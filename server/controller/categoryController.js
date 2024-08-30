@@ -6,25 +6,25 @@ module.exports = {
   /*---category view and add---*/
 
   getCategory: async (req, res) => {
-    
+
     const locals = {
       title: "Category",
     };
     const perPage = 12
-    const page = req.query.page||1
+    const page = req.query.page || 1
     const categories = await Category.find()
-    .skip(perPage*page-perPage)   
-    .limit(perPage)
-    .exec();
+      .skip(perPage * page - perPage)
+      .limit(perPage)
+      .exec();
     const count = await Category.find().countDocuments({});
-    const nextPage = parseInt(page)+1;
+    const nextPage = parseInt(page) + 1;
     const hasNextPage = nextPage <= Math.ceil(count / perPage);
 
     const breadcrumbs = [
       { name: 'Home', url: '/admin' },
       { name: 'Category', url: '/admin/category' },
       { name: `Page ${page}`, url: `/admin/category?page=${page}` }
-    ];             
+    ];
     console.log(categories);
     res.render("admin/categories/category", {
       locals,
@@ -46,7 +46,7 @@ module.exports = {
       { name: 'Home', url: '/admin' },
       { name: 'Category', url: '/admin/category' },
       { name: `Add Category`, url: `/category/addCategory` }
-    ];   
+    ];
     res.render("admin/categories/addCategory", {
       locals,
       layout: adminLayout,
@@ -84,7 +84,7 @@ module.exports = {
       { name: 'Home', url: '/admin' },
       { name: 'Category', url: '/admin/category' },
       { name: `Edit Category`, url: `/category/editCategory/:id` }
-    ];  
+    ];
     res.render("admin/categories/editCategory", {
       category,
       layout: adminLayout,
@@ -160,7 +160,7 @@ module.exports = {
         .json({ success: false, message: "Server error", error });
     }
   },
-  
+
   deleteCategory: async (req, res) => {
     try {
       const categoryId = req.body.categoryId;

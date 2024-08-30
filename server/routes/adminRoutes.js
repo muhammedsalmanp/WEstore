@@ -6,13 +6,15 @@ const adminController = require("../controller/adminController");
 const categoryController = require("../controller/categoryController");
 const productController = require("../controller/productController");
 const userMangementController = require("../controller/userManagementController");
-const { productUpload, upload } = require("../config/multer");
+const { productUpload,brandLogoUpload } = require("../config/multer");
 const couponController = require("../controller/CouponCondroller");
-const orderCondroller = require("../controller/orderController")
-
+const orderCondroller = require("../controller/orderController");
+const brandController= require("../controller/brandsController");
 const { isAdminLoggedIn } = require("../middleware/authMiddleware");
+const brandsController = require("../controller/brandsController");
 
 router.get("/", isAdminLoggedIn, adminController.getDashboard);
+router.get('/dashboard/chart-data',isAdminLoggedIn, adminController.getChartData);
 
 //category management
 router.get("/category", isAdminLoggedIn, categoryController.getCategory);
@@ -22,6 +24,13 @@ router.post("/category/addCategory", categoryController.addCategory);
 router.post("/category/editCategory/:id",isAdminLoggedIn,categoryController.editCategory);
 router.post("/category/unlistOrListCategory", categoryController.softdelete);
 router.delete("/category/deleteCategory",isAdminLoggedIn,categoryController.deleteCategory);
+
+//brands mangement 
+
+router.get("/brands",isAdminLoggedIn,brandsController.getBrands);
+router.get("/brands/addBrands",isAdminLoggedIn,brandsController.getAddBrand);
+router.post("/brand/addBrand",isAdminLoggedIn,brandLogoUpload,brandsController.addBrand);
+
 
 //product controller
 

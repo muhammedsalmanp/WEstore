@@ -1,7 +1,7 @@
 const Order = require("../model/orderSchema");
 const UserAddress = require("../model/userAddressSchema");
 const User = require("../model/userSchema");
-const Product=require("../model/productSchema")
+const Product = require("../model/productSchema")
 const adminLayout = "./layouts/adminLayouts";
 const Coupon = require("../model/couponSchema")
 const crypto = require("crypto");
@@ -9,7 +9,7 @@ const razorpayInstance = require("../config/razorPay");
 const Wishlist = require("../model/wishlistSchema");
 const Cart = require("../model/cartSchema");
 
-   
+
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
 
@@ -25,7 +25,7 @@ function generateReturnId(length) {
 function calculateReturnAmount(order, productId) {
     const product = order.products.find(p => p._id.toString() === productId);
     if (!product) {
-        return 0; 
+        return 0;
     }
     const returnAmount = product.price * product.quantity;
     return returnAmount;
@@ -34,44 +34,44 @@ function calculateReturnAmount(order, productId) {
 module.exports = {
 
     //admin side 
-    
-   getAllOrders:async(req,res)=>{
-    const locals = {
-        title: "Order ",
-    };
-    const perPage = 12
-    const page = req.query.page||1
-    const orders = await Order.find().populate("products._id") .populate('userId', 'firstName lastName email')
-    .skip(perPage*page-perPage)   
-    .limit(perPage)
-    .exec();
-    const count = await  Order.find().countDocuments({});
-    const nextPage = parseInt(page)+1;
-    const hasNextPage = nextPage <= Math.ceil(count / perPage);
-    let wishlist = await Wishlist.findOne({ userId: req.session.user}).populate('products');
-    let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
-    const cartCount = cart && cart.products ? cart.products.length : 0;
-    const breadcrumbs = [
-    { name: 'Home', url: '/admin' },
-    { name: 'order', url: '/admin/order' },
-    { name: `Page ${page}`, url: `/admin/order?page=${page}` }
-    ]; 
-    res.render("admin/orders/order", {
-        locals,
-        layout: adminLayout,
-        orders,
-        current: page,
-        perPage: perPage,
-        pages: Math.ceil(count / perPage),
-        nextPage: hasNextPage ? nextPage : null,
-        breadcrumbs,
-        wishlist,
-        cartCount:cartCount,
-      });
 
-   },
-    
-   updateOrderStatus : async (req, res) => {
+    getAllOrders: async (req, res) => {
+        const locals = {
+            title: "Order ",
+        };
+        const perPage = 12
+        const page = req.query.page || 1
+        const orders = await Order.find().populate("products._id").populate('userId', 'firstName lastName email')
+            .skip(perPage * page - perPage)
+            .limit(perPage)
+            .exec();
+        const count = await Order.find().countDocuments({});
+        const nextPage = parseInt(page) + 1;
+        const hasNextPage = nextPage <= Math.ceil(count / perPage);
+        let wishlist = await Wishlist.findOne({ userId: req.session.user }).populate('products');
+        let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
+        const cartCount = cart && cart.products ? cart.products.length : 0;
+        const breadcrumbs = [
+            { name: 'Home', url: '/admin' },
+            { name: 'order', url: '/admin/order' },
+            { name: `Page ${page}`, url: `/admin/order?page=${page}` }
+        ];
+        res.render("admin/orders/order", {
+            locals,
+            layout: adminLayout,
+            orders,
+            current: page,
+            perPage: perPage,
+            pages: Math.ceil(count / perPage),
+            nextPage: hasNextPage ? nextPage : null,
+            breadcrumbs,
+            wishlist,
+            cartCount: cartCount,
+        });
+
+    },
+
+    updateOrderStatus: async (req, res) => {
         const { orderId } = req.params;
         const { status } = req.body;
 
@@ -97,6 +97,9 @@ module.exports = {
             }
 
             order.status = status;
+            if (order.status === "Delivered") {
+                order.paymentStatus = "Paid"
+            }
             await order.save();
 
             res.json({ success: true, message: 'Order status updated successfully' });
@@ -106,80 +109,80 @@ module.exports = {
         }
     },
 
-    getOrderDetils: async (req,res)=>{
-       try {
-        const locals = {
-            title: "Order Detils",
-        };
-        let wishlist = await Wishlist.findOne({ userId: req.session.user}).populate('products');
-        let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
-        const cartCount = cart && cart.products ? cart.products.length : 0;
-        const breadcrumbs = [
-            { name: 'Home', url: '/admin' },
-            { name: 'order', url: '/admin/order' },
-            { name: `OrderDetils`, url: `/admin/order/<%= order.orderId %>` }
-            ]; 
-        const { orderId } = req.params
-        const order = await Order.findOne({orderId:orderId })
-        .populate('shippingAddress') 
-        .populate('products._id')
-        .populate('coupon') 
-        .populate('userId', 'firstName lastName email');
+    getOrderDetils: async (req, res) => {
+        try {
+            const locals = {
+                title: "Order Detils",
+            };
+            let wishlist = await Wishlist.findOne({ userId: req.session.user }).populate('products');
+            let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
+            const cartCount = cart && cart.products ? cart.products.length : 0;
+            const breadcrumbs = [
+                { name: 'Home', url: '/admin' },
+                { name: 'order', url: '/admin/order' },
+                { name: `OrderDetils`, url: `/admin/order/<%= order.orderId %>` }
+            ];
+            const { orderId } = req.params
+            const order = await Order.findOne({ orderId: orderId })
+                .populate('shippingAddress')
+                .populate('products._id')
+                .populate('coupon')
+                .populate('userId', 'firstName lastName email');
 
-        if (!order) {
-            return res.status(404).send('Order not found');
-        }
-        const shippingAddress = order.shippingAddress ? order.shippingAddress : null;
-    
-        const products = order.products.map(product => ({
-            productName: product._id.productName,
-            price: product._id.price,
-            productId: product._id._id,
-            description: product._id.description,
-            quantity: product.quantity,
-            primaryImages: product._id.primaryImages 
-        }));
-        res.render('admin/orders/viewOrdes', {
-            locals,
-            order: order,
-            shippingAddress: shippingAddress,
-            products: products,
-            status: order.status,
-            coupon: order.coupon,
-            couponDiscount: order.couponDiscount, 
-            offerAppliedTotalAmount: order.offerAppliedTotalAmount,
-            layout: adminLayout,
-            breadcrumbs,
-            wishlist,
-           cartCount:cartCount,
-        });
+            if (!order) {
+                return res.status(404).send('Order not found');
+            }
+            const shippingAddress = order.shippingAddress ? order.shippingAddress : null;
 
-       } catch (error) {
-        console.error("Error fetching order details:", error);
+            const products = order.products.map(product => ({
+                productName: product._id.productName,
+                price: product._id.price,
+                productId: product._id._id,
+                description: product._id.description,
+                quantity: product.quantity,
+                primaryImages: product._id.primaryImages
+            }));
+            res.render('admin/orders/viewOrdes', {
+                locals,
+                order: order,
+                shippingAddress: shippingAddress,
+                products: products,
+                status: order.status,
+                coupon: order.coupon,
+                couponDiscount: order.couponDiscount,
+                offerAppliedTotalAmount: order.offerAppliedTotalAmount,
+                layout: adminLayout,
+                breadcrumbs,
+                wishlist,
+                cartCount: cartCount,
+            });
+
+        } catch (error) {
+            console.error("Error fetching order details:", error);
             res.status(500).send('Server error');
-       }
+        }
     },
 
     //user side 
 
-    getOrder:  async (req, res) => {
+    getOrder: async (req, res) => {
         try {
             const userId = req.session.user;
             const { orderId } = req.params;
             const user = await User.findOne(req.session.user)
             const order = await Order.findOne({ userId, orderId })
-                .populate('shippingAddress') 
-                .populate('products._id') 
-                .populate('coupon') 
+                .populate('shippingAddress')
+                .populate('products._id')
+                .populate('coupon')
                 .populate('userId', 'firstName lastName email');
-    
+
             if (!order) {
                 return res.status(404).send('Order not found');
             }
 
-        let wishlist = await Wishlist.findOne({ userId: req.session.user}).populate('products');
-        let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
-        const cartCount = cart && cart.products ? cart.products.length : 0;
+            let wishlist = await Wishlist.findOne({ userId: req.session.user }).populate('products');
+            let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
+            const cartCount = cart && cart.products ? cart.products.length : 0;
             const shippingAddress = order.shippingAddress ? order.shippingAddress : null;
             const products = order.products.map(product => ({
                 productName: product._id.productName,
@@ -188,21 +191,21 @@ module.exports = {
                 description: product._id.description,
                 quantity: product.quantity,
                 primaryImages: product._id.primaryImages,
-                isCanceld:product.isCanceld,
+                isCanceld: product.isCanceld,
             }));
-    
+
             res.render('shop/orderPage', {
                 user: req.session.user,
-                userDetils:user,
+                userDetils: user,
                 order: order,
                 shippingAddress: shippingAddress,
                 products: products,
                 status: order.status,
-                coupon: order.coupon, 
+                coupon: order.coupon,
                 couponDiscount: order.couponDiscount,
-                offerAppliedTotalAmount: order.offerAppliedTotalAmount ,
+                offerAppliedTotalAmount: order.offerAppliedTotalAmount,
                 wishlist,
-                cartCount:cartCount,
+                cartCount: cartCount,
             });
         } catch (error) {
             console.error("Error fetching order details:", error);
@@ -212,48 +215,48 @@ module.exports = {
 
     cancelOrder: async (req, res) => {
         const { orderId, productId, reason } = req.body;
-    
+
         try {
             const order = await Order.findOne({ orderId })
                 .populate('products._id')
                 .populate('coupon');
-    
+
             console.log('Fetched Order:', order);
             console.log('Requested Product ID:', productId);
-    
+
             if (!order) {
                 return res.status(404).json({ message: 'Order not found' });
             }
-    
+
             const product = order.products.find(p => p._id._id.toString() === productId);
-    
+
             console.log('Found Product:', product);
-    
+
             if (!product) {
                 return res.status(404).json({ message: 'Product not found in this order' });
             }
-    
+
 
             if (order.status === 'Delivered' || order.status === 'Out for delivery') {
                 return res.status(400).json({ message: 'You can only cancel products from delivered orders' });
             }
-     
+
             product.isCanceld = true;
-    
+
             const updatedProduct = await Product.findById(productId);
             if (updatedProduct) {
                 updatedProduct.stock += product.quantity;
                 await updatedProduct.save();
             }
-    
+
             order.totalAmount -= product.price * product.quantity;
-    
+
             let applicableCouponDiscount = 0;
 
             if (order.coupon) {
-                if (order.totalAmount >= order.coupon.minPurchaseAmount) {   
+                if (order.totalAmount >= order.coupon.minPurchaseAmount) {
                     applicableCouponDiscount = (order.totalAmount * order.coupon.discountPercentage) / 100;
-                } else { 
+                } else {
                     order.couponMessage = 'You can no longer use the coupon because the order total is below the minimum purchase amount required.';
                 }
             }
@@ -264,9 +267,9 @@ module.exports = {
             if (allProductsCanceled) {
                 order.status = 'Cancelled';
             }
-    
+
             await order.save();
-    
+
             res.json({
                 message: 'Product cancelled successfully',
                 order
@@ -279,52 +282,52 @@ module.exports = {
 
     restoreProduct: async (req, res) => {
         const { orderId, productId } = req.body;
-    
+
         try {
             const order = await Order.findOne({ orderId })
                 .populate('products._id')
                 .populate('coupon');
-    
+
             if (!order) {
                 return res.status(404).json({ message: 'Order not found' });
             }
-    
-            // Find the canceled product
+
+
             const product = order.products.find(p => p._id._id.toString() === productId);
-    
+
             if (!product || !product.isCanceld) {
                 return res.status(404).json({ message: 'Product not found or not canceled' });
             }
-    
-            // Restore the product status
+
             product.isCanceld = false;
-    
-            // Update stock
+
+
             const updatedProduct = await Product.findById(productId);
             if (updatedProduct) {
                 updatedProduct.stock -= product.quantity;
                 await updatedProduct.save();
             }
-    
-            // Recalculate order total amount
             order.totalAmount += product.price * product.quantity;
-    
-            // Recalculate coupon discount
+
             let applicableCouponDiscount = 0;
             if (order.coupon && order.totalAmount >= order.coupon.minPurchaseAmount) {
                 applicableCouponDiscount = (order.totalAmount * order.coupon.discountPercentage) / 100;
             }
-    
+
             order.offerAppliedTotalAmount = order.totalAmount - applicableCouponDiscount;
-    
-            // Update order status if necessary
+
+
+
             const allProductsCanceled = order.products.every(p => p.isCanceld);
+
             if (!allProductsCanceled) {
-                order.status = 'Ordered'; // Change to the appropriate status if needed
+                order.status = 'Ordered';
             }
-    
+            if (order.paymentStatus === "Failed") {
+                order.status = "Failed"
+            }
             await order.save();
-    
+
             res.json({
                 message: 'Product restored successfully',
                 order
@@ -334,32 +337,32 @@ module.exports = {
             res.status(500).json({ message: 'Internal server error' });
         }
     },
-    
+
     returnProduct: async (req, res) => {
         try {
             const { orderId, productId, reason, boxStatus, damageStatus } = req.body;
             console.log('Received Order ID:', orderId);
             console.log('Received Product ID:', productId);
-    
+
             const returnId = generateReturnId(8);
-    
-            const order = await Order.findOne({ orderId: orderId});
-    
+
+            const order = await Order.findOne({ orderId: orderId });
+
             if (!order) {
                 return res.status(404).json({ success: false, message: 'Order not found.' });
             }
-    
+
             order.status = 'Returned';
             order.return = true;
             order.returnID = returnId;
             order.returnReason = reason;
             order.damageStatus = damageStatus;
-    
+
             const expectedReturnAmount = calculateReturnAmount(order, productId);
-    
+
             await order.save();
             console.log(order);
-            
+
             return res.status(200).json({
                 success: true,
                 message: 'Product return initiated.',
@@ -372,4 +375,30 @@ module.exports = {
         }
     },
 
+    reOrder: async (req, res) => {
+        const { orderId, paymentMethod } = req.body
+        try {
+            const order = await Order.findOne({ orderId: orderId });
+            if (!order) {
+                return res.json({ success: false, message: "order not found!" });
+            }
+            order.status = 'Ordered';
+            order.paymentMethod = 'COD';
+            order.paymentStatus = "Pending"
+            await order.save()
+            if (order.status !== 'Failed') {
+                for (const item of order.products) {
+                    if (item._id && item._id._id) {
+                        await Product.findByIdAndUpdate(item._id._id, {
+                            $inc: { stock: -item.quantity }
+                        });
+                    }
+                }
+            }
+            res.json({ success: true, message: "oeder plied seccsefuly!" })
+        } catch (error) {
+            console.error('Error updating payment method:', error);
+            res.json({ success: false, message: 'Failed to update payment method' });
+        }
+    },
 };

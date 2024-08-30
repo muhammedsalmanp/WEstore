@@ -1,61 +1,269 @@
-
-    
-    <section class="content-main">
-        <div class="content-header">
-            <div>
-                <h2 class="content-title card-title">Dashboard </h2>
-                <p>Whole data about your business here</p>
-            </div>
-            
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Dashboard</h2>
+            <p>Whole data about your business here</p>
         </div>
-        <div class="row">
-            <div class="col-lg-3">
-                <div class="card card-body mb-4">
-                    <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-primary-light"> <i class="icon material-icons md-people"></i></span>
-                        <div class="text">
-                            <h6 class="mb-1 card-title">Total Users</h6>
-                            <span><%- userCount  %></span>
-                            
-                        </div>
-                    </article>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="card card-body mb-4">
-                    <article class="icontext">
-                        <span class="icon icon-sm rounded-circle bg-primary-light"> <i class="icon material-icons md-shopping_bag"></i></span>
-                        <div class="text">
-                            <h6 class="mb-1 card-title">Total Products</h6>
-                            <span><%- productCount  %></span>
-                            
-                        </div>
-                    </article>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <a href="/admin/products/stocks" style="text-decoration: none; color: inherit;">
-                    <div class="card card-body mb-4 border-danger">
-                        <article class="icontext">
-                            <span class="icon icon-sm rounded-circle bg-danger-light">
-                                <i class="icon material-icons md-warning"></i>
-                            </span>
-                            <div class="text">
-                                <h6 class="mb-1 card-title text-danger">Out of Stock Products</h6>
-                                <span class="text-danger"><%= outOfStock %></span>
-                            </div>
-                        </article>
+    </div>
+
+    <div class="row">
+        <!-- Total Users -->
+        <div class="col-lg-3">
+            <div class="card card-body mb-4">
+                <article class="icontext">
+                    <span class="icon icon-sm rounded-circle bg-primary-light">
+                        <i class="icon material-icons md-people"></i>
+                    </span>
+                    <div class="text">
+                        <h6 class="mb-1 card-title">Total Users</h6>
+                        <span>
+                            <%= userCount %>
+                        </span>
                     </div>
-                </a>
+                </article>
             </div>
-            
-            
-            
-         
         </div>
-        
-        
-        
-    </section> <!-- content-main end// -->
-    
 
+        <!-- Total Products -->
+        <div class="col-lg-3">
+            <div class="card card-body mb-4">
+                <article class="icontext">
+                    <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
+                    <div class="text">
+                        <h6 class="mb-1 card-title">Products</h6> <span><%= productCount %></span>
+                        <span class="text-sm">
+                            In <%=CatCount %> Categories
+                        </span>
+                    </div>
+                </article>
+            </div>
+        </div>
+        <!-- Out of Stock Products -->
+        <div class="col-lg-3">
+            <a href="/admin/products/stocks" style="text-decoration: none; color: inherit;">
+                <div class="card card-body mb-4 border-danger">
+                    <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-danger-light">
+                            <i class="icon material-icons md-warning"></i>
+                        </span>
+                        <div class="text">
+                            <h6 class="mb-1 card-title text-danger">Out of Stock Products</h6>
+                            <span class="text-danger">
+                                <%= outOfStock %>
+                            </span>
+                        </div>
+                    </article>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3">
+            <div class="card card-body mb-4">
+                <article class="icontext">
+                    <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
+                    <div class="text">
+                        <h6 class="mb-1 card-title">Orders</h6> <span><%=cordCount %></span>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+    
+       
+    <!-- Sales Statistics with Dynamic Chart -->
+    <div class="card mb-4">
+        <article class="card-body">
+            <h5 class="card-title">Sales Statistics</h5>
+
+            <div class="d-flex justify-content-end">
+                <select id="timeRangeSelect" class="form-select form-select-sm mb-3" style="width: auto;">
+                    <option value="today">Today</option>
+                    <option value="1month" selected>Last 1 Month</option>
+                    <option value="1year">Last 1 Year</option>
+                </select>
+            </div>
+
+            <canvas id="salesChart" height="120px"></canvas>
+        </article>
+    </div>
+    <div class="row">
+        <!-- Top Selling Products -->
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <article class="card-body">
+                    <h5 class="card-title">Top Selling Products</h5>
+                    <% topSellingProducts.forEach(product=> { %>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3">
+                                <% if (product.productImage) { %>
+                                    <img src="/uploads/products-images/<%= product.productImage.split('\\').pop() %>"
+                                        alt="<%= product.productName %>"
+                                        style="width: 65px; height: auto; object-fit: cover;" class="img-fluid rounded">
+                                    <% } else { %>
+                                        <span>No Image</span>
+                                        <% } %>
+                            </div>
+                            <div class="d-flex justify-content-between w-100">
+                                <div>
+                                    <p class="mb-0">
+                                        <%= product.productName %>
+                                    </p>
+                                    <small class="text-muted">Category: <%= product.categoryName %></small>
+                                </div>
+                                <div class="text-end">
+                                    <p class="mb-0"><strong>Quantity:<%= product.totalQuantity %></strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <% }); %>
+                </article>
+            </div>
+        </div>
+
+        <!-- Top Selling Categories -->
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <article class="card-body">
+                    <h5 class="card-title">Top Selling Categories</h5>
+                    <% topSellingCategories.forEach(category=> { %>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="d-flex justify-content-between w-100">
+                                <div>
+                                    <p class="mb-0">
+                                        <%= category.categoryName %>
+                                    </p>
+                                    <small class="text-muted">Total Sales: $<%= category.totalSales.toFixed(2) %>
+                                            </small>
+                                </div>
+                                <div class="text-end">
+                                    <p class="mb-0"><strong>Quantity: <%= category.totalQuantity %></strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <% }); %>
+                </article>
+            </div>
+        </div>
+
+        <!-- Top Selling Brands -->
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <article class="card-body">
+                    <h5 class="card-title">Top Selling Brands</h5>
+                    <% topSellingBrands.forEach(brand=> { %>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="d-flex justify-content-between w-100">
+                                <div>
+                                    <p class="mb-0">
+                                        <%= brand.brandName %>
+                                    </p>
+                                    <small class="text-muted">Total Sales: $<%= brand.totalSales.toFixed(2) %></small>
+                                </div>
+                                <div class="text-end">
+                                    <p class="mb-0"><strong>Quantity: <%= brand.totalQuantity %></strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <% }); %>
+                </article>
+            </div>
+        </div>
+    </div>
+
+
+
+</section> <!-- content-main end// -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let salesChart;
+
+    document.getElementById('timeRangeSelect').addEventListener('change', function () {
+        updateChart(this.value);
+    });
+
+    function updateChart(timeRange) {
+        fetch(`/admin/dashboard/chart-data?timeRange=${timeRange}`)
+            .then(response => response.json())
+            .then(chartData => {
+                if (salesChart) {
+                    salesChart.destroy();
+                }
+
+                const ctx = document.getElementById('salesChart').getContext('2d');
+                salesChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [
+                            {
+                                label: 'Orders',
+                                data: chartData.orders,
+                                borderColor: 'blue',
+                                backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                                fill: true
+                            },
+                            {
+                                label: 'Cancellations',
+                                data: chartData.cancellations,
+                                borderColor: 'red',
+                                backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                fill: true
+                            },
+                            {
+                                label: 'Returns',
+                                data: chartData.returns,
+                                borderColor: 'green',
+                                backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: getXAxisLabel(timeRange)
+                                },
+                                ticks: {
+                                    callback: function (value) {
+                                        return value;
+                                    }
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Count'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching chart data:', error);
+            });
+    }
+
+    function getXAxisLabel(timeRange) {
+        switch (timeRange) {
+            case 'today':
+            case '1day':
+                return 'Hours';
+            case '1week':
+                return 'Days';
+            case '1month':
+                return 'Days';
+            case '1year':
+                return 'Months';
+            default:
+                return 'Years';
+        }
+    }
+
+    // Initial load
+    updateChart('1month');
+</script>

@@ -2,8 +2,10 @@ const sharp = require("sharp");
 const adminLayout = "./layouts/adminLayouts";
 const Category = require("../model/categorySchema");
 const Product = require("../model/productSchema");
+const Brand = require('../model/brandsSchema');
 const path = require("path");
 const fs = require("fs");
+
 
 module.exports = {
 
@@ -18,6 +20,7 @@ module.exports = {
       let page = req.query.page || 1;
       const product = await Product.find()
         .populate("category")
+        .populate("brand") // This ensures we get the full Brand document
         .sort({ createdAt: -1 })
         .skip(perPage * page - perPage)
         .limit(perPage)
@@ -25,13 +28,20 @@ module.exports = {
       const count = await Product.find().countDocuments({});
       const nextPage = parseInt(page) + 1;
       const hasNextPage = nextPage <= Math.ceil(count / perPage);
-
+  
       const breadcrumbs = [
         { name: 'Home', url: '/admin' },
         { name: 'Products', url: '/admin/products' },
         { name: `Page ${page}`, url: `/admin/products?page=${page}` }
       ];
-
+  
+      // Check if product objects contain populated brand fields
+      console.log("Product details:", product.map(p => ({
+        id: p._id,
+        name: p.productName,
+        brand: p.brand ? p.brand.name : 'No Brand'
+      })));
+  
       res.render("admin/products/products", {
         locals,
         layout: adminLayout,
@@ -53,17 +63,19 @@ module.exports = {
     };
 
     const categories = await Category.find({ isActive: true });
+    const brands = await Brand.find();
     const breadcrumbs = [
       { name: 'Home', url: '/admin' },
       { name: 'Products', url: '/admin/products' },
       { name: "Add Product", url: "/add-product" }
     ];
     console.log(categories);
-
+     
     res.render("admin/products/addProducts", {
       locals,
       layout: adminLayout,
       categories,
+      brands,
       breadcrumbs,
     });
   },
@@ -124,6 +136,7 @@ module.exports = {
         const product = new Product({
             productName: req.body.productName.toLowerCase(),
             category: req.body.categoryName,
+            brand:req.body.brandName,
             description: req.body.productDespt,
             stock: req.body.productStock,
             price: req.body.price,
@@ -160,8 +173,9 @@ module.exports = {
       title: "Products",
     };
 
-    const product = await Product.findById(req.params.id).populate("category");
+    const product = await Product.findById(req.params.id).populate("category").populate("brand");
     const categories = await Category.find({ isActive: true });
+    const brands =  await Brand.find();
     const breadcrumbs = [
       { name: 'Home', url: '/admin' },
       { name: 'Products', url: '/admin/products' },
@@ -172,6 +186,7 @@ module.exports = {
       layout: adminLayout,
       product,
       categories,
+      brands,
       breadcrumbs,
     });  
   },
@@ -254,6 +269,7 @@ editProduct: async (req, res) => {
       const updateProduct = {
           productName: req.body.productName.toLowerCase(),
           category: req.body.categoryName,
+          brand:req.body.brandName,
           description: req.body.productDespt,
           stock: req.body.productStock,
           price: req.body.price,
