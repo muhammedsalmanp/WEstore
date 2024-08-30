@@ -62,14 +62,6 @@ router.post("/order/create",orderController.reOrder)
 
 
 
-router.get('/product-stock/:productId', async (req, res) => {
-    try {
-        const product = await Product.findById(req.params.productId);
-        res.json({ stock: product.stock });
-    } catch (error) {
-        res.status(500).json({ error: 'Something went wrong' });
-    }
-});
 
 
 
