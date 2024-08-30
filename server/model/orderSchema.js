@@ -75,6 +75,9 @@ const orderSchema = new mongoose.Schema({
     returnReason: {
         type: String
     },
+    boxStatus:{
+        type: String,
+    },
     return: {
         type: Boolean,
         default: false

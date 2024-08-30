@@ -25,9 +25,9 @@ module.exports = {
       const cart = await Cart.findOne({ userId: req.session.user });
       const userAddress = await UserAddress.findOne({ userId: req.session.user });
       const orders = await Order.find({ userId: req.session.user })
-        .populate('shippingAddress') // Populate shippingAddress details
-        .populate('coupon'); // If you need to display coupon details as well
-  
+        .populate('shippingAddress') 
+        .populate('coupon')
+        .sort({createdAt:-1});
       if (!user) {
         req.flash("error", "You need to log in!");
         return res.redirect("/login");
