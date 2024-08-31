@@ -1,0 +1,292 @@
+<style>
+        
+        .h2container {
+            width: 90%;
+            max-width: 70%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .main-content {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .balance-box {
+            background-color: #46b50a; /* Green background */
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            color: #fff; /* White text */
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            width: 53%;
+            margin-left: 25%;
+            
+        }
+
+       /* Update for the balance text color */
+.balance-box h2  {
+    font-size: 36px;
+    margin-bottom: 10px;
+    color: #ffffff; /* Change this to your desired color */
+}
+
+/* Resizing input fields and buttons */
+.add-balance-btn {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px; /* Adjusted padding for resizing */
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px; /* Smaller font size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 75%;
+}
+
+.transaction-amount {
+    font-size: 20px; /* Adjusted font size for resizing */
+    color: #060c12;
+    font-weight: bold;
+}
+
+.pagination a {
+    margin: 0 3px; /* Adjusted margin for resizing */
+    padding: 8px 12px; /* Adjusted padding for resizing */
+    font-size: 14px; /* Smaller font size */
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.pagination a:hover {
+    background-color: #0056b3;
+}
+
+        .add-balance-btn i {
+            margin-right: 10px;
+        }
+
+        .payment-history {
+            margin-top: 30px;
+        }
+
+        .payment-history h3 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #10161e;
+        }
+
+        .transaction {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid #b0b041;
+            transition: border-color 0.3s ease;
+        }
+
+        .transaction:hover {
+            border-left-color: #514f17;
+        }
+
+        .transaction-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .transaction-details p {
+            margin:0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .transaction-details p strong {
+            color: #333;
+        }
+
+        .transaction-amount {
+            font-size: 18px;
+            color: #21680f;
+            font-weight: bold;
+            margin-right: 10%;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination a:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .transaction {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .transaction-amount {
+                margin-top: 10px;
+            }
+        }
+</style>
+
+
+<div class="page-header breadcrumb-wrap mb-15">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/" rel="nofollow">Home</a>
+        <span></span>
+        <a href="/wallet" rel="nofollow">wallet</a>
+      </div>
+    </div>
+  </div>
+<div class="h2container">
+  
+    <div class="main-content">
+        <div class="balance-box">
+            <h2>₹<%= balance.toFixed(2) %></h2>
+            <p>Available Balance</p>
+        </div>
+        <button class="add-balance-btn" id="addBalanceBtn"><i class="fas fa-plus-circle"></i> Add Balance</button>
+
+        <div class="payment-history">
+            <h3>Payment History</h3>
+            <% if (transactions.length > 0) { %>
+                <% transactions.forEach(trans => { %>
+                    <div class="transaction">
+                        <div class="transaction-details">
+                            <p><strong>Date:</strong> <%= new Date(trans.date).toLocaleDateString() %></p>
+                            <p><strong>Status:</strong> <%= trans.status %></p>
+                            <p><strong>Transaction ID:</strong> <%= trans.transactionId %></p>
+                            <p><strong>Type:</strong> <%= trans.type.charAt(0).toUpperCase() + trans.type.slice(1) %></p>
+                        </div>
+                        <div class="transaction-amount">₹<%= trans.amount.toFixed(2) %></div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p>No transactions found.</p>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.querySelector(".add-balance-btn").addEventListener("click", function () {
+        Swal.fire({
+            title: 'Enter Amount',
+            input: 'number',
+            inputAttributes: {
+                min: 1,
+                step: 1
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Proceed to Pay',
+            showLoaderOnConfirm: true,
+            preConfirm: (amount) => {
+                return fetch('/wallet/createwalletpayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ amount: amount })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.message || 'Payment initiation failed');
+                    }
+                    // Initiate Razorpay payment process
+                    var options = {
+                        key: data.key,
+                        amount: data.amount, // in paise
+                        currency: "INR",
+                        name: "Add Balance",
+                        description: "Adding funds to wallet",
+                        order_id: data.orderId,
+                        handler: function (response) {
+                            // Payment succeeded, verify payment on server
+                            fetch('/wallet/verifypayment', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    paymentId: response.razorpay_payment_id,
+                                    orderId: data.orderId,
+                                    amount: amount
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire('Payment Successful', 'Your wallet has been credited.', 'success')
+                                        .then(() => {
+                                            // Reload the page after showing the success message
+                                            window.location.reload();
+                                        });
+                                } else {
+                                    Swal.fire('Payment Failed', 'Verification failed. Please contact support.', 'error');
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire('Payment Failed', 'An error occurred during verification.', 'error');
+                            });
+                        },
+                        modal: {
+                            ondismiss: function () {
+                                // Handle the scenario where the user closes the payment modal
+                                Swal.fire('Payment Failed', 'Payment was cancelled by the user.', 'error');
+                            }
+                        },
+                        theme: {
+                            color: "#3399cc"
+                        }
+                    };
+                    var rzp = new Razorpay(options);
+                    rzp.open();
+                })
+                .catch(error => {
+                    Swal.fire('Error', error.message, 'error');
+                });
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        });
+    });
+</script>
+    

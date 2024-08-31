@@ -7,7 +7,9 @@ const { checkBlockedUser, isAuthenticated } = require('../middleware/authMiddlew
 const { isLoggedOut } = require('../middleware/logoutMiddileware');
 const checkOutCondroller = require("../controller/checkOutCondroller");
 const couponController = require("../controller/CouponCondroller");
-const orderController = require("../controller/orderController")
+const orderController = require("../controller/orderController");
+const walletCotroller = require("../controller/walletController");
+
 
 const Product = require("../model/productSchema");
 // user Wishlist 
@@ -59,7 +61,11 @@ router.post('/return-product', orderController.returnProduct);
 
 router.post("/order/create",orderController.reOrder)
 
+//wallet
 
+router.get("/wallet",walletCotroller.getwallet);
+router.post("/wallet/createwalletpayment",walletCotroller.requesrtoPay);
+router.post('/wallet/verifypayment',walletCotroller.verifyPayment);
 
 
 
