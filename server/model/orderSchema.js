@@ -49,7 +49,7 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Ordered', 'Shipped', 'Out for delivery',"processing", 'Delivered', 'Cancelled', 'Returned', 'Received', 'Refund Issued', 'Refund Credited','Failed',],
+        enum: ['Ordered', 'Shipped', 'Out for delivery',"processing", 'Delivered', 'Cancelled', 'Returned','Return Requested','Return Accepted','Return Rejected', 'Received', 'Refund Issued', 'Refund Credited','Failed',],
         default: 'Ordered'
     },
     createdAt: {
@@ -67,7 +67,7 @@ const orderSchema = new mongoose.Schema({
     couponDiscount: {
         type: Number,
         default: 0
-    },
+    },  
     offerAppliedTotalAmount: {
         type: Number,
         default: 0
@@ -98,6 +98,9 @@ const orderSchema = new mongoose.Schema({
     couponMessage: {
         type: String,
     },
+    shipingCharg:{
+        type:String,
+    }
 });
 
 module.exports = mongoose.model('Order', orderSchema);

@@ -1,270 +1,467 @@
 <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
 <style>
-	/* Hide the dropdown by default */
-	.dropdown-menu {
-	  display: none;
-	  position: absolute;
-	  background-color: white;
-	  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-	  z-index: 1;
-	}
-  
-	/* Show the dropdown when 'show' class is added */
-	.dropdown-menu.show {
-	  display: block;
-	}
-	.cl2 {
-    color: black !important;
+	/* General Styles */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
 }
 
-	.dropdown-item {
-	  padding: 8px 16px;
-	  display: block;
-	  text-decoration: none;
-	  color: black;
-	}
-  
-	.dropdown-item:hover {
-	  background-color: #f1f1f1;
-	}
-	/* Container for search input and icon */
+.dropdown-menu.show {
+  display: block;
+}
+
+.cl2 {
+  color: black !important;
+}
+
+.dropdown-item {
+  padding: 8px 16px;
+  display: block;
+  text-decoration: none;
+  color: black;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f1f1;
+}
+
 .search-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-	width: 90%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 40%;
 }
 
-/* Style for search input */
 .input-search {
-    padding: 8px 40px 8px 12px; /* Add padding on the right for the icon */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    flex: 1;
+  padding: 8px 40px 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex: 1;
 }
 
-/* Style for search icon */
 #search-icon {
-    position: absolute;
-    right: 12px; /* Position inside the input field */
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    padding: 8px;
-    pointer-events: all; /* Ensure the icon can be clicked */
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  padding: 8px;
+  pointer-events: all;
 }
 
-/* Style for suggestions dropdown */
 .suggestions {
-    display: none; /* Initially hidden */
-    position: absolute;
-    top: 100%; /* Position below the search container */
-    left: 0;
-    right: 0;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    max-height: 200px; /* Optional: limit the height */
-    overflow-y: auto; /* Optional: add scroll if content is too long */
-    z-index: 1000; /* Ensure it appears above other elements */
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
 }
 
-/* Style for each suggestion item */
 .suggestions ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .suggestions li {
-    padding: 10px;
-    cursor: pointer;
+  padding: 10px;
+  cursor: pointer;
 }
 
 .suggestions li:hover {
-    background-color: #f0f0f0;
+  background-color: #f0f0f0;
 }
 
-/* Style for error message */
 .error-message {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  color: red;
+  font-size: 14px;
+  display: none;
+  text-align: center;
+  z-index: 1000;
+}
+
+/* Media Queries for Smaller Screens */
+@media (max-width: 768px) {
+  .search-container {
+    width: 20%; /* Adjust width for better use of space on tablets */
+    padding: 0 10px; /* Add some padding for aesthetics */
+  }
+
+  .input-search {
+    padding: 8px 32px 8px 12px; /* Adjust padding to fit the new width */
+  }
+
+  #search-icon {
+    right: 8px; /* Adjust position of the icon */
+  }
+
+  .dropdown-menu {
+    box-shadow: none; 
+    border-top: 5%;
+  }
+
+  .dropdown-item {
+    padding: 10px; /* Increase padding for easier clicking */
+  }
+}
+
+@media (max-width: 480px) {
+  .search-container {
+    width: 100%; /* Full width on very small screens */
+    padding: 0; /* Remove padding to fit the screen */
+  }
+
+  .input-search {
+    padding: 8px 24px 8px 12px; /* Adjust padding for very small screens */
+  }
+
+  #search-icon {
+    right: 4px; /* Adjust position of the icon further */
+  }
+
+  .dropdown-item {
+    padding: 12px; /* Increase padding for very small screens */
+  }
+
+  .dropdown-menu {
+    box-shadow: none; /* Remove box shadow for simplicity */
+    border-top: 5%;
+  }
+}
+.dropdown-menu {
+    display: none;
     position: absolute;
-    top: 100%; /* Position below the search container */
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    right: 0;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.suggestions {
+    display: none;
+    position: absolute;
+    top: 100%;
     left: 0;
     right: 0;
     background: white;
     border: 1px solid #ddd;
     border-radius: 4px;
-    padding: 10px;
-    color: red;
-    font-size: 14px;
-    display: none; /* Initially hidden */
-    text-align: center;
-    z-index: 1000; /* Ensure it appears above other elements */
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.suggestions.show {
+    display: block;
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+    /* Adjust dropdown and suggestions positioning as needed for smaller screens */
+    .dropdown-menu, .suggestions {
+        left: 0;
+        right: 0;
+    }
 }
 
 
-  </style>
+</style>
+
+
 <!-- Header -->
 <header class="header-v2">
-	<!-- Header desktop -->
-	<div class="container-menu-desktop">
-		<div class="wrap-menu-desktop">
-			<nav class="limiter-menu-desktop container">
-				<!-- Logo desktop -->        
-				<a href="/" class="logo">
-					<img src="/images/icons/Westore-logo.png" alt="IMG-LOGO">
-				</a>
-  
-				<!-- Menu desktop -->
-				<div class="menu-desktop">
-					<ul class="main-menu">
-						<li class="active-menu">
-							<a href="/">Home</a>                                
-						</li>
-						<li>
-							<a href="/allProducts">All Products</a>
-						</li>    
-						<li>
-							<a href="/">About</a>
-						</li>
-						<li>
-							<a href="/">Contact</a>
-						</li>
-					</ul>
-				</div> 
-				   
-  
-				<!-- Icon header -->
-				<div class="wrap-icon-header flex-w flex-r-m">
-					<div class="wrap-icon-header flex-w flex-r-m">
-						<div class="search-container">
-							<input id="search-input" type="text" placeholder="Search..." class="input-search">
-							<div id="search-icon" class="icon-header-item cl2 hov-cl1 trans-04">
-								<i class="zmdi zmdi-search"></i>
-							</div>
-							<div id="suggestions" class="suggestions"></div>
-							<div id="error-message" class="error-message" style="display: none;">No products found.</div>
-						</div>
-					</div>
-					<% if (typeof user !=='undefined') { %>
-						<% if (user) { %>		
-							<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="<%= cartCount %>">
-								<i class="zmdi zmdi-shopping-cart"></i>
-							</a>
-						
-							<a href="/wishlist" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= wishlist && wishlist.products && wishlist.products.length ? wishlist.products.length : '0' %>">
-								<i class="zmdi zmdi-favorite-outline"></i>
-							</a>
+    <!-- Header desktop -->
+    <div class="container-menu-desktop trans-03">
+        <div class="wrap-menu-desktop">
+            <nav class="limiter-menu-desktop p-l-45">
+                <a href="/" class="logo m-l-100">
+                    <img src="/images/icons/Westore-logo.png" alt="IMG-LOGO">
+                </a>
+                <!-- Menu desktop -->
+                <div class="menu-desktop">
+                    <ul class="main-menu">
+                        <li class="active-menu"><a href="/">Home</a></li>
+                        <li><a href="/allProducts">All Products</a></li>
+                        <li><a href="/">About</a></li>
+                        <li><a href="/">Contact</a></li>
+                    </ul>
+                </div>
+                <!-- Icon header -->
+                <div class="wrap-icon-header flex-w flex-r-m mr-200">
+                    <div class="search-container">
+                        <input id="search-input" type="text" placeholder="Search..." class="input-search">
+                        <div id="search-icon" class="icon-header-item cl2 hov-cl1 trans-04">
+                            <i class="zmdi zmdi-search"></i>
+                        </div>
+                        <div id="suggestions" class="suggestions"></div>
+                        <div id="error-message" class="error-message" style="display: none;">No products found.</div>
+                    </div>
+                    <% if (typeof user !== 'undefined') { %>
+                        <% if (user) { %>
+                            <a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="<%= cartCount %>">
+                                <i class="zmdi zmdi-shopping-cart"></i>
+                            </a>
+                            <a href="/wishlist" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= wishlist && wishlist.products && wishlist.products.length ? wishlist.products.length : '0' %>">
+                                <i class="zmdi zmdi-favorite-outline"></i>
+                            </a>
+                            <a href="/wallet" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11" style="color: black;">
+                                <i class="fas fa-wallet"></i>
+                            </a>
+                            <!-- Profile Icon with Dropdown -->
+                            <div class="dropdown">
+                                <a href="javascript:void(0)" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 dropdown-toggle" id="profileDropdown">
+                                    <i class="zmdi zmdi-account-o"></i>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a href="/user/profile" class="dropdown-item">View Profile</a>
+                                    <a href="/logout" class="dropdown-item">Logout</a>
+                                </div>
+                            </div>
+                        <% } %>
+                    <% } else { %>
+                        <a href="/login" class="flex-c-m stext-101 cl0 size-105 bg1 bor1 hov-btn1 p-lr-5 trans-04 ml-5">Login</a>
+                    <% } %>
+                </div>
+            </nav>
+        </div>
+    </div>
 
-							<!-- FontAwesome Wallet Icon -->
-							<a href="/wallet" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 " style="color: black;">
-								<i class="fas fa-wallet"></i>
-							</a>
+   <!-- Header Mobile -->
+<div class="wrap-header-mobile">
+    <!-- Logo mobile -->
+    <div class="logo-mobile">
+        <a href="/"><img src="/images/icons/Westore-logo.png" alt="IMG-LOGO"></a>
+    </div>
+    <!-- Search for Mobile -->
+    <div class="search-container-mobile">
+        <input id="search-input-mobile" type="text" placeholder="Search..." class="input-search">
+        <div id="search-icon-mobile" class="icon-header-item cl2 hov-cl1 trans-04"></div>
+        <div id="suggestions-mobile" class="suggestions"></div>
+        <div id="error-message-mobile" class="error-message" style="display: none;">No products found.</div>
 
-						  
-							<!-- Profile Icon with Dropdown -->
-							<div class="dropdown">
-								<a href="javascript:void(0)" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 dropdown-toggle" id="profileDropdown">
-									<i class="zmdi zmdi-account-o"></i>
-								</a>
-								<div class="dropdown-menu">
-									<a href="/user/profile" class="dropdown-item">View Profile</a>
-									<a href="/logout" class="dropdown-item">Logout</a>
-								</div>
-							</div>
-						<% } %>
-						
-					<% } else { %>
-					<a href="/login" class="flex-c-m stext-101 cl0 size-105 bg1 bor1 hov-btn1 p-lr-5 trans-04 ml-5">
-						Login
-					</a>
-					<% } %>
-				</div>
-			</nav>
-		</div>    
-	</div>
-  </header>
-  <script>
+    </div>
+    <!-- Profile Icon with Dropdown -->
+    <div class="dropdown mt-500">
+        <a href="javascript:void(0)" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 dropdown-toggle" id="profileDropdownMobile">
+            <i class="zmdi zmdi-account-o"></i>
+        </a>
+        <div class="dropdown-menu mt-500">
+            <% if (typeof user !== 'undefined') { %> 
+                <% if (user) { %>
+                    <a href="/cart" class="dropdown-item">Cart</a>
+                    <a href="/wishlist" class="dropdown-item">Wishlist</a>
+                    <a href="/wallet" class="dropdown-item">Wallet</a>
+                    <a href="/user/profile" class="dropdown-item">View Profile</a>
+                    <a href="/logout" class="dropdown-item">Logout</a>
+                <% } %>
+            <% } else { %>
+                <a href="/login" class="dropdown-item">Login</a>
+            <% } %>
+        </div>
+    </div>
+    <!-- Button show menu -->
+    <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </div>
+</div>
+
+
+    <!-- Menu Mobile -->
+    <div class="menu-mobile">
+        <ul class="main-menu-m">
+            <li><a href="/">Home</a></li>
+            <li><a href="/allProducts">All Products</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </div>
+</header>
+
+<script>
 	document.addEventListener('DOMContentLoaded', function () {
-	  // Get the profile dropdown elements
-	  const profileDropdown = document.getElementById('profileDropdown');
-	  const dropdownMenu = profileDropdown ? profileDropdown.nextElementSibling : null;
-  
-	  // Toggle dropdown visibility on profile icon click
-	  if (profileDropdown) {
-		profileDropdown.addEventListener('click', function () {
-		  if (dropdownMenu) {
-			dropdownMenu.classList.toggle('show');
-		  }
-		});
-	  }
-  
-	  // Close the dropdown if clicking outside of it
-	  document.addEventListener('click', function (event) {
-		if (dropdownMenu && !profileDropdown.contains(event.target) && !dropdownMenu.contains(event.target)) {
-		  dropdownMenu.classList.remove('show');
-		}
-	  });
-	});
-  </script>
- <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('search-input');
-    const searchIcon = document.getElementById('search-icon');
-    const suggestionsList = document.getElementById('suggestions');
-    const errorMessage = document.getElementById('error-message');
+    // Function to handle dropdown toggle
+    const toggleDropdown = (dropdownTrigger, dropdownMenu) => {
+        dropdownTrigger.addEventListener('click', function () {
+            dropdownMenu.classList.toggle('show');
+        });
 
-    const showSuggestions = async (query) => {
-        try {
-            const response = await fetch(`/allProducts/search?query=${encodeURIComponent(query)}`);
-            const suggestions = await response.json();
-
-            if (suggestions.length > 0) {
-                const limitedSuggestions = suggestions.slice(0, 4); // Limit to 4 suggestions
-                suggestionsList.innerHTML = '<ul>' + limitedSuggestions.map(item => `<li>${item}</li>`).join('') + '</ul>';
-                suggestionsList.style.display = 'block';
-                errorMessage.style.display = 'none'; // Hide error message
-            } else {
-                suggestionsList.style.display = 'none';
-                errorMessage.style.display = 'block'; // Show error message
+        // Close the dropdown if clicked outside
+        document.addEventListener('click', function (event) {
+            if (!dropdownTrigger.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.remove('show');
             }
-        } catch (error) {
-            console.error('Error fetching suggestions:', error);
-            suggestionsList.style.display = 'none';
-            errorMessage.style.display = 'block'; // Show error message
-        }
+        });
     };
 
-    searchInput.addEventListener('input', () => {
-        const query = searchInput.value.trim();
-        if (query.length > 0) {
-            showSuggestions(query);
-        } else {
-            suggestionsList.style.display = 'none';
-            errorMessage.style.display = 'none';
-        }
-    });
+    // Function to handle search suggestions
+    const handleSearchSuggestions = (searchInput, suggestionsList, errorMessage) => {
+        searchInput.addEventListener('input', async function () {
+            const query = searchInput.value.trim();
+            if (query.length > 0) {
+                try {
+                    const response = await fetch(`/allProducts/search?query=${encodeURIComponent(query)}`);
+                    const suggestions = await response.json();
 
-    searchIcon.addEventListener('click', () => {
-        const query = searchInput.value.trim();
-        if (query.length > 0) {
-            window.location.href = `/allProducts?search=${encodeURIComponent(query)}`;
-        } else {
-            errorMessage.style.display = 'block'; // Show error message if no query is entered
-            suggestionsList.style.display = 'none';
-        }
-    });
+                    if (suggestions.length > 0) {
+                        const limitedSuggestions = suggestions.slice(0, 4); // Limit to 4 suggestions
+                        suggestionsList.innerHTML = '<ul>' + limitedSuggestions.map(item => `<li>${item}</li>`).join('') + '</ul>';
+                        suggestionsList.style.display = 'block';
+                        errorMessage.style.display = 'none';
+                    } else {
+                        suggestionsList.style.display = 'none';
+                        errorMessage.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Error fetching suggestions:', error);
+                    suggestionsList.style.display = 'none';
+                    errorMessage.style.display = 'block';
+                }
+            } else {
+                suggestionsList.style.display = 'none';
+                errorMessage.style.display = 'none';
+            }
+        });
 
-    suggestionsList.addEventListener('click', (e) => {
-        if (e.target.tagName === 'LI') {
-            const selectedSuggestion = e.target.textContent;
-            window.location.href = `/allProducts?search=${encodeURIComponent(selectedSuggestion)}`;
-        }
-    });
+        searchInput.nextElementSibling.addEventListener('click', function () {
+            const query = searchInput.value.trim();
+            if (query.length > 0) {
+                window.location.href = `/allProducts?search=${encodeURIComponent(query)}`;
+            } else {
+                errorMessage.style.display = 'block';
+                suggestionsList.style.display = 'none';
+            }
+        });
+
+        suggestionsList.addEventListener('click', function (e) {
+            if (e.target.tagName === 'LI') {
+                const selectedSuggestion = e.target.textContent;
+                window.location.href = `/allProducts?search=${encodeURIComponent(selectedSuggestion)}`;
+            }
+        });
+    };
+
+    // Initialize dropdown and search suggestions
+    const profileDropdownDesktop = document.getElementById('profileDropdown');
+    const dropdownMenuDesktop = profileDropdownDesktop ? profileDropdownDesktop.nextElementSibling : null;
+    const profileDropdownMobile = document.getElementById('profileDropdownMobile');
+    const dropdownMenuMobile = profileDropdownMobile ? profileDropdownMobile.nextElementSibling : null;
+
+    if (profileDropdownDesktop && dropdownMenuDesktop) {
+        toggleDropdown(profileDropdownDesktop, dropdownMenuDesktop);
+    }
+
+    if (profileDropdownMobile && dropdownMenuMobile) {
+        toggleDropdown(profileDropdownMobile, dropdownMenuMobile);
+    }
+
+    // Search functionality for both desktop and mobile
+    const searchInputDesktop = document.getElementById('search-input');
+    const suggestionsListDesktop = document.getElementById('suggestions');
+    const errorMessageDesktop = document.getElementById('error-message');
+
+    const searchInputMobile = document.getElementById('search-input-mobile');
+    const suggestionsListMobile = document.getElementById('suggestions-mobile');
+    const errorMessageMobile = document.getElementById('error-message-mobile');
+
+    if (searchInputDesktop) {
+        handleSearchSuggestions(searchInputDesktop, suggestionsListDesktop, errorMessageDesktop);
+    }
+
+    if (searchInputMobile) {
+        handleSearchSuggestions(searchInputMobile, suggestionsListMobile, errorMessageMobile);
+    }
 });
+
 </script>
-	
-	
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+    const handleSearchSuggestions = (searchInput, suggestionsList, errorMessage) => {
+        searchInput.addEventListener('input', async function () {
+            const query = searchInput.value.trim();
+            if (query.length > 0) {
+                try {
+                    const response = await fetch(`/allProducts/search?query=${encodeURIComponent(query)}`);
+                    const suggestions = await response.json();
+
+                    if (suggestions.length > 0) {
+                        const limitedSuggestions = suggestions.slice(0, 4); // Limit to 4 suggestions
+                        suggestionsList.innerHTML = '<ul>' + limitedSuggestions.map(item => `<li>${item}</li>`).join('') + '</ul>';
+                        suggestionsList.style.display = 'block';
+                        errorMessage.style.display = 'none';
+                    } else {
+                        suggestionsList.style.display = 'none';
+                        errorMessage.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Error fetching suggestions:', error);
+                    suggestionsList.style.display = 'none';
+                    errorMessage.style.display = 'block';
+                }
+            } else {
+                suggestionsList.style.display = 'none';
+                errorMessage.style.display = 'none';
+            }
+        });
+
+        searchInput.nextElementSibling.addEventListener('click', function () {
+            const query = searchInput.value.trim();
+            if (query.length > 0) {
+                window.location.href = `/allProducts?search=${encodeURIComponent(query)}`;
+            } else {
+                errorMessage.style.display = 'block';
+                suggestionsList.style.display = 'none';
+            }
+        });
+
+        suggestionsList.addEventListener('click', function (e) {
+            if (e.target.tagName === 'LI') {
+                const selectedSuggestion = e.target.textContent;
+                window.location.href = `/allProducts?search=${encodeURIComponent(selectedSuggestion)}`;
+            }
+        });
+    };
+
+    // Initialize search functionality for both desktop and mobile
+    const searchInputDesktop = document.getElementById('search-input');
+    const suggestionsListDesktop = document.getElementById('suggestions');
+    const errorMessageDesktop = document.getElementById('error-message');
+
+    const searchInputMobile = document.getElementById('search-input-mobile');
+    const suggestionsListMobile = document.getElementById('suggestions-mobile');
+    const errorMessageMobile = document.getElementById('error-message-mobile');
+
+    if (searchInputDesktop) {
+        handleSearchSuggestions(searchInputDesktop, suggestionsListDesktop, errorMessageDesktop);
+    }
+
+    if (searchInputMobile) {
+        handleSearchSuggestions(searchInputMobile, suggestionsListMobile, errorMessageMobile);
+    }
+});
+
+</script>

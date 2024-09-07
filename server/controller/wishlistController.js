@@ -70,6 +70,7 @@ module.exports ={
         });
     }
   },
+  
   removeFromWishlist: async (req, res) => {
     const userId = req.session.user;
     const productId = req.body.productId;

@@ -17,7 +17,6 @@ const walletSchema = new Schema({
             transactionId: {
                 type: String,
                 required: true,
-                unique: true
             },
             amount: {
                 type: Number,
@@ -25,7 +24,7 @@ const walletSchema = new Schema({
             },
             type: {
                 type: String,
-                enum: ['deposit', 'withdrawal', 'payment'],
+                enum: ['deposit', 'withdrawal', 'payment',"refund"],
                 required: true
             },
             status: {
@@ -33,6 +32,10 @@ const walletSchema = new Schema({
                 enum: ['completed', 'pending', 'failed'],
                 default: 'completed'
             },
+         debit:{
+            type:String,
+            enum:['debit','credit'],
+         },
             date: {
                 type: Date,
                 default: Date.now

@@ -70,4 +70,6 @@ router.get('/order', isAdminLoggedIn, orderCondroller.getAllOrders)
 router.post('/order/:orderId/update-status', orderCondroller.updateOrderStatus);
 router.get('/order/:orderId', orderCondroller.getOrderDetils);
 
+/*return */
+router.get("/return",isAdminLoggedIn,orderCondroller.getAllreturn)
 module.exports = router;

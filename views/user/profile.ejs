@@ -22,13 +22,13 @@
     /* Adjust spacing between checkbox and label */
   }
 </style>
-<section class="pt-150 pb-150">
+<section class="pt-25 pb-20">
   <div class="container">
     <div class="row">
       <div class="col-lg-10 m-auto">
         <div class="row">
           <div class="col-md-4">
-            <div class="dashboard-menu">
+            <div class="dashboard-menu mb-10">
               <ul class="nav flex-column" role="tablist">
                 <li class="nav-item">
                   <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" href="#dashboard" role="tab"
@@ -98,28 +98,33 @@
                             <th>Order</th>
                             <th>Date</th>
                             <th>Status</th>
+                            <th>payment Method</th>
                             <th>Total</th>
                             <th>Actions</th>
+
                           </tr>
                         </thead>
                         <tbody>
-                          <% orders.forEach(order => { %>
+                          <% orders.forEach(order=> { %>
                             <tr>
-                              <td><%= order.orderId %></td>
-                              <td><%= order.createdAt.toLocaleDateString() %></td>
-                              <td><%= order.status %></td>
-                              <td>₹<%= order.totalAmount %> for <%= order.products.length %> item<%= order.products.length > 1 ? 's' : '' %></td>
+                              <td> <%= order.orderId %></td>
+                              <td> <%= order.createdAt.toLocaleDateString() %></td>
+                              <td> <%= order.status %></td>
+                              <td><%= order.paymentMethod %></td>
+                              <td>₹<%= order.totalAmount %> for <%= order.products.length %> item<%=
+                                      order.products.length> 1 ? 's' : '' %></td>
                               <td>
-                                <a href="/order/details/<%= order.orderId %>" class="btn-small d-block"> Oder Details</a>
+                                <a href="/order/details/<%= order.orderId %>" class="btn-small d-block"> Oder
+                                  Details</a>
                               </td>
                             </tr>
-                          <% }) %>
+                            <% }) %>
                         </tbody>
                       </table>
                     </div>
                   </div>
-                  
-                  
+
+
                 </div>
               </div>
 
@@ -194,6 +199,9 @@
                                 <p><strong>Zipcode:</strong>
                                   <%= address.zipcode %>
                                 </p>
+                                <p><strong>State:</strong>
+                                  <%= address.state %>
+                                </p>
                                 <p><strong>Country:</strong>
                                   <%= address.country %>
                                 </p>
@@ -232,177 +240,227 @@
                             <p>No addresses found.</p>
                             <% } %>
                   </div>
-
-
-
-
                 </div>
               </div>
-
-              <!-- Add Address Modal -->
-              <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
+            </div>
+            <!-- Add Address Modal -->
+            <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
                   <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <!-- Address Form in Modal -->
-                      <form id="addAddressForm" action="/user/addAddress" method="POST">
-                        <div class="form-group">
-                          <label for="place">Place</label>
-                          <select name="place" id="place" class="form-control form-control-sm custom-input">
-                            <option value="" disabled selected>Select Place</option>
-                            <option value="home">Home</option>
-                            <option value="work">Work</option>
-                          </select>
-                        </div>
-                        <div class="form-group">
-                          <label for="houseNumber">House Number</label>
-                          <input type="text" name="houseNumber" id="houseNumber" class="form-control form-control-sm custom-input" required />
-                        </div>
-                        <div class="form-group">
-                          <label for="state">State</label>
-                          <select name="state" id="state" class="form-control form-control-sm custom-input" required>
-                            <option value="" disabled selected>Select State</option>
-                            <!-- States and Union Territories will be populated here -->
-                            <option value="Andhra Pradesh">Andhra Pradesh</option>
-                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                            <option value="Assam">Assam</option>
-                            <option value="Bihar">Bihar</option>
-                            <option value="Chhattisgarh">Chhattisgarh</option>
-                            <option value="Goa">Goa</option>
-                            <option value="Gujarat">Gujarat</option>
-                            <option value="Haryana">Haryana</option>
-                            <option value="Himachal Pradesh">Himachal Pradesh</option>
-                            <option value="Jharkhand">Jharkhand</option>
-                            <option value="Karnataka">Karnataka</option>
-                            <option value="Kerala">Kerala</option>
-                            <option value="Madhya Pradesh">Madhya Pradesh</option>
-                            <option value="Maharashtra">Maharashtra</option>
-                            <option value="Manipur">Manipur</option>
-                            <option value="Meghalaya">Meghalaya</option>
-                            <option value="Mizoram">Mizoram</option>
-                            <option value="Nagaland">Nagaland</option>
-                            <option value="Odisha">Odisha</option>
-                            <option value="Punjab">Punjab</option>
-                            <option value="Rajasthan">Rajasthan</option>
-                            <option value="Sikkim">Sikkim</option>
-                            <option value="Tamil Nadu">Tamil Nadu</option>
-                            <option value="Telangana">Telangana</option>
-                            <option value="Tripura">Tripura</option>
-                            <option value="Uttar Pradesh">Uttar Pradesh</option>
-                            <option value="Uttarakhand">Uttarakhand</option>
-                            <option value="West Bengal">West Bengal</option>
-                            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-                            <option value="Chandigarh">Chandigarh</option>
-                            <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
-                            <option value="Lakshadweep">Lakshadweep</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="Puducherry">Puducherry</option>
-                            <option value="Ladakh">Ladakh</option>
-                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                            <option value="Ladakh">Ladakh</option>
-                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                          </select>
-                        </div>
-                        <div class="form-group">
-                          <label for="country">Country</label>
-                          <input type="text" name="country" id="country" class="form-control form-control-sm custom-input" value="India" readonly />
-                        </div>
-                        <div class="form-group">
-                          <label for="city">City</label>
-                          <input type="text" name="city" id="city" class="form-control form-control-sm custom-input" required />
-                        </div>
-                        <div class="form-group">
-                          <label for="zipcode">Zipcode</label>
-                          <input type="text" name="zipcode" id="zipcode" class="form-control form-control-sm custom-input" required />
-                          <small id="zipcodeError" class="form-text text-danger"></small>
-                        </div>
-                        <div class="form-group">
-                          <label for="landmark">Landmark (Optional)</label>
-                          <input type="text" name="landmark" id="landmark" class="form-control form-control-sm custom-input" />
-                        </div>
-                        <div class="form-group">
-                          <label for="street">Street</label>
-                          <input type="text" name="street" id="street" class="form-control form-control-sm custom-input" required />
-                        </div>
-                        <div class="form-group">
-                          <label for="phoneNumber">Phone Number</label>
-                          <input type="tel" name="phoneNumber" id="phoneNumber" class="form-control form-control-sm custom-input" required />
-                          <small id="phoneNumberError" class="form-text text-danger"></small>
-                        </div>
-                        <div class="form-group d-flex align-items-center">
-                          <button type="submit" class="btn btn-primary btn-sm">Save Address</button>
-                        </div>
-                      </form>
-                    </div>
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <form id="addAddressForm" action="/user/addAddress" method="POST">
+                              <div class="row mb-3">
+                                  <div class="col-md-6">
+                                      <label for="place" class="form-label">Place</label>
+                                      <select class="form-select" id="place" name="place" required>
+                                          <option value="home">Home</option>
+                                          <option value="work">Work</option>
+                                      </select>
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label for="houseNumber" class="form-label">House Number</label>
+                                      <input type="text" class="form-control" id="houseNumber" name="houseNumber" required />
+                                  </div>
+                              </div>
+                              <div class="row mb-3">
+                                  <div class="col-md-6">
+                                      <label for="street" class="form-label">Street</label>
+                                      <input type="text" class="form-control" id="street" name="street" required />
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label for="city" class="form-label">City</label>
+                                      <input type="text" class="form-control" id="city" name="city" required />
+                                  </div>
+                              </div>
+                              <div class="row mb-3">
+                                  <div class="col-md-6">
+                                      <label for="zipcode" class="form-label">Zipcode</label>
+                                      <input type="text" class="form-control" id="zipcode" name="zipcode" required />
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label for="state" class="form-label">State</label>
+                                      <select class="form-select" id="state" name="state" required>
+                                          <!-- States -->
+                                          <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                          <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                          <option value="Assam">Assam</option>
+                                          <option value="Bihar">Bihar</option>
+                                          <option value="Chhattisgarh">Chhattisgarh</option>
+                                          <option value="Goa">Goa</option>
+                                          <option value="Gujarat">Gujarat</option>
+                                          <option value="Haryana">Haryana</option>
+                                          <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                          <option value="Jharkhand">Jharkhand</option>
+                                          <option value="Karnataka">Karnataka</option>
+                                          <option value="Kerala">Kerala</option>
+                                          <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                          <option value="Maharashtra">Maharashtra</option>
+                                          <option value="Manipur">Manipur</option>
+                                          <option value="Meghalaya">Meghalaya</option>
+                                          <option value="Mizoram">Mizoram</option>
+                                          <option value="Nagaland">Nagaland</option>
+                                          <option value="Odisha">Odisha</option>
+                                          <option value="Punjab">Punjab</option>
+                                          <option value="Rajasthan">Rajasthan</option>
+                                          <option value="Sikkim">Sikkim</option>
+                                          <option value="Tamil Nadu">Tamil Nadu</option>
+                                          <option value="Telangana">Telangana</option>
+                                          <option value="Tripura">Tripura</option>
+                                          <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                          <option value="Uttarakhand">Uttarakhand</option>
+                                          <option value="West Bengal">West Bengal</option>
+
+                                          <!-- Union Territories -->
+                                          <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                          <option value="Chandigarh">Chandigarh</option>
+                                          <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and
+                                              Daman and Diu</option>
+                                          <option value="Lakshadweep">Lakshadweep</option>
+                                          <option value="Delhi">Delhi</option>
+                                          <option value="Puducherry">Puducherry</option>
+                                          <option value="Ladakh">Ladakh</option>
+                                          <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                      </select>
+                                  </div>
+                              </div>
+                              <div class="row mb-3">
+                                  <div class="col-md-6">
+                                      <label for="country" class="form-label">Country</label>
+                                      <input type="text" class="form-control" id="country" name="country" value="India" readonly />
+                                  </div>
+                                  
+                                  <div class="col-md-6">
+                                      <label for="landmark" class="form-label">Landmark</label>
+                                      <input type="text" class="form-control" id="landmark" name="landmark" />
+                                  </div>
+                              </div>
+                              <div class="row mb-3">
+                                  <div class="col-md-12">
+                                      <label for="phoneNumber" class="form-label">Phone Number</label>
+                                      <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required />
+                                  </div>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button"  class="btn btn-sm" data-bs-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-primary">Add Address</button>
+                              </div>
+                          </form>
+                      </div>
                   </div>
-                </div>
               </div>
-                      
+            </div>
+            <!-- Edit Address Modal -->
+            <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <form id="editAddressForm">
+                          <div class="modal-body">
+                              <input type="hidden" id="editAddressId" name="addressId">
+                              <div class="row mb-3">
+                                  <div class="col-md-6">
+                                      <label for="editPlace" class="form-label">Place</label>
+                                      <select class="form-select" id="editPlace" name="place" required>
+                                          <option value="home">Home</option>
+                                          <option value="work">Work</option>
+                                      </select>
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label for="editHouseNumber" class="form-label">House Number</label>
+                                      <input type="text" class="form-control" id="editHouseNumber" name="houseNumber" required />
+                                  </div>
+                              </div>
+                              <div class="row mb-3">
+                                  <div class="col-md-6">
+                                      <label for="editStreet" class="form-label">Street</label>
+                                      <input type="text" class="form-control" id="editStreet" name="street" required />
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label for="editCity" class="form-label">City</label>
+                                      <input type="text" class="form-control" id="editCity" name="city" required />
+                                  </div>
+                              </div>
+                              <div class="row mb-3">
+                                  <div class="col-md-6">
+                                      <label for="editZipcode" class="form-label">Zipcode</label>
+                                      <input type="text" class="form-control" id="editZipcode" name="zipcode" required />
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label for="editState" class="form-label">State</label>
+                                      <select class="form-select" id="editState" name="state" required>
+                                          <!-- States and Union Territories -->
+                                          <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                          <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                          <option value="Assam">Assam</option>
+                                          <option value="Bihar">Bihar</option>
+                                          <option value="Chhattisgarh">Chhattisgarh</option>
+                                          <option value="Goa">Goa</option>
+                                          <option value="Gujarat">Gujarat</option>
+                                          <option value="Haryana">Haryana</option>
+                                          <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                          <option value="Jharkhand">Jharkhand</option>
+                                          <option value="Karnataka">Karnataka</option>
+                                          <option value="Kerala">Kerala</option>
+                                          <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                          <option value="Maharashtra">Maharashtra</option>
+                                          <option value="Manipur">Manipur</option>
+                                          <option value="Meghalaya">Meghalaya</option>
+                                          <option value="Mizoram">Mizoram</option>
+                                          <option value="Nagaland">Nagaland</option>
+                                          <option value="Odisha">Odisha</option>
+                                          <option value="Punjab">Punjab</option>
+                                          <option value="Rajasthan">Rajasthan</option>
+                                          <option value="Sikkim">Sikkim</option>
+                                          <option value="Tamil Nadu">Tamil Nadu</option>
+                                          <option value="Telangana">Telangana</option>
+                                          <option value="Tripura">Tripura</option>
+                                          <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                          <option value="Uttarakhand">Uttarakhand</option>
+                                          <option value="West Bengal">West Bengal</option>
+                                          <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                          <option value="Chandigarh">Chandigarh</option>
+                                          <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                                          <option value="Lakshadweep">Lakshadweep</option>
+                                          <option value="Delhi">Delhi</option>
+                                          <option value="Puducherry">Puducherry</option>
+                                          <option value="Ladakh">Ladakh</option>
+                                          <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                      </select>
+                                  </div>
+                              </div>
+                              <div class="row mb-3">
+                                  <div class="col-md-6">
+                                      <label for="editCountry" class="form-label">Country</label>
+                                      <input type="text" class="form-control" id="editCountry" name="country" value="India" readonly />
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label for="editLandmark" class="form-label">Landmark</label>
+                                      <input type="text" class="form-control" id="editLandmark" name="landmark" />
+                                  </div>
+                              </div>
+                              <div class="row mb-3">
+                                  <div class="col-md-12">
+                                      <label for="editPhoneNumber" class="form-label">Phone Number</label>
+                                      <input type="text" class="form-control" id="editPhoneNumber" name="phoneNumber" required />
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                              <button type="submit" class="btn btn-primary">Save Changes</button>
+                          </div>
+                      </form>
+                  </div>
+              </div>
             </div>
 
-            <!-- Edit Address Modal -->
-            <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog"
-              aria-labelledby="editAddressModalLabel" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <form id="editAddressForm">
-                    <div class="modal-body">
-                      <input type="hidden" id="editAddressId" name="addressId">
-                      <div class="form-group">
-                        <label for="editPlace">Place</label>
-                        <select class="form-control" id="editPlace" name="place" required>
-                          <option value="">Select Place</option>
-                          <option value="home">Home</option>
-                          <option value="work">Work</option>
-                        </select>
-                      </div>
-                      <div class="form-group">
-                        <label for="editHouseNumber">House Number</label>
-                        <input type="text" class="form-control" id="editHouseNumber" name="houseNumber" required>
-                      </div>
-                      <div class="form-group">
-                        <label for="editStreet">Street</label>
-                        <input type="text" class="form-control" id="editStreet" name="street" required>
-                      </div>
-                      <div class="form-group">
-                        <label for="editCity">City</label>
-                        <input type="text" class="form-control" id="editCity" name="city" required>
-                      </div>
-                      <div class="form-group">
-                        <label for="editZipcode">Zipcode</label>
-                        <input type="text" class="form-control" id="editZipcode" name="zipcode" required>
-                      </div>
-                      <div class="form-group">
-                        <label for="editCountry">Country</label>
-                        <input type="text" class="form-control" id="editCountry" name="country" required>
-                      </div>
-                      <div class="form-group">
-                        <label for="editLandmark">Landmark</label>
-                        <input type="text" class="form-control" id="editLandmark" name="landmark">
-                      </div>
-                      <div class="form-group">
-                        <label for="editPhoneNumber">Phone Number</label>
-                        <input type="text" class="form-control" id="editPhoneNumber" name="phoneNumber">
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
 
             <!-- Account Details -->
             <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
@@ -609,6 +667,7 @@
     }
   }
 </script>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -619,6 +678,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     // Handle edit button click
@@ -634,6 +694,7 @@
             document.getElementById('editCity').value = address.city;
             document.getElementById('editZipcode').value = address.zipcode;
             document.getElementById('editCountry').value = address.country;
+            document.getElementById("editState").value = address.state;
             document.getElementById('editLandmark').value = address.landmark || '';
             document.getElementById('editPhoneNumber').value = address.phoneNumber || '';
             $('#editAddressModal').modal('show');
@@ -659,7 +720,8 @@
         zipcode: document.getElementById('editZipcode').value,
         country: document.getElementById('editCountry').value,
         landmark: document.getElementById('editLandmark').value,
-        phoneNumber: document.getElementById('editPhoneNumber').value
+        phoneNumber: document.getElementById('editPhoneNumber').value,
+        state:document.getElementById("editState").value,
       };
 
       fetch(`/user/address/${addressId}/edit`, {
@@ -731,6 +793,7 @@
     }
   });
 </script>
+
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.btn-set-default').forEach(button => {
@@ -743,6 +806,7 @@
   });
 
 </script>
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('[id^="set-default-btn-"]').forEach(button => {
@@ -802,7 +866,7 @@
 </script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const zipcodeInput = document.getElementById('zipcode');
     const zipcodeError = document.getElementById('zipcodeError');
     const landmarkInput = document.getElementById('landmark');
@@ -838,7 +902,7 @@
     }
 
     // Event listener for zip code input
-    zipcodeInput.addEventListener('input', function() {
+    zipcodeInput.addEventListener('input', function () {
       const zipcode = zipcodeInput.value.trim();
       if (zipcode.length === 6) { // Assuming 6-digit pin code
         validateZipcode(zipcode);

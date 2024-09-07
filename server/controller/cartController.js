@@ -91,6 +91,7 @@ module.exports = {
       );
       cart.couponDiscount = 0;
       cart.coupon = null;
+      cart.shipingCharg= "Free Delivery"
       cart.offerAppliedTotalAmount = cart.totalPrice;
       await cart.save();
 
@@ -136,6 +137,7 @@ module.exports = {
       );
       cart.couponDiscount = 0;
       cart.coupon = null;
+      cart.shipingCharg= "Free Delivery"
       cart.offerAppliedTotalAmount = cart.totalPrice;
       await cart.save();
 
@@ -185,6 +187,7 @@ module.exports = {
 
       cart.couponDiscount = 0;
       cart.coupon = null;
+      cart.shipingCharg= "Free Delivery"
       cart.offerAppliedTotalAmount = cart.totalPrice;
       await cart.save();
 
@@ -212,6 +215,7 @@ module.exports = {
       cart.totalProduct = 0;
       cart.couponDiscount = 0;
       cart.coupon = null;
+      cart.shipingCharg= "Free Delivery"
       cart.offerAppliedTotalAmount = 0;
       await cart.save();
       res.json({ success: true });

@@ -13,6 +13,7 @@ router.get('/shop/quickView/:id',shopController.getQuickView)
 router.get("/shop/productDetails/:id",shopController.getProductDetails)
 
 //allProducts
+
 router.get("/allProducts",shopController.getAllProduct)
 router.get('/allProducts/search',shopController.getSearchSuggestions)
 

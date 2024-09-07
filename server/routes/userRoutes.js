@@ -12,6 +12,7 @@ const walletCotroller = require("../controller/walletController");
 
 
 const Product = require("../model/productSchema");
+const walletController = require("../controller/walletController");
 // user Wishlist 
 router.post('/wishlist/add', wishlistController.addToWishlist);
 router.post('/wishlist/remove', wishlistController.removeFromWishlist);
@@ -49,6 +50,7 @@ router.post("/checkOut/addAddress", userController.checkOutaddAddress)
 router.post("/checkOut/address/:addressId/edit", userController.checkOuteditAddress)
 router.delete("/checkOut/address/:addressId/delete", userController.checkOutdeleteAddress)
 router.post("/checkOut/set-default-address/:addressId", userController.checkOutsetDefault)
+router.get("/getShippingCharges",checkOutCondroller.getShippingCharges);
 
 router.post("/user/verify-orderpayment",checkOutCondroller.verifyPayment)
 
@@ -66,6 +68,13 @@ router.post("/order/create",orderController.reOrder)
 router.get("/wallet",walletCotroller.getwallet);
 router.post("/wallet/createwalletpayment",walletCotroller.requesrtoPay);
 router.post('/wallet/verifypayment',walletCotroller.verifyPayment);
+
+
+router.post("/user/check-wallet-balance",walletCotroller.getbalanceL);
+router.post("/user/add-money",walletController.addMoney);
+
+
+
 
 
 

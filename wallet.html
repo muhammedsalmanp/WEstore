@@ -1,0 +1,18 @@
+<% if (status==="Return Rejected") { %>
+    <div id="progress-status"
+        class="progress-step mb-6
+            <%= status === 'Return Rejected' ? 'active' : '' %> 
+            <%= status === 'Return Rejected' ? 'current' : '' %> ">
+        
+        <span class="progress-icon">
+            <i class="<%= status === 'Return Rejected' ? 'fas fa-times-circle' : 
+                        (status === 'Return Requested' ? 'fas fa-undo-alt' : '') %>"></i>
+        </span>
+        
+        <p>
+            <%= status === 'Return Rejected' ? 'Return Request Rejected' : 
+                (status === 'Return Requested' ? 'Return Requested' : '') %>
+        </p>
+    </div>
+
+<% }

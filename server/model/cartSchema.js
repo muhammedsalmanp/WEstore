@@ -38,7 +38,10 @@ const cartSchema = new mongoose.Schema({
     offerAppliedTotalAmount: {
         type: Number,
         default: 0
-    }
+    },
+    shipingCharg:{
+        type:String,
+    },
 }, {
     timestamps: true
 });

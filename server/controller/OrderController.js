@@ -8,6 +8,7 @@ const crypto = require("crypto");
 const razorpayInstance = require("../config/razorPay");
 const Wishlist = require("../model/wishlistSchema");
 const Cart = require("../model/cartSchema");
+const Wallet = require("../model/walletSchema");
 
 
 const mongoose = require('mongoose');
@@ -39,22 +40,24 @@ module.exports = {
         const locals = {
             title: "Order ",
         };
-        const perPage = 12
-        const page = req.query.page || 1
-        const orders = await Order.find().populate("products._id").populate('userId', 'firstName lastName email')
-        .sort({createdAt:-1})
-            .skip(perPage * page - perPage)
+        const perPage = 50;
+        const page = req.query.page || 1;
+        const orders = await Order.find({return: false})
+            .populate("products._id")
+            .populate('userId', 'firstName lastName email')
+            .sort({ createdAt: -1 })
+            .skip(perPage * (page - 1))
             .limit(perPage)
             .exec();
-        const count = await Order.find().countDocuments({});
-        const nextPage = parseInt(page) + 1;
+        const count = await Order.find({return: false}).countDocuments({});
+        const nextPage = parseInt(page) + 1;  
         const hasNextPage = nextPage <= Math.ceil(count / perPage);
         let wishlist = await Wishlist.findOne({ userId: req.session.user }).populate('products');
         let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
         const cartCount = cart && cart.products ? cart.products.length : 0;
         const breadcrumbs = [
             { name: 'Home', url: '/admin' },
-            { name: 'order', url: '/admin/order' },
+            { name: 'Order', url: '/admin/order' },
             { name: `Page ${page}`, url: `/admin/order?page=${page}` }
         ];
         res.render("admin/orders/order", {
@@ -69,47 +72,107 @@ module.exports = {
             wishlist,
             cartCount: cartCount,
         });
-
     },
+    
 
     updateOrderStatus: async (req, res) => {
         const { orderId } = req.params;
-        const { status } = req.body;
-
+        const { status, returnReason, boxStatus, returnID } = req.body;
+    
         try {
-            const validStatuses = ['Ordered', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled', 'Returned', 'Received', 'Refund Issued', 'Refund Credited'];
+            const validStatuses = ['Ordered', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled', 'Returned', 'Return Requested', 'Return Accepted', 'Return Rejected', 'Received', 'Refund Issued', 'Refund Credited'];
+            const returnStatuses = ['Return Requested', 'Return Accepted', 'Return Rejected', 'Returned', 'Received', 'Refund Issued', 'Refund Credited'];
+            const nonReturnStatuses = ['Ordered', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled'];
+    
+            // Validate the status
             if (!validStatuses.includes(status)) {
                 return res.status(400).json({ success: false, message: 'Invalid status' });
             }
+    
             const order = await Order.findById(orderId);
             if (!order) {
                 return res.status(404).json({ success: false, message: 'Order not found' });
             }
+    
+            const userId = order.userId;
+            let wallet = await Wallet.findOne({ userId: userId });
+    
+            if (!wallet) {
+                wallet = await Wallet.create({
+                    userId: userId,
+                    balance: 0,
+                    transactions: []
+                });
+            }
+    
             if (order.return) {
-                const returnStatuses = ['Returned', 'Received', 'Refund Issued', 'Refund Credited'];
                 if (!returnStatuses.includes(status)) {
                     return res.status(400).json({ success: false, message: 'Invalid status for a return' });
                 }
+    
+                if (status === 'Return Requested' ) {
+                    if (!returnReason) {
+                        return res.status(400).json({ success: false, message: 'Return reason is required' });
+                    }
+                    order.returnReason = returnReason;
+                    order.boxStatus = boxStatus || '';
+                }
+                if(status === 'Return Accepted') {
+                    order.status = "Returned"; 
+                }
+                if (status === 'Return Rejected') {
+                    order.status = 'Return Rejected'; 
+                }
+    
+                if (status === 'Returned' || status === 'Received') {
+                    order.return = true;
+                }
+    
+                if (status === 'Refund Issued') {
+                    const refundAmount = order.products.reduce((total, product) => {
+                        return total + (product.price * product.quantity);
+                    }, 0);
+    
+                    const transactionId = `TXN-${Date.now()}`;
+    
+                    wallet.balance += refundAmount;
+                    wallet.transactions.push({
+                        transactionId,
+                        amount: refundAmount,
+                        type: 'refund',
+                        status: 'completed',
+                        debit: 'credit'
+                    });
+    
+                    await wallet.save();
+    
+                    order.status = 'Refund Credited';
+                }
             } else {
-                const nonReturnStatuses = ['Ordered', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled'];
                 if (!nonReturnStatuses.includes(status)) {
                     return res.status(400).json({ success: false, message: 'Invalid status for a non-return' });
                 }
             }
-
-            order.status = status;
-            if (order.status === "Delivered") {
-                order.paymentStatus = "Paid"
+    
+            // Update the order status based on the provided status (except 'Refund Issued')
+            if (status !== 'Refund Issued') {
+                order.status = status;
             }
+    
+            // If the status is 'Delivered' and payment method is not COD, mark it as 'Paid'
+            if (order.status === 'Delivered' && order.paymentMethod !== 'COD') {
+                order.paymentStatus = 'Paid';
+            }
+    
             await order.save();
-
+    
             res.json({ success: true, message: 'Order status updated successfully' });
         } catch (error) {
             console.error('Error updating order status:', error);
             res.status(500).json({ success: false, message: 'Internal server error' });
         }
     },
-
+      
     getOrderDetils: async (req, res) => {
         try {
             const locals = {
@@ -164,6 +227,42 @@ module.exports = {
         }
     },
 
+    getAllreturn: async (req, res) => {
+        const locals = {
+            title: "Return ",
+        };
+        const perPage = 25
+        const page = req.query.page || 1
+        const orders = await Order.find({return:true}).populate("products._id").populate('userId', 'firstName lastName email')
+        .sort({createdAt:-1})
+            .skip(perPage * page - perPage)
+            .limit(perPage)
+            .exec();
+        const count = await Order.find({return:true}).countDocuments({});
+        const nextPage = parseInt(page) + 1;  
+        const hasNextPage = nextPage <= Math.ceil(count / perPage);
+        let wishlist = await Wishlist.findOne({ userId: req.session.user }).populate('products');
+        let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
+        const cartCount = cart && cart.products ? cart.products.length : 0;
+        const breadcrumbs = [
+            { name: 'Home', url: '/admin' },
+            { name: 'return', url: '/admin/return' },
+            { name: `Page ${page}`, url: `/admin/return?page=${page}` }
+        ];
+        res.render("admin/orders/retuen", {
+            locals,
+            layout: adminLayout,
+            orders,
+            current: page,
+            perPage: perPage,
+            pages: Math.ceil(count / perPage),
+            nextPage: hasNextPage ? nextPage : null,
+            breadcrumbs,
+            wishlist,
+            cartCount: cartCount,
+        });
+
+    },
     //user side 
 
     getOrder: async (req, res) => {
@@ -228,6 +327,8 @@ module.exports = {
             if (!order) {
                 return res.status(404).json({ message: 'Order not found' });
             }
+            const userId = req.session.user
+            const wallet= await Wallet.findOne({userId:userId});
 
             const product = order.products.find(p => p._id._id.toString() === productId);
 
@@ -251,7 +352,6 @@ module.exports = {
             }
 
             order.totalAmount -= product.price * product.quantity;
-
             let applicableCouponDiscount = 0;
 
             if (order.coupon) {
@@ -267,8 +367,22 @@ module.exports = {
             const allProductsCanceled = order.products.every(p => p.isCanceld);
             if (allProductsCanceled) {
                 order.status = 'Cancelled';
+                order.paymentStatus='Refunded'
             }
-
+             
+            const refundamount = product.price*product.quantity;
+            const transactionId = `TXN-${Date.now()}`;
+           if (order.paymentMethod !=="COD"){
+              wallet.balance = wallet.balance + refundamount;
+              wallet.transactions.push({
+                transactionId,
+                amount:refundamount,
+                type:"refund",
+                status:"completed",
+                debit:"credit"
+              })
+           }
+           await wallet.save();
             await order.save();
 
             res.json({
@@ -420,23 +534,19 @@ module.exports = {
             let couponDiscount = 0;
     
             if (order.coupon) {
-                // Find the coupon
                 const coupon = await Coupon.findById(order.coupon);
     
                 if (coupon) {
-                    // Apply coupon discount to the new order
                     couponDiscount = offerAppliedTotalAmount -= couponDiscount;
                 }
             }
     
             if (order.products.length === 1) {
-                // If there is only one product in the order, just update the original order
-                order.status = 'Returned';
+                order.status = "Return Requested";
                 order.return = true;
                 order.returnReason = reason;
                 order.damageStatus = damageStatus;
     
-                // Save the updated original order
                 await order.save();
     
                 console.log('Updated Order:', order);
@@ -448,34 +558,29 @@ module.exports = {
                     expectedReturnAmount: offerAppliedTotalAmount
                 });
             } else {
-                // If there are multiple products, create a new order for the returned product
-    
-                // Generate a new return ID
                 const returnId = generateReturnId(8);
-    
-                // Create a new order for the returned product
                 const newOrder = new Order({
                     userId: order.userId,
                     products: [product],
                     totalAmount: offerAppliedTotalAmount,
                     shippingAddress: order.shippingAddress,
                     paymentMethod: order.paymentMethod,
-                    status: 'Returned', // Set status to 'Returned'
-                    expectedDeliveryDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000), // Assuming 4 days from now
-                    offerAppliedTotalAmount: offerAppliedTotalAmount, // Set the offer applied amount based on the product
-                    orderId: returnId, // Use the new return ID
+                    status: "Return Requested", 
+                    expectedDeliveryDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000),
+                    offerAppliedTotalAmount: offerAppliedTotalAmount,
+                    orderId: returnId, 
                     returnReason: reason,
                     boxStatus: boxStatus,
                     damageStatus: damageStatus,
-                    coupon: order.coupon, // Preserve the original coupon for record
-                    couponDiscount: couponDiscount, // Include the coupon discount in the new order
+                    coupon: order.coupon, 
+                    couponDiscount: couponDiscount, 
                     return : true,
                 });
     
-                // Save the new order
+                
                 await newOrder.save();
     
-                // Remove the returned product from the original order
+                
                 order.products.splice(productIndex, 1);
     
                 
@@ -524,4 +629,5 @@ module.exports = {
             res.json({ success: false, message: 'Failed to update payment method' });
         }
     },
+    
 };

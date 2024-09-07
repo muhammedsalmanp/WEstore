@@ -41,11 +41,19 @@
                 </a>
             </li>
             <li class="<%= currentRoute === '/admin/order' ? 'menu-item active' : 'menu-item' %>">
-                <a class="menu-link" href="/admin/order"> <i class="icon material-icons md-featured_play_list"></i>
+                <a class="menu-link" href="/admin/order"> 
+                    <i class="icon material-icons md-assignment"></i>
                     <span class="text">Orders</span>
                 </a>
-                
             </li>
+            
+            <li class="<%= currentRoute === '/admin/return' ? 'menu-item active' : 'menu-item' %>">
+    <a class="menu-link" href="/admin/return"> 
+        <i class="icon material-icons md-restore"></i>
+        <span class="text">Returns</span>
+    </a>
+</li>
+
             <li class="<%= currentRoute === '/admin/banners' ? 'menu-item active' : 'menu-item' %>">
                 <a class="menu-link" href="#"> <i class="icon material-icons md-image"></i>
                     <span class="text">Banners</span>

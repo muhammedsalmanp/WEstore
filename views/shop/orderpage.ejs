@@ -371,13 +371,15 @@
    
         <% if (status!=='Cancelled' ) { %>
             <!-- Animated Checkmark at the Top -->
-            <% if (status!=='Failed' ) { %>
+            <% if (status!=='Failed'  ) { %>
+           <% if (status!=="Return Requested" && status!=="Return Rejected") { %>
             <div class="success-animation">
                 <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
                     <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
                     <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
                 </svg>
             </div>
+           <% } %>
             <% }else { %>
                 <h1 class="mb-6" style="color: #c0392b; ">Order Failed</h1>
              <% } %>
@@ -406,6 +408,25 @@
                     </div>
                 </div>
             <% } else {%>
+                <% if (status==="Return Requested"||status==="Return Rejected") { %>
+                    <div id="progress-status"
+                    class="progress-step mb-6
+                        <%= status === 'Return Requested' ? 'active' : '' %> 
+                        <%= status === 'Return Rejected' ? 'active' : '' %> 
+                        <%= status === 'Return Requested' ? 'current' : '' %> 
+                        <%= status === 'Return Rejected' ? 'current' : '' %>">
+                    
+                    <span class="progress-icon">
+                        <i class="<%= status === 'Return Requested' ? 'fas fa-undo-alt' : 
+                                    (status === 'Return Rejected' ? 'fas fa-times-circle' : '') %>"></i>
+                    </span>
+                    
+                    <p>
+                        <%= status === 'Return Requested' ? 'Return Requested' : 
+                            (status === 'Return Rejected' ? 'Return Rejected' : '') %>
+                    </p>
+                </div>
+                <% } else {%>
                 <div id="progress-container" class="progress-container">
                     <div id="progress-returned"
                         class="progress-step <%= status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Returned' ? 'active' : '' %> <%= status === 'Returned' ? 'current' : '' %>">
@@ -428,6 +449,7 @@
                         <p>Refund Credited</p>
                     </div>
                 </div>
+                 <% } %>
             <% } %>
         <% }else{ %>
             <div id="progress-cancelled"
@@ -452,13 +474,14 @@
                         <p>Quantity: <%= product.quantity %></p>
                         <% if (status==='Delivered' ) { %>
                             <p>Delivery Date: <%= product.deliveryDate %></p>
-                        <% } %>
+                        <% } %>  
                     </div>
                     <div id="product-image-<%= product.id %>" class="product-image">
                         <img src="/uploads/products-images/<%= product.primaryImages.length > 0 ? product.primaryImages[0].name : 'default-image.jpg' %>"alt="Product Image">
                     </div>
                     <div id="product-cancellation-<%= product._id %>"class="product-cancellation">
-                        <% if (status!=="Failed") { %>                        
+                        <% if (status!=="Failed") { %>  
+                        <% if (status!=="Return Requested" && status!=="Return Rejected" && status!=="Refund Credited") { %>                      
                         <% if (status==='Delivered' ) { %>
                             <% if (!order.return) { %>
                                 <button id="return-button-<%= product.productId %>"class="return-button">Return</button>
@@ -474,6 +497,7 @@
                             <% } %>
                         <% } %>
                         <% } %>
+                        <% } %>
                     </div>
                 </div>
             <% }) %>
@@ -486,6 +510,7 @@
     <div id="offer-details" class="offer-details">
         <p>Total Price: ₹<%= order.totalAmount.toFixed(2) %>
         </p>
+        <P>shipping charge :<%= order.shipingCharg ?order.shipingCharg :"Free shipping" %> </P>
         <p>Coupon: <%= order.coupon && order.coupon.code ? order.coupon.code
                 : 'No Coupon Applied' %>
         </p>
@@ -505,7 +530,7 @@
             </p>
             <% } %>
 
-                <p>Offer Applied Total Amount: ₹<%= ((order.offerAppliedTotalAmount ||
+                <p>Total Amount you have to pay : ₹<%= ((order.offerAppliedTotalAmount ||
                         order.totalAmount) < 0 ? 0 : (order.offerAppliedTotalAmount ||
                         order.totalAmount)).toFixed(2) %>
                 </p>
@@ -564,13 +589,20 @@
             <p>Order Date: <%= new Date(order.createdAt).toLocaleDateString('en-IN') %></p>
             <p>Delivery Date: <%= new Date(order.expectedDeliveryDate).toLocaleDateString('en-IN') %></p>
             <p>Payment Method: <%= order.paymentMethod %></p>
+            <% if (status!=="Return Requested" && status!=="Return Rejected") { %> 
             <p>Payment Status: <%= order.paymentStatus %></p>
-            <% if (order.paymentMethod === 'Razor Pay' && order.paymentId) { %>
+            <% if (order.paymentMethod === 'Razor Pay' && order.paymentId ||order.paymentMethod === 'Wallet' && order.paymentId  ) { %>
                 <p>Transaction ID: <%= order.paymentId %></p>
             <% } %>
-            <% if (order.paymentStatus === 'Failed') { %>
-                <button id="payNowButton" class="btn btn-primary">Pay Now</button>
+            <% if (order.paymentMethod!=="COD") { %>
+                <% if (order.paymentStatus === 'Failed'|| order.paymentStatus === 'Pending' ) { %>
+                    <button id="payNowButton" class="btn btn-sm btn-secondary">Pay Now</button>
+                <% } %>
             <% } %>
+           <% } %>
+            
+            
+
         </div>
         
 
@@ -579,12 +611,13 @@
 
     <!-- Buttons -->
     <div id="button-container">
-        <button id="print-button" onclick="window.print()">Print</button>
-        <button id="whatsapp-button" class="whatsapp-button">
-            <a href="/allProducts"><i class="fi-rs-shopping-bag mr-10"></i>Continue
-                Shopping</a>
+        <button id="" class="button" style="background-color:#A4A04E; border: none; padding: 10px 20px; cursor: pointer;">
+            <a href="/allProducts" style="color: white; text-decoration: none;">
+                <i class="fi-rs-shopping-bag mr-10" style="color: white;"></i>Continue Shopping
+            </a>
         </button>
     </div>
+    
     <!-- Cancel Reason Modal -->
     <div class="modal fade" id="cancelReasonModal" tabindex="-1"
         aria-labelledby="cancelReasonModalLabel" aria-hidden="true">
@@ -881,127 +914,63 @@
                 Swal.fire({
                     title: 'Select Payment Method',
                     html: `
-                        <div style="display: flex; flex-direction: row; justify-content: space-around; align-items: center;">
-                            <div style="text-align: center;">
-                                <input type="radio" name="paymentMethod" value="wallet" id="walletOption" style="display: none;">
-                                <i class="fas fa-wallet" id="walletIcon" style="font-size: 2rem; cursor: pointer; color: #4CAF50;" title="Wallet"></i>
-                                <div style="color: #4CAF50;">Wallet</div>
-                            </div>
-                            <div style="text-align: center;">
-                                <input type="radio" name="paymentMethod" value="cod" id="codOption" style="display: none;">
-                                <i class="fas fa-money-bill" id="codIcon" style="font-size: 2rem; cursor: pointer; color: #FFC107;" title="Cash on Delivery"></i>
-                                <div style="color: #FFC107;">Cash on Delivery</div>
-                            </div>
-                            <div style="text-align: center;">
-                                <input type="radio" name="paymentMethod" value="razorPay" id="razorPayOption" style="display: none;">
-                                <i class="fas fa-credit-card" id="razorPayIcon" style="font-size: 2rem; cursor: pointer; color: #2196F3;" title="Razor Pay"></i>
-                                <div style="color: #2196F3;">Razor Pay</div>
-                            </div>
-                        </div>
+                        <select id="paymentMethodDropdown" style="width: 100%; padding: 10px; font-size: 1rem;">
+                            <option value="wallet">Wallet</option>
+                            <option value="cod">Cash on Delivery</option>
+                            <option value="razorPay">Pay Online (Card/Net Banking/UPI)</option>
+                        </select>
                     `,
-                    showConfirmButton: false, // Hide the confirm button
+                    showConfirmButton: true,
+                    confirmButtonText: 'Proceed',
                     showCancelButton: true,
                     cancelButtonText: 'Cancel',
-                    didOpen: () => {
-                        document.getElementById('walletIcon').addEventListener('click', function() {
-                            handlePayment('wallet');
-                        });
-                        document.getElementById('codIcon').addEventListener('click', function() {
-                            handlePayment('cod');
-                        });
-                        document.getElementById('razorPayIcon').addEventListener('click', function() {
-                            handlePayment('razorPay');
-                        });
+                    preConfirm: () => {
+                        const paymentMethod = document.getElementById('paymentMethodDropdown').value;
+                        return handlePayment(paymentMethod);
                     }
                 });
             });
         }
     
-        function handlePayment(paymentMethod) {
+        async function handlePayment(paymentMethod) {
             const orderId = '<%= order.orderId %>'; 
-            const totalAmount = '<%= order.totalAmount %>'; 
-    
+            const totalAmount = parseFloat("<%= order.totalAmount %>");
+
             if (paymentMethod === 'wallet') {
-                // Handle Wallet Payment
-                fetch('/order/create', {
+                const walletData = await fetch('/user/check-wallet-balance', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        orderId: orderId,
-                        paymentMethod: 'Wallet'
+                        amount: totalAmount,
+                        orderId: orderId
                     })
-                }).then(response => {
-                    if (response.ok) {
-                        Swal.fire({
-                            title: 'Order Placed',
-                            text: 'Your order will be processed using Wallet payment.',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            window.location.reload(); // Reload or redirect as needed
-                        });
-                    } else {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Failed to process payment. Please try again.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                }).catch(error => {
-                    console.error('Error:', error);
+                }).then(response => response.json());
+
+                if (walletData.success) {
+                    showPurchaseSuccessDialog(orderId);
+                } else {
+                    const shortfall = walletData.shortfall;
                     Swal.fire({
-                        title: 'Error!',
-                        text: 'An error occurred while processing the payment.',
+                        title: 'Insufficient Wallet Balance',
+                        text: `You need to add ₹${shortfall} to complete this purchase.`,
                         icon: 'error',
-                        confirmButtonText: 'OK'
+                        showCancelButton: true,
+                        confirmButtonText: 'Add Money',
+                        cancelButtonText: 'Cancel'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            handlePayment('razorPay');
+                        }
                     });
-                });
+                }
             } else if (paymentMethod === 'cod') {
-                // Handle Cash on Delivery
-                fetch('/order/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        orderId: orderId,
-                        paymentMethod: 'COD'
-                    })
-                }).then(response => {
-                    if (response.ok) {
-                        Swal.fire({
-                            title: 'Order Placed',
-                            text: 'Your order will be processed with Cash on Delivery.',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            window.location.reload(); 
-                        });
-                    } else {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Failed to process payment. Please try again.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                }).catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'An error occurred while processing the payment.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                });
+                processOrder('cod');
             } else if (paymentMethod === 'razorPay') {
-                // Razorpay Payment Gateway
                 var options = {
-                    key: "<%= process.env.RAZOR_PAY_KEY_ID %>", // Your Razorpay Key ID
-                    amount: totalAmount * 100, // Amount in paise
+                    key: "<%= process.env.RAZOR_PAY_KEY_ID %>",
+                    amount: totalAmount * 100, 
                     currency: "INR",
                     name: "Order Payment",
                     description: "Payment for order",
@@ -1019,25 +988,12 @@
                         .then(response => response.json())
                         .then(verifyData => {
                             if (verifyData.success) {
-                                showPurchaseSuccessDialog(orderId);
+                                showPurchaseSuccessDialog(orderId) ;
                             } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: 'Payment verification failed. Please try again.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
+                                showPaymentFailedDialog();
                             }
                         })
-                        .catch(error => {
-                            console.error('Error verifying payment:', error);
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'An error occurred while verifying the payment.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        });
+                        .catch(showPaymentFailedDialog);
                     },
                     theme: {
                         color: "#3399cc"
@@ -1049,6 +1005,26 @@
             }
         }
     
+        function processOrder(paymentMethod) {
+            const orderId = '<%= order.orderId %>';
+            fetch('/order/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    orderId: orderId,
+                    paymentMethod: paymentMethod
+                })
+            }).then(response => {
+                if (response.ok) {
+                    showPurchaseSuccessDialog(orderId);
+                } else {
+                    showPaymentFailedDialog();
+                }
+            }).catch(showPaymentFailedDialog);
+        }
+
         function showPurchaseSuccessDialog(orderId) {
             Swal.fire({
                 title: 'Purchase Successful',
@@ -1065,6 +1041,19 @@
                 }
             });
         }
+
+        function showPaymentFailedDialog() {
+            Swal.fire({
+                title: 'Payment Failed',
+                text: 'Unfortunately, your payment could not be processed. Please try again later or contact support.',
+                icon: 'error',
+                confirmButtonText: 'Retry Payment'
+            }).then(() => {
+                window.location.reload();
+            });
+        }
     });
 </script>
+
+
     

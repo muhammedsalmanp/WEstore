@@ -858,7 +858,7 @@ h5.widget-title {
 }
 
 .btn:hover {
-  color: white;
+  color: rgb(255, 255, 255);
 }
 
 .btn-shadow-brand {
@@ -951,8 +951,8 @@ button.submit:hover, button[type='submit']:hover {
 }
 
 .btn.btn-secondary, .button.btn-secondary {
-  background-color: #41506b;
-  border-color: #41506b;
+  background-color: #A4A04E;
+  border-color: #A4A04E;
 }
 
 .btn.btn-facebook, .button.btn-facebook {

@@ -43,7 +43,12 @@
 .status-refund-credited {
   background-color: #5cb85c; /* Green */
 }
-
+.status-returned-rejected{
+  background-color: #e60909; /* Green */
+}
+.status-returned-accepted{
+  background-color: Green; /*  */
+}
 </style>
 
 
@@ -73,7 +78,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Order Id</th>
+                        <th>Return Id</th>
                         <th>Date</th>
                         <th>User</th>
                         <th>Payment</th>
@@ -86,7 +91,7 @@
                 <tbody>
                     <% 
                     const statusOptions = {
-                        'true': ['Return Rejected','Returned', 'Received', 'Refund Issued', 'Refund Credited'],
+                        'true': ['Returned', 'Received', 'Refund Issued', 'Return Accepted', 'Return Rejected','Return Requested'],
                         'false': ['Ordered', 'Shipped', 'Out for delivery', 'Delivered', 'Cancelled']
                     };
 
@@ -105,15 +110,16 @@
                             case 'Received': return 'status-received';
                             case 'Refund Issued': return 'status-refund-issued';
                             case 'Refund Credited': return 'status-refund-credited';
+                            case 'Return Accepted':return 'status-returned-accepted';
+                            case 'Return Rejected':return 'status-returned-rejected';
+                            case "Return Requested":return 'status-returned';
                             default: return '';
                         }
                     };
                     %>
-                    <% 
-                    const startIndex = (Number(current) - 1) * perPage + 1; // Calculate the starting index for the current page
-                    orders.forEach((order, index) => { %>
+                    <% orders.forEach((order, index) => { %>
                         <tr>
-                            <td><%= startIndex + index %></td>
+                            <td><%= (current - 1) * perPage + index + 1 %></td>
                             <td><%= order.orderId %></td>
                             <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
                             <td><%= order.userId && order.userId.email ? order.userId.email : "user@gmil.com" %></td>
@@ -125,18 +131,14 @@
                             </td>
                             <td><%= order.totalAmount %></td>
                             <td>
-                                <% if (order.status !== 'Cancelled') { %>
-                                    <% if (order.status==="Failed") { %>
-                                        <span class="status-button" style="color: white;background-color:red;font-weight:bold;">Failed</span>
-                                    <% } else { %>
-                                        <button class="status-button <%= getStatusClass(order.status) %>" onclick="openStatusModal('<%= order._id %>', '<%= order.return %>', '<%= order.status %>')"><%= order.status %></button>
-                                    <% } %>
-                                <% } else { %>
-                                    <span class="status-button" style="color: white;background-color:red;font-weight:bold;">Cancelled</span>
-                                <% } %>
-                            </td>
+                                <button class="status-button <%= getStatusClass(order.status) %>" onclick="openStatusModal('<%= order._id %>', '<%= order.return %>', '<%= order.status %>')">
+                                  <%= order.status %>
+                                </button>
+                              </td>
+                              
                             <td>
-                                <a href="/admin/order/<%= order.orderId %>">View in detail</a>
+                                <!-- Action buttons can be added here -->
+                                <a href="/admin/order/<%= order.orderId %>">View in detail </a>
                             </td>
                         </tr>
                     <% }) %>
@@ -180,7 +182,7 @@
                 <% if (current == 1) { %>
                     <li class="page-item disabled"><a href="#" class="page-link">First</a></li>
                 <% } else { %>
-                    <li class="page-item"><a href="/admin/order/?page=1" class="page-link">First</a></li>
+                    <li class="page-item"><a href="/admin/return/?page=1" class="page-link">First</a></li>
                 <% } %>
                 <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
                 <% if (i !== 1) { %>
@@ -190,7 +192,7 @@
                     <% if (i == current) { %>
                         <li class="page-item disabled"><a href="#" class="page-link"><%= i %></a></li>
                     <% } else { %>
-                        <li class="page-item"><a href="/admin/order?page=<%= i %>" class="page-link"><%= i %></a></li>
+                        <li class="page-item"><a href="/admin/return?page=<%= i %>" class="page-link"><%= i %></a></li>
                     <% } %>
                 <% if (i == Number(current) + 4 && i < pages) { %>
                     <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
@@ -199,12 +201,13 @@
                 <% if (current == pages) { %>
                     <li class="page-item disabled"><a href="#" class="page-link">Last</a></li>
                 <% } else { %>
-                    <li class="page-item"><a href="/admin/order/?page=<%= pages %>" class="page-link">Last</a></li>
+                    <li class="page-item"><a href="/admin/return/?page=<%= pages %>" class="page-link">Last</a></li>
                 <% } %>
             </ul>
         </nav>
     <% } %>
 </section>
+
 
 <script>
     // Define valid status transitions
@@ -275,3 +278,4 @@
         .catch(error => console.error('Error:', error));
     });
 </script>
+

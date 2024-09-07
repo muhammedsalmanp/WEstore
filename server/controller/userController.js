@@ -9,8 +9,6 @@ const Order = require("../model/orderSchema")
 
 
 const axios = require('axios'); 
-
-
 const mongoose = require("mongoose");
 
 module.exports = {
@@ -114,58 +112,61 @@ module.exports = {
 
   addAddress: async (req, res) => {
     try {
-      const {
-        place,
-        houseNumber,
-        street,
-        city,
-        zipcode,
-        country,
-        landmark,
-        phoneNumber,
-      } = req.body;
-      const userId = req.session.user; // Assuming user ID is stored in session
+        const {
+            place,
+            houseNumber,
+            street,
+            city,
+            state, // Added the state field
+            zipcode,
+            country,
+            landmark,
+            phoneNumber,
+        } = req.body;
+        const userId = req.session.user; // Assuming user ID is stored in session
 
-      // Create the new address object
-      const newAddress = {
-        place,
-        houseNumber,
-        street,
-        city,
-        zipcode,
-        country,
-        landmark,
-        phoneNumber,
-        isDefault: true, // Set as default initially
-      };
+        // Create the new address object
+        const newAddress = {
+            place,
+            houseNumber,
+            street,
+            city,
+            state,
+            zipcode,
+            country,
+            landmark,
+            phoneNumber,
+            isDefault: true, 
+        };
+        // Check if the user already has addresses
+        const userDocument = await UserAddress.findOne({ userId });
 
-      // Check if the user already has addresses
-      const userDocument = await UserAddress.findOne({ userId });
+        if (userDocument && userDocument.addresses.length > 0) {
+            newAddress.isDefault = false;
+        }
 
-      if (userDocument && userDocument.addresses.length > 0) {
-        newAddress.isDefault = false;
-      }
+        // Add the new address to the user's address array
+        const result = await UserAddress.findOneAndUpdate(
+            { userId },
+            { $push: { addresses: newAddress } },
+            { new: true }
+        );
 
-      // Add the new address to the user's address array
-      const result = await UserAddress.findOneAndUpdate(
-        { userId },
-        { $push: { addresses: newAddress } },
-        { new: true }
-      );
-
-      if (!result) {
-        // If the user document does not exist, create it
-        await UserAddress.create({ userId, addresses: [newAddress] });
-      }
-
-      req.flash("success", "Address added successfully");
-      res.redirect("/user/profile");
+        if (!result) {
+            // If the user document does not exist, create it
+            await UserAddress.create({ userId, addresses: [newAddress] });
+        }
+      
+       
+        req.flash("success", "Address added successfully");
+        res.redirect("/user/profile");
     } catch (error) {
-      console.error("Error adding address:", error);
-      req.flash("error", "Address addition unsuccessful");
-      res.redirect("/user/profile");
+        console.error("Error adding address:", error);
+        req.flash("error", "Address addition unsuccessful");
+        res.redirect("/user/profile");
     }
-  },
+},
+
   
   confirmZipCode:  async (req, res) => {
     try {
@@ -197,57 +198,65 @@ module.exports = {
 
   editAddress: async (req, res) => {
     try {
-      const userId = req.session.user;
-      const addressId = req.params.addressId;
-      const updatedAddress = req.body;
+        const userId = req.session.user;
+        const addressId = req.params.addressId;
+        const updatedAddress = req.body;
 
-      if (!updatedAddress.place || !['home', 'work'].includes(updatedAddress.place)) {
-        return res.json({ success: false, message: "Invalid place value." });
-      }
-
-      const result = await UserAddress.updateOne(
-        { userId, "addresses._id": addressId },
-        { $set: { "addresses.$": updatedAddress } }
-      );
-
-      if (result.modifiedCount > 0) {
-        const userDoc = await UserAddress.findOne({ userId });
-
-        console.log('User document:', userDoc);
-
-        if (userDoc) {
-          const hasDefault = userDoc.addresses.some(
-            (address) => address.isDefault
-          );
-          console.log('Has default address:', hasDefault);
-          if (!hasDefault) {
-            const updateResult = await UserAddress.updateOne(
-              { userId, "addresses._id": addressId },
-              { $set: { "addresses.$.isDefault": true } }
-            );
-            console.log('Default address update result:', updateResult);
-          }
-        } else {
-          console.log("User document not found");
+        // Ensure the 'place' field has a valid value
+        if (!updatedAddress.place || !['home', 'work'].includes(updatedAddress.place)) {
+            return res.json({ success: false, message: "Invalid place value." });
         }
 
-        req.flash("success", "Address updated successfully.")
-        res.json({ success: true, message: "Address updated successfully." });
-      } else {
-        req.flash("error", "Address update unsuccessful. Address may not be found")
-        res.json({
-          success: false,
-          message: "Address update unsuccessful. Address may not be found.",
-        });
-      }
+        // Conditionally handle the state field
+        if (!updatedAddress.state || !updatedAddress.state.trim()) {
+            delete updatedAddress.state;
+        }
+
+        // Update the specific address
+        const result = await UserAddress.updateOne(
+            { userId, "addresses._id": addressId },
+            { $set: { "addresses.$": updatedAddress } }
+        );
+
+        if (result.modifiedCount > 0) {
+            // Fetch the user document to verify if any address is set as default
+            const userDoc = await UserAddress.findOne({ userId });
+
+            if (userDoc) {
+                // Check if any address is set as default
+                const hasDefault = userDoc.addresses.some(
+                    (address) => address.isDefault
+                );
+
+                // If no address is set as default, set the current one as default
+                if (!hasDefault) {
+                    const updateResult = await UserAddress.updateOne(
+                        { userId, "addresses._id": addressId },
+                        { $set: { "addresses.$.isDefault": true } }
+                    );
+                    console.log('Default address update result:', updateResult);
+                }
+            } else {
+                console.log("User document not found");
+            }
+
+            req.flash("success", "Address updated successfully.");
+            res.json({ success: true, message: "Address updated successfully." });
+        } else {
+            req.flash("error", "Address update unsuccessful. Address may not be found.");
+            res.json({
+                success: false,
+                message: "Address update unsuccessful. Address may not be found.",
+            });
+        }
     } catch (error) {
-      console.error("Error updating address:", error);
-      res.json({
-        success: false,
-        message: "Address update unsuccessful. Please try again.",
-      });
+        console.error("Error updating address:", error);
+        res.json({
+            success: false,
+            message: "Address update unsuccessful. Please try again.",
+        });
     }
-  },
+},
 
   deleteAddress: async (req, res) => {
     try {
@@ -350,6 +359,7 @@ module.exports = {
         country,
         landmark,
         phoneNumber,
+        state,
       } = req.body;
       const userId = req.session.user; // Assuming user ID is stored in session
 
@@ -363,6 +373,7 @@ module.exports = {
         country,
         landmark,
         phoneNumber,
+        state,
         isDefault: true, // Set as default initially
       };
 
@@ -399,26 +410,29 @@ module.exports = {
       const userId = req.session.user;
       const addressId = req.params.addressId;
       const updatedAddress = req.body;
-
+  
+      // Validate the 'place' field
       if (!updatedAddress.place || !['home', 'work'].includes(updatedAddress.place)) {
         return res.json({ success: false, message: "Invalid place value." });
       }
-
+  
+      // Update the address
       const result = await UserAddress.updateOne(
         { userId, "addresses._id": addressId },
         { $set: { "addresses.$": updatedAddress } }
       );
-
+  
       if (result.modifiedCount > 0) {
+        // Fetch the user document to check if any address is set as default
         const userDoc = await UserAddress.findOne({ userId });
-
-        console.log('User document:', userDoc);
-
+  
         if (userDoc) {
+          // Check if there is a default address
           const hasDefault = userDoc.addresses.some(
             (address) => address.isDefault
           );
-          console.log('Has default address:', hasDefault);
+  
+          // If no address is set as default, make the edited address the default one
           if (!hasDefault) {
             const updateResult = await UserAddress.updateOne(
               { userId, "addresses._id": addressId },
@@ -429,17 +443,20 @@ module.exports = {
         } else {
           console.log("User document not found");
         }
-
-        req.flash("success", "Address updated successfully.")
+  
+        // Success response
+        req.flash("success", "Address updated successfully.");
         res.json({ success: true, message: "Address updated successfully." });
       } else {
-        req.flash("error", "Address update unsuccessful. Address may not be found")
+        // No modification made, possibly address not found
+        req.flash("error", "Address update unsuccessful. Address may not be found.");
         res.json({
           success: false,
           message: "Address update unsuccessful. Address may not be found.",
         });
       }
     } catch (error) {
+      // Handle any errors during the update process
       console.error("Error updating address:", error);
       res.json({
         success: false,
@@ -447,6 +464,7 @@ module.exports = {
       });
     }
   },
+  
 
   checkOutdeleteAddress: async (req, res) => {
     try {
@@ -535,5 +553,7 @@ module.exports = {
       res.json({ success: false, message: 'An error occurred while setting the default address.' });
     }
   },
+
+
 
 };
