@@ -86,12 +86,11 @@ module.exports = {
             totalprice:product.price,
             price: productPrice,
             categoryDiscount:categoryOffer,
-            categoryDiscountAmount:categoryDiscountAmount,
+            categoryDiscountAmount:Math.round(categoryDiscountAmount),
             offertype:category.offerType,
 
         });
 
-        // Recalculate the total product count and total price for the cart
         cart.totalProduct = cart.products.reduce(
             (total, item) => total + item.quantity,
             0
@@ -100,12 +99,15 @@ module.exports = {
             (total, item) => total + item.quantity * item.price,
             0
         );
-        
-        // Reset other fields as necessary
+
         cart.couponDiscount = 0;
         cart.coupon = null;
         cart.shipingCharg = "Free Delivery";
-        cart.offerAppliedTotalAmount = cart.totalPrice;
+        const taxRate = 18; 
+        const taxAmount = (cart.totalPrice * (taxRate / 100)).toFixed(2);
+        cart.taxRate = taxRate;
+        cart.taxAmount = Math.round(taxAmount);
+        cart.offerAppliedTotalAmount = Math.round(cart.totalPrice + cart.taxAmount);
         
         await cart.save();
         console.log(cart);
@@ -114,7 +116,7 @@ module.exports = {
         console.error("Error adding to cart:", error);
         res.status(500).json({ success: false, error: "An error occurred while adding the product to the cart." });
     }
-},
+  },
 
   updateCart: async (req, res) => {
     const { productId, quantity } = req.body;
@@ -146,7 +148,11 @@ module.exports = {
       cart.couponDiscount = 0;
       cart.coupon = null;
       cart.shipingCharg= "Free Delivery"
-      cart.offerAppliedTotalAmount = cart.totalPrice;
+       const taxRate = 18; 
+       const taxAmount = (cart.totalPrice * (taxRate / 100)).toFixed(2);
+       cart.taxRate = taxRate;
+       cart.taxAmount = Math.round(taxAmount);
+       cart.offerAppliedTotalAmount = Math.round(cart.totalPrice + cart.taxAmount);
       await cart.save();
       console.log(cart);
       
@@ -197,7 +203,12 @@ module.exports = {
       cart.couponDiscount = 0;
       cart.coupon = null;
       cart.shipingCharg= "Free Delivery"
-      cart.offerAppliedTotalAmount = cart.totalPrice;
+
+       const taxRate = 18; 
+       const taxAmount = (cart.totalPrice * (taxRate / 100)).toFixed(2);
+       cart.taxRate = taxRate;
+       cart.taxAmount = Math.round(taxAmount);
+       cart.offerAppliedTotalAmount = Math.round(cart.totalPrice + cart.taxAmount);
       await cart.save();
 
       res.json({ success: true, cart });
@@ -225,7 +236,12 @@ module.exports = {
       cart.couponDiscount = 0;
       cart.coupon = null;
       cart.shipingCharg= "Free Delivery"
-      cart.offerAppliedTotalAmount = 0;
+       const taxRate = 18;
+       const taxAmount = (cart.totalPrice * (taxRate / 100)).toFixed(2);
+       cart.taxRate = taxRate;
+       cart.taxAmount = Math.round(taxAmount);
+
+       cart.offerAppliedTotalAmount = Math.round(cart.totalPrice + cart.taxAmount);
       await cart.save();
       res.json({ success: true });
     } catch (error) { }
@@ -279,6 +295,11 @@ module.exports = {
       cart.totalPrice = newTotalPrice;
       cart.totalProduct = newTotalProduct;
       cart.offerAppliedTotalAmount = cart.totalPrice - cart.couponDiscount;
+      const taxRate = 18; 
+       const taxAmount = (cart.totalPrice * (taxRate / 100)).toFixed(2);
+       cart.taxRate = taxRate;
+       cart.taxAmount = Math.round(taxAmount);
+       cart.offerAppliedTotalAmount = Math.round(cart.offerAppliedTotalAmount + cart.taxAmount);
 
       await cart.save();
 

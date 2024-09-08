@@ -111,6 +111,14 @@ const orderSchema = new mongoose.Schema({
     },
     shipingCharg:{
         type:String,
+    },
+    taxRate:{ 
+        type: Number, 
+        default: 0 
+    },
+    taxAmount:{ 
+        type: Number, 
+        default: 0 
     }
 });
 

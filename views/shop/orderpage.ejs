@@ -368,10 +368,9 @@
 </style>
 
 <div id="order-summary" class="order-summary">
-   
-        <% if (status!=='Cancelled' ) { %>
-            <!-- Animated Checkmark at the Top -->
-            <% if (status!=='Failed'  ) { %>
+    <% if (status!=='Cancelled' ) { %>
+        <!-- Animated Checkmark at the Top -->
+        <% if (status!=='Failed'  ) { %>
            <% if (status!=="Return Requested" && status!=="Return Rejected") { %>
             <div class="success-animation">
                 <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
@@ -380,53 +379,50 @@
                 </svg>
             </div>
            <% } %>
-            <% }else { %>
-                <h1 class="mb-6" style="color: #c0392b; ">Order Failed</h1>
-             <% } %>
-            <!-- Progress Container -->
-            <% if ( !order.return) { %>
-                <div id="progress-container" class="progress-container">
-                    <div id="progress-ordered"
-                        class="progress-step <%= status === 'Ordered' || status === 'Shipped' || status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Ordered' ? 'active' : '' %> <%= status === 'Ordered' ? 'current' : '' %>">
-                        <span class="progress-icon"><i class="fas fa-shopping-cart"></i></span>
-                        <p>Ordered</p>
-                    </div>
-                    <div id="progress-shipped"
-                        class="progress-step <%= status === 'Shipped' || status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Shipped' ? 'active' : '' %> <%= status === 'Shipped' ? 'current' : '' %>">
-                        <span class="progress-icon"><i class="fas fa-shipping-fast"></i></span>
-                        <p>Shipped</p>
-                    </div>
-                    <div id="progress-out-for-delivery"
-                        class="progress-step <%= status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Out for delivery' ? 'active' : '' %> <%= status === 'Out for delivery' ? 'current' : '' %>">
-                        <span class="progress-icon"><i class="fas fa-truck"></i></span>
-                        <p>Out for Delivery</p>
-                    </div>
-                    <div id="progress-delivered"
-                        class="progress-step <%= status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Delivered' ? 'active' : '' %> <%= status === 'Delivered' ? 'current' : '' %>">
-                        <span class="progress-icon"><i class="fas fa-box-open"></i></span>
-                        <p>Delivered</p>
-                    </div>
+        <% }else { %>
+            <h1 class="mb-6" style="color: #c0392b; ">Order Failed</h1>
+        <% } %>
+        <!-- Progress Container -->
+        <% if ( !order.return) { %>
+            <div id="progress-container" class="progress-container">
+                <div id="progress-ordered"
+                    class="progress-step <%= status === 'Ordered' || status === 'Shipped' || status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Ordered' ? 'active' : '' %> <%= status === 'Ordered' ? 'current' : '' %>">
+                    <span class="progress-icon"><i class="fas fa-shopping-cart"></i></span>
+                    <p>Ordered</p>
                 </div>
-            <% } else {%>
-                <% if (status==="Return Requested"||status==="Return Rejected") { %>
-                    <div id="progress-status"
-                    class="progress-step mb-6
-                        <%= status === 'Return Requested' ? 'active' : '' %> 
-                        <%= status === 'Return Rejected' ? 'active' : '' %> 
-                        <%= status === 'Return Requested' ? 'current' : '' %> 
-                        <%= status === 'Return Rejected' ? 'current' : '' %>">
-                    
+                <div id="progress-shipped"
+                    class="progress-step <%= status === 'Shipped' || status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Shipped' ? 'active' : '' %> <%= status === 'Shipped' ? 'current' : '' %>">
+                    <span class="progress-icon"><i class="fas fa-shipping-fast"></i></span>
+                    <p>Shipped</p>
+                </div>
+                <div id="progress-out-for-delivery"
+                    class="progress-step <%= status === 'Out for delivery' || status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Out for delivery' ? 'active' : '' %> <%= status === 'Out for delivery' ? 'current' : '' %>">
+                    <span class="progress-icon"><i class="fas fa-truck"></i></span>
+                    <p>Out for Delivery</p>
+                </div>
+                <div id="progress-delivered"
+                    class="progress-step <%= status === 'Delivered' || status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Delivered' ? 'active' : '' %> <%= status === 'Delivered' ? 'current' : '' %>">
+                    <span class="progress-icon"><i class="fas fa-box-open"></i></span>
+                    <p>Delivered</p>
+                </div>
+            </div>
+        <% } else {%>
+            <% if (status==="Return Requested"||status==="Return Rejected") { %>
+                <div id="progress-status"class="progress-step mb-6
+                    <%= status === 'Return Requested' ? 'active' : '' %> 
+                    <%= status === 'Return Rejected' ? 'active' : '' %> 
+                    <%= status === 'Return Requested' ? 'current' : '' %> 
+                    <%= status === 'Return Rejected' ? 'current' : '' %>">
                     <span class="progress-icon">
-                        <i class="<%= status === 'Return Requested' ? 'fas fa-undo-alt' : 
-                                    (status === 'Return Rejected' ? 'fas fa-times-circle' : '') %>"></i>
+                        <i class="<%= status === 'Return Requested' ? 'fas fa-undo-alt' :
+                        (status === 'Return Rejected' ? 'fas fa-times-circle' : '') %>"></i>
                     </span>
-                    
                     <p>
-                        <%= status === 'Return Requested' ? 'Return Requested' : 
-                            (status === 'Return Rejected' ? 'Return Rejected' : '') %>
+                    <%= status === 'Return Requested' ? 'Return Requested' : 
+                    (status === 'Return Rejected' ? 'Return Rejected' : '') %>
                     </p>
                 </div>
-                <% } else {%>
+            <% } else {%>
                 <div id="progress-container" class="progress-container">
                     <div id="progress-returned"
                         class="progress-step <%= status === 'Returned' || status === 'Received' || status === 'Refund Issued' || status === 'Refund Credited' ? 'completed' : '' %> <%= status === 'Returned' ? 'active' : '' %> <%= status === 'Returned' ? 'current' : '' %>">
@@ -449,20 +445,16 @@
                         <p>Refund Credited</p>
                     </div>
                 </div>
-                 <% } %>
             <% } %>
-        <% }else{ %>
-            <div id="progress-cancelled"
-                class="progress-step <%= status === 'Cancelled' ? 'completed' : '' %> <%= status === 'Cancelled' ? 'active' : '' %> <%= status === 'Cancelled' ? 'current' : '' %>">
-                <span class="progress-icon-ca"><i class="fas fa-ban"></i></span>
-                <p>Cancelled</p>
-            </div>
         <% } %>
-   
-    <!-- Include order ID in a hidden input -->
+    <% }else{ %>
+        <div id="progress-cancelled"
+            class="progress-step <%= status === 'Cancelled' ? 'completed' : '' %> <%= status === 'Cancelled' ? 'active' : '' %> <%= status === 'Cancelled' ? 'current' : '' %>">
+            <span class="progress-icon-ca"><i class="fas fa-ban"></i></span>
+            <p>Cancelled</p>
+        </div>
+    <% } %>
     <input type="hidden" id="order-id" value="<%= order.orderId %>">
-
-    <!-- Product and Offer Details -->
     <div id="product-section" class="product-section">
         <% if (products && products.length> 0) { %>
             <% products.forEach(product=> { %>
@@ -472,6 +464,10 @@
                         <p>Description: <%= product.description %></p>
                         <p>Price: ₹<%= product.price %></p>
                         <p>Quantity: <%= product.quantity %></p>
+                        <% if (product.categoryDiscount && product.categoryDiscount > 0) { %>
+                            <p>Offer :  <%= product.offertype %> Offer only for the category  </p>
+                            <span>Discounted : <%= product.categoryDiscount %> % Off ( ₹<%= product.categoryDiscountAmount %>)</span>
+                        <% } %>
                         <% if (status==='Delivered' ) { %>
                             <p>Delivery Date: <%= product.deliveryDate %></p>
                         <% } %>  
@@ -508,35 +504,24 @@
 
     <!-- Offer Details -->
     <div id="offer-details" class="offer-details">
-        <p>Total Price: ₹<%= order.totalAmount.toFixed(2) %> 
-        </p>
-        <P>shipping charge :<%= order.shipingCharg ?order.shipingCharg  : "Free shipping" %>  </P>
-        <p>Coupon: <%= order.coupon && order.coupon.code ? order.coupon.code
-                : 'No Coupon Applied' %>
-        </p>
-
+        <p>Total Price: ₹<%= order.totalAmount.toFixed(2)%></p>
+        <P>Shipping charge :<%= order.shipingCharg ?order.shipingCharg:"Free shipping" %></P>
+        <P>Total tax (18%)  :<%= order.taxAmount ?order.taxAmount:"Free Tax" %></P> 
+        <p>Coupon: <%= order.coupon && order.coupon.code ? order.coupon.code:'No Coupon Applied' %></p>
         <% if (order.coupon && order.coupon.code) { %>
-            <p>Discount:
-                <% if (order.coupon.discountPercentage) { %>
-                    <%= order.coupon.discountPercentage %>%
-                        <% } else if (order.couponDiscount) { %>
-                            ₹<%= order.couponDiscount.toFixed(2) %> 
-                                <% } else { %>
-                                    Applied
-                                    <% } %>
-            </p>
-            <p>Discounted Price: ₹<%=(order.totalAmount -
-                    order.offerAppliedTotalAmount).toFixed(2)  %> 
-            </p>
-            <% } %>
-
-                <p>Total Amount you have to pay : ₹<%= ((order.offerAppliedTotalAmount ||
-                        order.totalAmount) < 0 ? 0 : (order.offerAppliedTotalAmount ||
-                        order.totalAmount)).toFixed(2) %>
-                </p>
+        <p>Discount:
+          <% if (order.coupon.discountPercentage) { %>
+             <%= order.coupon.discountPercentage %>%
+          <% } else if (order.couponDiscount) { %>
+            ₹<%= order.couponDiscount.toFixed(2) %> 
+          <% } else { %>
+            Applied
+          <% } %>
+        </p>
+        <p>Discounted Price: ₹<%=(order.totalAmount - order.offerAppliedTotalAmount).toFixed(2)  %></p>
+        <% } %>
+        <p>Total Amount you have to pay : ₹<%=order.offerAppliedTotalAmount%></p>
     </div>
-
-
     <!-- Order Details -->
     <div id="order-details" class="order-details">
         <!-- User Details -->
@@ -552,7 +537,6 @@
             <p>Phone: <%= shippingAddress.addresses[0].phoneNumber %>
             </p>
         </div>
-
         <!-- Shipping Address -->
         <div id="shipping-address" class="shipping-address">
             <p>Shipping Address:</p>
@@ -600,13 +584,7 @@
                 <% } %>
             <% } %>
            <% } %>
-            
-            
-
         </div>
-        
-
-
     </div>
 
     <!-- Buttons -->

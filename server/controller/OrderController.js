@@ -10,12 +10,12 @@ const Wishlist = require("../model/wishlistSchema");
 const Cart = require("../model/cartSchema");
 const Wallet = require("../model/walletSchema");
 const PDFDocument = require('pdfkit')
-
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
-
 const path =require('path')
 const fs = require("fs");
+
+
 function generateReturnId(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
@@ -24,38 +24,6 @@ function generateReturnId(length) {
     }
     return result;
 }
-
-function calculateReturnAmount(order, productId) {
-    const product = order.products.find(p => p._id.toString() === productId);
-    if (!product) {
-        return 0;
-    }
-    const returnAmount = product.price * product.quantity;
-    return returnAmount;
-}
-
-// Convert number to words in Indian format
-const convertAmountToWords = (amount) => {
-    const a = [
-        '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen',
-        'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'
-    ];
-    const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
-    const numberToWords = (num) => {
-        if ((num = num.toString()).length > 9) return 'Overflow'; // Limit to crores
-        const n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{3})$/);
-        if (!n) return ''; let str = '';
-        str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + ' Crore ' : '';
-        str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + ' Lakh ' : '';
-        str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + ' Thousand ' : '';
-        str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + ' Rupees ' : '';
-        return str + 'Only';
-    };
-
-    return numberToWords(amount);
-};
-
 
 const generateInvoice = async (order) => {
     const invoicesDir = path.join(__dirname, '..', 'invoices');
@@ -73,41 +41,52 @@ const generateInvoice = async (order) => {
 
     return new Promise((resolve, reject) => {
         try {
-            const doc = new PDFDocument();
+            const doc = new PDFDocument({ margin: 20 });
             const writeStream = fs.createWriteStream(filePath);
 
             doc.pipe(writeStream);
 
-            // Add title and invoice header
-            doc.fontSize(20).text('WE STORE', { align: 'center' });
-            doc.moveDown();
-            doc.fontSize(25).text('Invoice', { align: 'center' });
-            doc.moveDown();
+            // Add company and invoice details
+            doc.fontSize(20).fillColor('#FFFFFF').text('Invoice', 400, 30, { align: 'right' });
+            doc.fontSize(12).fillColor('black')
+                .text('WE STORE', 400, 60, { align: 'right' })
+                .text('+91 799 485 6108', 400, 75, { align: 'right' })
+                .text('westore@gmail.com', 400, 90, { align: 'right' })
+                .text('Westore.com', 400, 105, { align: 'right' });
 
-            // Define column positions
-            const columns = {
-                index: 50,
-                description: 100,
-                quantity: 280,
-                price: 370,
-                amount: 460
-            };
+            // Invoice details
+            doc.text('Invoice Details:', 50, 140)
+                .fontSize(10)
+                .text(`Invoice #: ${order.orderId}`, 50, 160)
+                .text(`Date of Issue: ${new Date().toLocaleDateString()}`, 50, 175)
+                .text(`Due Date: ${order.dueDate ? new Date(order.dueDate).toLocaleDateString() : 'TBD'}`, 50, 190);
 
-            // Table header
-            doc.fontSize(12)
-                .text('Index', columns.index, 150)
-                .text('Description', columns.description, 150)
-                .text('Quantity', columns.quantity, 150)
-                .text('Price', columns.price, 150)
-                .text('Amount', columns.amount, 150);
+            const shippingAddress = order.shippingAddress.addresses.find(addr => addr.isDefault) || order.shippingAddress.addresses[0];
 
-            // Draw horizontal line below header
-            doc.moveTo(columns.index, 170)
-                .lineTo(columns.amount + 100, 170)
-                .stroke();
+            // Bill to section
+            doc.text('Bill To:', 400, 140)
+                .fontSize(10)
+                .text(order.userId.email, 400, 160)
+                .text(`${shippingAddress.houseNumber}, ${shippingAddress.street}`, 400, 175)
+                .text(`${shippingAddress.city}, ${shippingAddress.state}, ${shippingAddress.zipcode}`, 400, 190)
+                .text(`Phone: ${shippingAddress.phoneNumber}`, 400, 225);
 
-            // Table content and total amount calculation
-            let position = 190;
+            // Define the Y position for the header
+            const headersY = 250;
+
+            // Draw horizontal lines for the table headers
+            doc.moveTo(50, headersY).lineTo(600, headersY).stroke(); // Adjust end position to accommodate the new column
+            doc.fontSize(10)
+                .text('ITEM/SERVICE', 50, headersY + 10)
+                .text('DESCRIPTION', 150, headersY + 10)
+                .text('BRAND', 250, headersY + 10) // Add "BRAND" header
+                .text('QTY/HRS', 370, headersY + 10)
+                .text('RATE', 430, headersY + 10)
+                .text('AMOUNT', 510, headersY + 10); // Adjust position for "AMOUNT" to fit new column
+            doc.moveTo(50, headersY + 30).lineTo(600, headersY + 30).stroke(); // Adjust end position for underline
+
+            // Table content
+            let position = headersY + 50;
             let totalAmount = 0;
 
             order.products.forEach((product, index) => {
@@ -115,69 +94,54 @@ const generateInvoice = async (order) => {
                 totalAmount += itemAmount;
 
                 doc.fontSize(10)
-                    .text(index + 1, columns.index, position)
-                    .text(product._id.productName || 'Unknown Product', columns.description, position) // Use product name from populated product ref
-                    .text(product.quantity, columns.quantity, position)
-                    .text(`${product.price.toFixed(2)}`, columns.price, position) // Use ₹ for Rupee symbol
-                    .text(`${itemAmount.toFixed(2)}`, columns.amount, position);
-
-                // Add warranty information below each product
-                position += 20;
-                doc.fontSize(8).text('1-year warranty included.', columns.description, position);
-
-                // Draw horizontal line after each row
-                doc.moveTo(columns.index, position + 15)
-                    .lineTo(columns.amount + 100, position + 15)
-                    .stroke();
+                    .text(product._id.productName || 'Unknown Product', 50, position)
+                    .text(product.description || '1 year warranty', 150, position)
+                    .text(product._id.brand.name || 'No Brand', 250, position) // Add brand here
+                    .text(product.quantity, 370, position) // Adjusted position
+                    .text(`${product.price.toFixed(2)}`, 430, position) // Adjusted position
+                    .text(`${product.quantity*product.price}`, 510, position); // Adjusted position
 
                 position += 20;
             });
 
-            // Display coupon discount if applicable
+            // Add discount, shipping, and tax
             if (order.couponDiscount > 0) {
-                doc.fontSize(10)
-                    .text('Coupon Discount', columns.description, position)
-                    .text(`${order.couponDiscount.toFixed(2)}`, columns.amount, position);
+                doc.text('Discount', 400, position)
+                    .text(`- ${order.couponDiscount.toFixed(2)}`, 510, position);
                 position += 20;
             }
 
-            // Parse shipping charge (stored as string) and display it
-            const shippingCharge = parseFloat(order.shipingCharg) || 0;
-            if (shippingCharge > 0) {
-                doc.fontSize(10)
-                    .text('Shipping Charges', columns.description, position)
-                    .text(`${shippingCharge.toFixed(2)}`, columns.amount, position);
+            // Debugging
+            console.log('Shipping Charge String:', order.shipingCharg);
+            
+            // Check if the shipping charge string is not empty and has valid value
+            if (order.shipingCharg && order.shipingCharg.trim() !== '') {
+                doc.text('Shipping Charges', 400, position)
+                   .text(`+ ${order.shipingCharg}`, 510, position);
                 position += 20;
+            } else {
+                console.log('Shipping charge is not provided or is empty.');
             }
+            
+            doc.text('Tax (18%)', 400, position)
+                .text(` + ${order.taxAmount}`, 510, position);
+            position += 20;
 
-            // Calculate final total (after coupon and shipping)
-            const finalAmount = order.offerAppliedTotalAmount || totalAmount;
-
-            // Add the total amount
-position += 20;
-doc.fontSize(12).text('Total:', columns.price, position, { align: 'left' });
-doc.fontSize(12).text(`${finalAmount.toFixed(2)}`, columns.amount, position, { align: 'right' });
-
-// Move the total amount in words and footer content to stay near the bottom of the page
-const footerStartPosition = doc.page.height - 120; // Adjust this to move them closer or farther from the bottom
-position = Math.max(position + 80, footerStartPosition); // Ensure a minimum gap before the footer starts
-
-// Add a horizontal line before the footer section
-doc.moveTo(columns.index, position - 10)
-    .lineTo(columns.amount + 100, position - 10)
-    .stroke();
+            // Final total
+            const finalAmount = order.offerAppliedTotalAmount;
+            doc.moveTo(50, position + 10).lineTo(550, position + 10).stroke();
+            doc.fontSize(12).text('Total:', 400, position + 20)
+                .text(finalAmount.toFixed(2), 510, position + 20);
 
 
+            // Footer conditions and instructions
+            doc.text('Terms/Conditions:', 10, doc.page.height - 100)
+                .text('~ 7 days return policy.', 50, doc.page.height - 80)
+                .text('~ For warranty claims, contact us within the warranty period.', 50, doc.page.height - 60)
+                .text('~ Please contact us for any invoice inquiries.', 50, doc.page.height - 40);
+  
 
-// Add return policy and warranty information below the total in words
-position += 10; // Move slightly down after total in words
-doc.fontSize(10)
-    .text('~ 7 days return policy available.', 20, position, { align: 'left' })
-    .text('~ To claim warranty, contact us through our website within the warranty period.',20, position + 20, { align: 'left' })
-    .text('~ After 30 days, claims must be made through the authorized service center.', 20, position + 10, { align: 'left' });
-
-// End the PDF document
-doc.end();
+            doc.end();
 
             writeStream.on('finish', () => {
                 console.log(`Invoice generated successfully at ${filePath}`);
@@ -194,6 +158,7 @@ doc.end();
         }
     });
 };
+
 
 module.exports = {
 
@@ -237,7 +202,6 @@ module.exports = {
         });
     },
     
-
     updateOrderStatus: async (req, res) => {
         const { orderId } = req.params;
         const { status, returnReason, boxStatus, returnID } = req.body;
@@ -430,122 +394,6 @@ module.exports = {
     //user side 
 
 
-    generateInvoice : async (order) => {
-        const invoicesDir = path.join(__dirname, '..', 'invoices');
-    
-        try {
-            if (!fs.existsSync(invoicesDir)) {
-                fs.mkdirSync(invoicesDir, { recursive: true });
-            }
-        } catch (err) {
-            console.error('Error creating invoices directory:', err);
-            throw new Error('Error creating invoices directory');
-        }
-    
-        const filePath = path.join(invoicesDir, `${order._id}.pdf`);
-    
-        return new Promise((resolve, reject) => {
-            try {
-                const doc = new PDFDocument();
-                const writeStream = fs.createWriteStream(filePath);
-    
-                doc.pipe(writeStream);
-    
-                // Add title and invoice header
-                doc.fontSize(20).text('WE STORE', { align: 'center' });
-                doc.moveDown();
-                doc.fontSize(25).text('Invoice', { align: 'center' });
-                doc.moveDown();
-    
-                // Define column positions
-                const columns = {
-                    index: 50,
-                    description: 100,
-                    quantity: 280,
-                    price: 370,
-                    amount: 460
-                };
-    
-                // Table header
-                doc.fontSize(12)
-                    .text('Index', columns.index, 150)
-                    .text('Description', columns.description, 150)
-                    .text('Quantity', columns.quantity, 150)
-                    .text('Price', columns.price, 150)
-                    .text('Amount', columns.amount, 150);
-    
-                // Draw horizontal line below header
-                doc.moveTo(columns.index, 170)
-                    .lineTo(columns.amount + 100, 170)
-                    .stroke();
-    
-                // Table content and total amount calculation
-                let position = 190;
-                let totalAmount = 0;
-    
-                order.products.forEach((product, index) => {
-                    const itemAmount = product.quantity * product.price;
-                    totalAmount += itemAmount;
-    
-                    doc.fontSize(10)
-                        .text(index + 1, columns.index, position)
-                        .text(product._id.product_name || 'Unknown Product', columns.description, position) // Use product name from populated product ref
-                        .text(product.quantity, columns.quantity, position)
-                        .text(`₹${product.price.toFixed(2)}`, columns.price, position)
-                        .text(`₹${itemAmount.toFixed(2)}`, columns.amount, position);
-    
-                    // Draw horizontal line after each row
-                    doc.moveTo(columns.index, position + 15)
-                        .lineTo(columns.amount + 100, position + 15)
-                        .stroke();
-    
-                    position += 20;
-                });
-    
-                // If there is a coupon discount, display it
-                if (order.couponDiscount > 0) {
-                    doc.fontSize(10)
-                        .text('Coupon Discount', columns.description, position)
-                        .text(`₹${order.couponDiscount.toFixed(2)}`, columns.amount, position);
-                    position += 20;
-                }
-    
-                // If there is a shipping charge, display it
-                if (order.shipingCharg && parseFloat(order.shipingCharg) > 0) {
-                    doc.fontSize(10)
-                        .text('Shipping Charges', columns.description, position)
-                        .text(`₹${parseFloat(order.shipingCharg).toFixed(2)}`, columns.amount, position);
-                    position += 20;
-                }
-    
-                // Calculate final total (after coupon and shipping)
-                const finalAmount = order.offerAppliedTotalAmount || totalAmount;
-    
-                // Add the total amount
-                position += 20;
-                doc.fontSize(12).text('Total:', columns.price, position, { align: 'left' });
-                doc.fontSize(12).text(`₹${finalAmount.toFixed(2)}`, columns.amount, position, { align: 'right' });
-    
-                // End the PDF document
-                doc.end();
-    
-                writeStream.on('finish', () => {
-                    console.log(`Invoice generated successfully at ${filePath}`);
-                    resolve(filePath);
-                });
-    
-                writeStream.on('error', (err) => {
-                    console.error('Error writing PDF to file:', err);
-                    reject(new Error('Error generating invoice PDF'));
-                });
-            } catch (err) {
-                console.error('Error generating invoice PDF:', err);
-                reject(new Error('Error generating invoice PDF'));
-            }
-        });
-    },    
-
-
     getOrder: async (req, res) => {
         try {
             const userId = req.session.user;
@@ -562,7 +410,7 @@ module.exports = {
             }
 
             let wishlist = await Wishlist.findOne({ userId: req.session.user }).populate('products');
-            let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
+            let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id').populate('products._id.category');
             const cartCount = cart && cart.products ? cart.products.length : 0;
             const shippingAddress = order.shippingAddress ? order.shippingAddress : null;
             const products = order.products.map(product => ({
@@ -573,8 +421,10 @@ module.exports = {
                 quantity: product.quantity,
                 primaryImages: product._id.primaryImages,
                 isCanceld: product.isCanceld,
-            }));
-
+                categoryDiscount:product.categoryDiscount,
+                offertype:product.offertype,
+                categoryDiscountAmount:product.categoryDiscountAmount,
+            }));            
             res.render('shop/orderPage', {
                 user: req.session.user,
                 userDetils: user,
@@ -910,17 +760,36 @@ module.exports = {
         }
     },
     
-    invoice : async (req, res) => {
+    invoice: async (req, res) => {
         const orderId = req.params.orderId;
     
         try {
-            const order = await Order.findOne({orderId:orderId}).populate('products._id'); 
+            const order = await Order.findOne({ orderId: orderId })
+                .populate('userId') 
+                .populate({
+                    path: 'products._id', 
+                    populate: {
+                        path: 'brand' 
+                    }
+                })
+                .populate({
+                    path: 'shippingAddress', 
+                    populate: {
+                        path: 'addresses' 
+                    }
+                });
+    
             if (!order) {
                 return res.status(404).send('Order not found');
             }
-
+    
+            console.log("User invoice order:", order);
+    
+            
             const invoicePath = await generateInvoice(order);
-            res.download(invoicePath, `${order._id}-invoice.pdf`, (err) => {
+            
+            
+            res.download(invoicePath, `WeStore${order.orderId}-invoice.pdf`, (err) => {
                 if (err) {
                     console.error('Error downloading the file:', err);
                     res.status(500).send('Error downloading the invoice');
@@ -931,4 +800,5 @@ module.exports = {
             res.status(500).send('Error generating the invoice');
         }
     },
+    
 };

@@ -76,14 +76,15 @@ module.exports = {
         let wishlist = await Wishlist.findOne({ userId: req.session.user }).populate('products');
         const cartCount = cart && cart.products ? cart.products.length : 0;
         let wallet = await Wallet.findOne({ userId: userId });
-
         if (!wallet) {
             wallet = await Wallet.create({
                 userId: userId,
                 balance: 0,
                 transactions: []
             });
-        }       
+        }     
+        console.log(cart);
+          
         res.render("shop/checkOut", {
             user: req.session.user,
             addresses: addresses,
@@ -125,12 +126,14 @@ module.exports = {
         const oldChargeAmount = oldDeliveryCharge !== 'Free Delivery' ? parseInt(oldDeliveryCharge.replace('₹', ''), 10) : 0;
         const newChargeAmount = newDeliveryCharge !== 'Free Delivery' ? parseInt(newDeliveryCharge.replace('₹', ''), 10) : 0;
 
-        // Adjust offerAppliedTotalAmount
+        cart.offerAppliedTotalAmount = Math.round(cart.totalPrice + cart.taxAmount);
+        console.log(cart);
         cart.offerAppliedTotalAmount = Math.max(0, cart.offerAppliedTotalAmount - oldChargeAmount + newChargeAmount);
         cart.shipingCharg = newDeliveryCharge;
 
         await cart.save();
-
+         console.log(cart);
+         
         res.json({
           success: true,
           newDeliveryCharge,
@@ -212,7 +215,9 @@ module.exports = {
         couponDiscount: couponDiscount, 
         offerAppliedTotalAmount: offerAppliedTotalAmount, 
         shipingCharg:shipingCharg,
-      });
+        taxRate:userCart.taxRate,
+      taxAmount:userCart.taxAmount,
+    });
       if (order.paymentMethod === "Razor Pay") {
         order.status = "Failed"
       }
