@@ -12,28 +12,39 @@ const orderSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    products: [
-        {
-            _id: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Product',
-                required: true
-            },
-            quantity: {
-                type: Number,
-                required: true,
-                min: 1
-            },
-            price: {
-                type: Number,
-                required: true
-            },
-            isCanceld: {
-                type: Boolean,
-                default: false
-            }
+    products: [{
+        _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product'
+        },
+        quantity: {
+            type: Number,
+            default: 1      
+        },
+        price: {
+            type: Number,
+            default: 0
+        },
+        totalprice: {
+            type: Number,
+            default: 0
+        },
+        productprice: {
+            type: Number,
+            default: 0
+        },
+        categoryDiscountAmount :{
+            type: Number,
+            default: 0
+        },
+        categoryDiscount :{
+            type: Number,
+            default: 0
+        },
+        offertype:{
+            type:String,
         }
-    ],
+    }],
     totalAmount: {
         type: Number,
         required: true

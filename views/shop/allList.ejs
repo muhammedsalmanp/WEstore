@@ -141,9 +141,12 @@
                                 </a>
                                 <% } %>
                   </div>
-                  <!-- <div class="product-badges product-badges-position product-badges-mrg">
-                                        <span class="hot">Hot</span>
-                                    </div> -->
+                  <% if (product.onOffer) { %>
+                    <div class="product-badges product-badges-position product-badges-mrg">
+                      <span class="hot"><%- product.offerDiscountPersantage%> %off</span>
+                  </div>
+                  <% } %>
+                  
                 </div>
                 <div class="product-content-wrap">
                   <div class="product-category">
@@ -159,12 +162,14 @@
                   </h2>
                   <div class="rating-result" title="90%">
                     <span>
-                      <span>90%</span>
+                      <span></span>
                     </span>
                   </div>
                   <div class="product-price">
-                    <span>₹<%= product.price %>.00</span>
-                    <span class="old-price">₹<%= product.oldPrice %>.00</span>
+                    <span>₹<%= Math.ceil(product.price) %>.00</span>
+                    <% if (product.onOffer) { %>
+                      <span class="old-price">₹<%= product.oldPrice %>.00</span>
+                      <% } %>
                   </div>
                   <div class="product-action-1 show">
                     <% if (product.stock> 0) { %>

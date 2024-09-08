@@ -43,10 +43,10 @@ module.exports ={
     const userId = req.session.user;
     const productId = req.body.productId;
 
-    try {
-      if (!userId) {
-        req.flash("error", "you need to login or register");
-        res.json({ error: true });
+    try { 
+      if(!userId){
+       req.flash("error","you need login!!")
+       return res.redirect("/login")
       }
       let wishlist = await Wishlist.findOne({ userId });
 

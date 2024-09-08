@@ -38,74 +38,83 @@ module.exports = {
 
   addToCart: async (req, res) => {
     try {
-      const { productId, quantity } = req.body;
+        const { productId, quantity } = req.body;
+        const userId = req.session.user;
 
-      if (!productId) {
-        return res
-          .status(400)
-          .json({ success: false, error: "Product ID is required." });
-      }
-
-      const product = await Product.findById(productId);
-      if (!product) {
-        return res
-          .status(404)
-          .json({ success: false, error: "Product not found." });
-      }
-
-      if (product.stock <= 0) {
-        return res
-          .status(400)
-          .json({ success: false, error: "Product is out of stock." });
-      }
-
-      const userId = req.session.user;
-      let cart = await Cart.findOne({ userId });
-
-      if (!cart) {
-        cart = new Cart({ userId, products: [] });
-      } else {
-        const productInCart = cart.products.find(
-          (item) => item._id.toString() === productId
-        );
-        if (productInCart) {
-          return res
-            .status(400)
-            .json({ success: false, error: "Product already in cart." });
+        if (!productId) {
+            return res.status(400).json({ success: false, error: "Product ID is required." });
         }
-      }
 
-      cart.products.push({
-        _id: product._id,
-        quantity: parseInt(quantity),
-        price: product.price,
-      });
+        // Find the product and populate its category
+        const product = await Product.findById(productId).populate('category');
+        if (!product) {
+            return res.status(404).json({ success: false, error: "Product not found." });
+        }
 
-      cart.totalProduct = cart.products.reduce(
-        (total, item) => total + item.quantity,
-        0
-      );
-      cart.totalPrice = cart.products.reduce(
-        (total, item) => total + item.quantity * item.price,
-        0
-      );
-      cart.couponDiscount = 0;
-      cart.coupon = null;
-      cart.shipingCharg= "Free Delivery"
-      cart.offerAppliedTotalAmount = cart.totalPrice;
-      await cart.save();
+        if (product.stock <= 0) {
+            return res.status(400).json({ success: false, error: "Product is out of stock." });
+        }
 
-      res.json({ success: true });
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      res
-        .status(500)
-        .json({
-          success: false,
-          error: "An error occurred while adding the product to the cart.",
+        let cart = await Cart.findOne({ userId });
+
+        if (!cart) {
+            cart = new Cart({ userId, products: [] });
+        } else {
+            const productInCart = cart.products.find(
+                (item) => item._id.toString() === productId
+            );
+            if (productInCart) {
+                return res.status(400).json({ success: false, error: "Product already in cart." });
+            }
+        }
+
+        // Get the category of the product and check if it has an offer
+        const category = product.category;
+        let productPrice = product.price;
+        let categoryDiscountAmount =0 ;
+        if (category && category.onOffer) {
+            var categoryOffer = category.offerDiscountPersantage || 0;
+            productPrice = Math.round(product.price * (1 - categoryOffer / 100))
+           categoryDiscountAmount=Math.round(product.price * (categoryOffer / 100))
+        }
+
+        // Add the product with the calculated price to the cart
+        cart.products.push({
+            _id: product._id,
+            quantity: parseInt(quantity),
+            productprice:product.price,
+            totalprice:product.price,
+            price: productPrice,
+            categoryDiscount:categoryOffer,
+            categoryDiscountAmount:categoryDiscountAmount,
+            offertype:category.offerType,
+
         });
+
+        // Recalculate the total product count and total price for the cart
+        cart.totalProduct = cart.products.reduce(
+            (total, item) => total + item.quantity,
+            0
+        );
+        cart.totalPrice = cart.products.reduce(
+            (total, item) => total + item.quantity * item.price,
+            0
+        );
+        
+        // Reset other fields as necessary
+        cart.couponDiscount = 0;
+        cart.coupon = null;
+        cart.shipingCharg = "Free Delivery";
+        cart.offerAppliedTotalAmount = cart.totalPrice;
+        
+        await cart.save();
+        console.log(cart);
+        res.json({ success: true });
+    } catch (error) {
+        console.error("Error adding to cart:", error);
+        res.status(500).json({ success: false, error: "An error occurred while adding the product to the cart." });
     }
-  },
+},
 
   updateCart: async (req, res) => {
     const { productId, quantity } = req.body;
@@ -129,8 +138,7 @@ module.exports = {
       }
 
       productItem.quantity = quantity;
-
-      // Recalculate the total price
+      productItem.categoryDiscountAmount= Math.round(productItem.productprice-(productItem.quantity*productItem.price));
       cart.totalPrice = cart.products.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
@@ -140,7 +148,8 @@ module.exports = {
       cart.shipingCharg= "Free Delivery"
       cart.offerAppliedTotalAmount = cart.totalPrice;
       await cart.save();
-
+      console.log(cart);
+      
       res.json({
         success: true,
         newSubtotal: productItem.price * quantity,

@@ -8,6 +8,7 @@ const path = require("path");
 const Brand = require("../model/brandsSchema")
 
 module.exports = {
+  
   userHome: async (req, res) => {
     const locals = {
       title: "Home Page",
@@ -27,10 +28,9 @@ module.exports = {
       let wishlist = await Wishlist.findOne({ userId: req.session.user }).populate('products');
       let cart = await Cart.findOne({ userId: req.session.user }).populate('products._id');
       const cartCount = cart && cart.products ? cart.products.length : 0;
-
   
       const count = await Product.countDocuments({ isActive: true, _id: { $nin: newArrivals.map(p => p._id) } });
-
+  
       const products = await Product.find({ isActive: true, _id: { $nin: newArrivals.map(p => p._id) } })
         .populate({
           path: "category",
@@ -39,11 +39,17 @@ module.exports = {
         .skip(perPage * (page - 1))
         .limit(perPage)
         .exec();
-
+  
+      const offerCategories = await Category.aggregate([
+        { $match: { onOffer: true, isActive: true } }, 
+        { $sample: { size: 3 } } 
+      ]);
+      
+  
       const nextPage = page + 1;
       const hasNextPage = nextPage <= Math.ceil(count / perPage);
-       console.log(products);
-       
+      console.log(products);
+      
       res.render("index", {
         user: req.session.user,
         locals,
@@ -58,6 +64,7 @@ module.exports = {
         wishlist,
         cartCount: cartCount,
         brands: brands,
+        offerCategories, // Pass the offer categories to the view
       });
     } catch (error) {
       console.log("from userController", error);

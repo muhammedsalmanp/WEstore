@@ -18,7 +18,16 @@ const brandSchema = new Schema({
             type: String, 
             required: true
         }
-    }
+    },
+    offerDiscountPersantage: {
+        type: Number,
+        min: 0,
+        default: 0
+    },
+    onOffer: {
+        type: Boolean,
+        default: false,
+    },
 }, {
     timestamps: true 
 });

@@ -17,6 +17,25 @@ const cartSchema = new mongoose.Schema({
         price: {
             type: Number,
             default: 0
+        },
+        totalprice: {
+            type: Number,
+            default: 0
+        },
+        productprice: {
+            type: Number,
+            default: 0
+        },
+        categoryDiscountAmount :{
+            type: Number,
+            default: 0
+        },
+        categoryDiscount :{
+            type: Number,
+            default: 0
+        },
+        offertype:{
+            type:String,
         }
     }],
     totalProduct: {  

@@ -172,9 +172,14 @@ module.exports = {
       const products = userCart.products.map(item => {
         if (item._id && item._id._id) {
           return {
-            _id: item._id._id, // ObjectId of the product
-            quantity: item.quantity,
-            price: item.price
+            _id: item._id._id,
+            quantity:item.quantity,
+            price:item.price,
+            productprice:item.productprice,
+            totalprice:item.totalprice,
+            categoryDiscount:item.categoryDiscount,
+            categoryDiscountAmount:item.categoryDiscountAmount,
+            offertype:item.offertype, 
           };
         } else {
           console.warn('Product ID not found for item:', item);

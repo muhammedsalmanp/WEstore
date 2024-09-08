@@ -47,8 +47,14 @@
                                                                 <%= product._id.productName %>
                                                             </a>
                                                         </h5>
-                                                        <span class="product-qty">x <%= product.quantity %></span>
+                                                        <span class="product-qty mt-50">x <%= product.quantity %></span><br> <!-- Add line break -->
+                                                        
+                                                        <% if (product.categoryDiscount > 0) { %>
+                                                            <p><%= product.offertype %> offer
+                                                            <span><%= product.categoryDiscount %>% Off ( - <%= product.categoryDiscountAmount %>)</span></p>
+                                                        <% } %>
                                                     </td>
+                                                                                                        
                                                     <td class="product-subtotal" data-label="Total">₹<%= Math.ceil(product.price * product.quantity).toFixed(2) %></td>
                                                 </tr>
                                             <% }); %>

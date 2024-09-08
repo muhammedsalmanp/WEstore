@@ -118,6 +118,20 @@ const productSchema = new mongoose.Schema({
             },
         },
     ],
+    offerDiscountPrice: {
+        type: Number,
+        min: 0,
+        default: 0
+      },
+      offerDiscountPersantage: {
+        type: Number,
+        min: 0,
+        default: 0
+      },
+      onOffer: {
+        type: Boolean,
+        default: false,
+      },
 }, {
     timestamps: true,
     strict: false,

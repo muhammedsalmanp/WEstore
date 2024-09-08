@@ -1,0 +1,310 @@
+
+<style>
+    .table thead th {
+        background-color: #f8f9fa; 
+        color: #000; 
+        text-align: left; 
+        padding: 10px; 
+    }
+  </style>
+  
+  <section class="content-main">
+  <ol class="breadcrumb">
+      <% breadcrumbs.forEach(function(crumb, index) { %>
+          <% if (index === breadcrumbs.length - 1) { %>
+              <li class="breadcrumb-item active"><%= crumb.name %></li>
+          <% } else { %>
+              <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.name %></a></li>
+          <% } %>
+      <% }); %>
+  </ol>
+  <div class="content-header">
+      <div>
+          <h2 class="content-title card-title">Products</h2>
+        
+      </div>
+      <div>
+          <a href="/admin/offer/Category" class="btn btn-primary btn-sm rounded">Category Offer </a>
+          <!-- <a href="/admin/offer/brands" class="btn btn-primary btn-sm rounded">Brand offer</a> -->
+      </div>
+  </div>
+  
+  <div class="card mb-4">
+      <div class="card-body">
+          <div class="table-responsive">
+              <table class="table text-capitalize table-hover">
+                  <thead>
+                      <tr>
+                          <th>no</th>
+                          <th>Image</th>
+                          <th>Name</th>
+                          <th>Price</th>
+                          <th>Discount (%)</th>
+                          <th>Offer Status</th>
+                          <th>Offer Price</th>
+                          <th>Activate/Deactivate</th>
+                          <th>Actions</th>  
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <% if (product && product.length > 0) { %>
+                          <% product.forEach((product, index) => { %>
+                              <tr>
+                                <td class="align-middle text-center">
+                                    <%= (current - 1) * perPage + index + 1 %>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <% const imageUrl = product.primaryImages[0]?.name || product.secondaryImages[0]?.name; %>
+                                    <img class="img-fluid img-thumbnail" src="/uploads/products-images/crp/<%= imageUrl ? imageUrl : 'default-image.jpg' %>" width="70rem" alt="Product Image">
+                                </td>
+                                <td class="align-middle">
+                                    <%= product.productName %>
+                                </td>
+                                <td class="align-middle">
+                                    <%= product.oldPrice%>
+                                </td>
+                                <td  class="align-middle" ><%= product.offerDiscountPersantage%></td>
+                                <td class="align-middle" >
+                                    <% if (product.onOffer) { %>
+                                    <span class="badge bg-success">Active</span>
+                                    <% } else { %>
+                                    <span class="badge bg-danger">Not Active</span>
+                                    <% } %>
+                                </td>
+                                <td class="align-middle">
+                                    <%= product.price%>
+                                </td>
+                                <!-- Inside your table -->
+                                <td class="align-middle">
+                                    <% if (!product.onOffer) { %>
+                                        <button onclick="toggleActive('<%- product._id %>', '<%- product.productName %>', 'true')" class="btn btn-success btn-sm">Activate</button>
+                                    <% } else { %>
+                                        <button onclick="toggleActive('<%- product._id %>', '<%- product.productName %>', 'false')" class="btn btn-danger btn-sm">Deactivate</button>
+                                    <% } %>
+                                </td>
+                                <td class="align-middle">
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#offerModal" 
+                                            data-product-id="<%= product._id %>"
+                                            data-product-name="<%= product.productName %>"
+                                            data-old-price="<%= product.oldPrice %>">
+                                            </i>+ Add / Edit
+                                    </button>
+                                </td>             
+                              </tr>
+                          <% }) %>
+                      <% } else { %>
+                          <tr>
+                              <td colspan="10" class="align-middle text-center">No products found</td>
+                          </tr>
+                      <% } %>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+  
+  
+  <% if (product.length > 0 && (nextPage || current == pages)) { %>
+      <nav aria-label="Dashboard pagination">
+          <ul class="pagination justify-content-center mt-5">
+              <% if (current == 1) { %>
+                  <li class="page-item disabled"><a href="#" class="page-link">First</a></li>
+              <% } else { %>
+                  <li class="page-item"><a href="/admin/offer/product/?page=1" class="page-link">First</a></li>
+              <% } %>
+              <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+              <% if (i !== 1) { %>
+                  <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
+              <% } %>
+              <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+                  <% if (i == current) { %>
+                      <li class="page-item disabled"><a href="#" class="page-link"><%= i %></a></li>
+                  <% } else { %>
+                      <li class="page-item"><a href="/admin/offer/product?page=<%= i %>" class="page-link"><%= i %></a></li>
+                  <% } %>
+              <% if (i == Number(current) + 4 && i < pages) { %>
+                  <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
+              <% } %>
+              <% } %>
+              <% if (current == pages) { %>
+                  <li class="page-item disabled"><a href="#" class="page-link">Last</a></li>
+              <% } else { %>
+                  <li class="page-item"><a href="/admin/offer/product/?page=<%= pages %>" class="page-link">Last</a></li>
+              <% } %>
+          </ul>
+      </nav>
+  <% } %>
+  
+
+  <div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="offerModalLabel">Edit Offer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="offerForm">
+                    <div class="mb-3">
+                        <label for="productName" class="form-label">Product Name</label>
+                        <input type="text" class="form-control" id="productName" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="oldPrice" class="form-label">Old Price</label>
+                        <input type="text" class="form-control" id="oldPrice" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="offerPercentage" class="form-label">Offer Percentage (%)</label>
+                        <input type="number" class="form-control" id="offerPercentage" name="offerPercentage" placeholder="Enter discount percentage">
+                    </div>
+                    <input type="hidden" id="productId" name="productId">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById('offerModal').addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+    
+        var productId = button.getAttribute('data-product-id');
+        var productName = button.getAttribute('data-product-name');
+        var oldPrice = button.getAttribute('data-old-price');
+    
+        var modal = document.getElementById('offerModal');
+        var productIdInput = modal.querySelector('#productId');
+        var productNameInput = modal.querySelector('#productName');
+        var oldPriceInput = modal.querySelector('#oldPrice');
+    
+        productIdInput.value = productId;
+        productNameInput.value = productName;
+        oldPriceInput.value = oldPrice;
+    });
+    
+    document.getElementById('offerForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+    
+        var productId = document.getElementById('productId').value;
+        var offerPercentage = document.getElementById('offerPercentage').value;
+        var oldPrice = document.getElementById('oldPrice').value;
+    
+        if (!offerPercentage || offerPercentage <= 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Input',
+                text: 'Please add a valid offer percentage.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            return;
+        }
+    
+        var data = {
+            productId: productId,
+            offerDiscount: offerPercentage,
+            offerPrice: oldPrice
+        };
+    
+        fetch('/admin/offer/product', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Offer updated successfully!',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    location.reload(); // Refresh the page to reflect changes
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: result.message || 'Failed to update offer',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while updating the offer',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        });
+    });
+    
+    function toggleActive(productId, productName, status) {
+        const action = status === "true" ? "activate" : "deactivate";
+    
+        Swal.fire({
+            title: `Are you sure you want to ${action} this offer?`,
+            text: `Product: ${productName}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, proceed',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/admin/offer/product/status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ productId, status })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: result.message || 'Operation successful',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload(); // Reload the page to reflect changes
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: result.message || 'Failed to update status',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while updating the status',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                });
+            }
+        });
+    }
+    </script>
+    

@@ -61,7 +61,15 @@ const userSchema = new Schema({
     cart: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Cart",
-    }
+    },
+    referralCode: {
+        type: String,
+        default: null,
+      },
+      referralCodeGenerated: {
+        type: Boolean,
+        default: false,
+      },
 }, {
     timestamps: true,
 });

@@ -6,11 +6,16 @@ const UserAddress = require("../model/userAddressSchema");
 const bcrypt = require("bcrypt");
 const Coupon = require("../model/couponSchema")
 const Order = require("../model/orderSchema")
+const Wallet  = require('../model/walletSchema')
 
 
 const axios = require('axios'); 
 const mongoose = require("mongoose");
 
+
+function generateReferralCode() {
+  return 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+}
 module.exports = {
 
 
@@ -30,7 +35,15 @@ module.exports = {
         req.flash("error", "You need to log in!");
         return res.redirect("/login");
       }
-      
+      const wallet = await Wallet.findOne({userId:req.session.user});
+      if (!wallet) {
+        
+        wallet = await Wallet.create({
+            userId: req.session.user,
+            balance: 0,
+            transactions: []
+        });
+    }
       const cartCount = cart && cart.products ? cart.products.length : 0;
       res.render("user/profile", {
         user,
@@ -38,7 +51,8 @@ module.exports = {
         cart,
         cartCount:cartCount,
         addresses: userAddress ? userAddress.addresses : [],
-        orders
+        orders,
+        wallet,
       });
     } catch (error) {
       console.error("Error fetching account details:", error);
@@ -165,8 +179,7 @@ module.exports = {
         req.flash("error", "Address addition unsuccessful");
         res.redirect("/user/profile");
     }
-},
-
+  },
   
   confirmZipCode:  async (req, res) => {
     try {
@@ -256,7 +269,7 @@ module.exports = {
             message: "Address update unsuccessful. Please try again.",
         });
     }
-},
+  },
 
   deleteAddress: async (req, res) => {
     try {
@@ -345,8 +358,42 @@ module.exports = {
       res.json({ success: false, message: 'An error occurred while setting the default address.' });
     }
   },
+  
+  generateReferralCode : async (req, res) => {
+    try {
+      const userId = req.session.user
+      const user = await User.findOne(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      if (user.referralCodeGenerated) {
+        return res.status(400).json({ message: 'Referral code already generated' });
+      }
+  
+      const referralCode = generateReferralCode();
+      user.referralCode = referralCode;
+      user.referralCodeGenerated = true;
+      await user.save();
+  
+      res.json({ referralCode });
+    } catch (error) {
+      res.status(500).json({ message: 'Error generating referral code', error });
+    }
+  },
 
-  /*check out */
+  copyReferralCode : async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const user = await User.findById(userId);
+      if (!user || !user.referralCode) {
+        return res.status(404).json({ message: 'Referral code not found' });
+      }
+      res.json({ referralCode: user.referralCode });
+    } catch (error) {
+      res.status(500).json({ message: 'Error retrieving referral code', error });
+    }
+  },
 
   checkOutaddAddress: async (req, res) => {
     try {

@@ -140,7 +140,7 @@ module.exports = {
         description: req.body.productDespt,
         stock: req.body.productStock,
         price: req.body.price,
-        oldPrice: req.body.oldPrice,
+        oldPrice: req.body.price,
         Colour: req.body.colour,
         displaySize: req.body.displaySize,
         resolution: req.body.resolution,
@@ -274,7 +274,7 @@ module.exports = {
         description: req.body.productDespt,
         stock: req.body.productStock,
         price: req.body.price,
-        oldPrice: req.body.oldPrice,
+        oldPrice: req.body.price,
         Colour: req.body.colour,
         displaySize: req.body.displaySize,
         resolution: req.body.resolution,
@@ -290,6 +290,7 @@ module.exports = {
         itemWeight: req.body.itemWeight,
         primaryImages: primaryImages,
         secondaryImages: secondaryImages,
+        onOffer:false,
       };
 
       await Product.findByIdAndUpdate(productId, updateProduct, { new: true });

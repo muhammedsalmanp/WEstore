@@ -35,6 +35,10 @@ router.post("/user/address/:addressId/edit", userController.editAddress)
 router.delete("/user/address/:addressId/delete", userController.deleteAddress)
 router.post("/set-default-address/:addressId", userController.setDefault)
 router.get("/api/getAddressDetails/:zipcode",userController.confirmZipCode)
+
+router.get('/generate-referral-code',userController.generateReferralCode)
+
+
 // coupon 
 
 router.get('/coupons/available', couponController.getAllCoupons);
@@ -63,6 +67,7 @@ router.post('/return-product', orderController.returnProduct);
 
 router.post("/order/create",orderController.reOrder)
 
+router.get("/user/invoice/generate/:orderId",orderController.invoice);
 //wallet
 
 router.get("/wallet",walletCotroller.getwallet);

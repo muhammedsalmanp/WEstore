@@ -12,6 +12,7 @@ const orderCondroller = require("../controller/orderController");
 const brandController= require("../controller/brandsController");
 const { isAdminLoggedIn } = require("../middleware/authMiddleware");
 const brandsController = require("../controller/brandsController");
+const offerController= require('../controller/offerController');
 
 router.get("/", isAdminLoggedIn, adminController.getDashboard);
 router.get('/dashboard/chart-data',isAdminLoggedIn, adminController.getChartData);
@@ -72,4 +73,15 @@ router.get('/order/:orderId', orderCondroller.getOrderDetils);
 
 /*return */
 router.get("/return",isAdminLoggedIn,orderCondroller.getAllreturn)
+
+/*offers  */
+
+router.get("/offer/product",isAdminLoggedIn,offerController.getProducts);
+router.get("/offer/Category",isAdminLoggedIn,offerController.getCategory);
+
+router.post("/offer/product",isAdminLoggedIn,offerController.addOfferToProducts);
+router.post("/offer/product/status",isAdminLoggedIn,offerController.activationOrDeactiovatingProduct);
+router.post("/offer/Category",isAdminLoggedIn,offerController.addOfferToCategory);
+router.post("/offer/Category/status",isAdminLoggedIn,offerController.activationOrDeactiovatingCategory);
+
 module.exports = router;

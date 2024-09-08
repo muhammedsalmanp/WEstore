@@ -508,9 +508,9 @@
 
     <!-- Offer Details -->
     <div id="offer-details" class="offer-details">
-        <p>Total Price: ₹<%= order.totalAmount.toFixed(2) %>
+        <p>Total Price: ₹<%= order.totalAmount.toFixed(2) %> 
         </p>
-        <P>shipping charge :<%= order.shipingCharg ?order.shipingCharg :"Free shipping" %> </P>
+        <P>shipping charge :<%= order.shipingCharg ?order.shipingCharg  : "Free shipping" %>  </P>
         <p>Coupon: <%= order.coupon && order.coupon.code ? order.coupon.code
                 : 'No Coupon Applied' %>
         </p>
@@ -520,13 +520,13 @@
                 <% if (order.coupon.discountPercentage) { %>
                     <%= order.coupon.discountPercentage %>%
                         <% } else if (order.couponDiscount) { %>
-                            ₹<%= order.couponDiscount.toFixed(2) %>
+                            ₹<%= order.couponDiscount.toFixed(2) %> 
                                 <% } else { %>
                                     Applied
                                     <% } %>
             </p>
-            <p>Discounted Price: ₹<%= (order.totalAmount -
-                    order.offerAppliedTotalAmount).toFixed(2) %>
+            <p>Discounted Price: ₹<%=(order.totalAmount -
+                    order.offerAppliedTotalAmount).toFixed(2)  %> 
             </p>
             <% } %>
 
@@ -616,6 +616,9 @@
                 <i class="fi-rs-shopping-bag mr-10" style="color: white;"></i>Continue Shopping
             </a>
         </button>
+        <% if (status==='Delivered' ) { %>
+        <a href="/user/invoice/generate/<%= order.orderId %>" class="button">Generate Invoice</a>
+        <% } %>
     </div>
     
     <!-- Cancel Reason Modal -->

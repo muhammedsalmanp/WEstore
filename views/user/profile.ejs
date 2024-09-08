@@ -50,13 +50,6 @@
                     aria-controls="orders" aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab"
-                    aria-controls="track-orders" aria-selected="false"><i
-                      class="fi-rs-shopping-cart-check mr-10"></i>Track Your
-                    Order</a>
-                </li>
-
-                <li class="nav-item">
                   <a class="nav-link" href="/logout"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
                 </li>
               </ul>
@@ -68,22 +61,33 @@
               <div class="tab-pane fade active show" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
                 <div class="card">
                   <div class="card-header">
-                    <h5 class="mb-0">
-                      Hello <%= user.firstName %>
-                        <%= user.lastName %>
-                    </h5>
+                    <h5 class="mb-0">Welcome to Your Dashboard</h5>
                   </div>
                   <div class="card-body">
-                    <p>
-                      From your account dashboard. you can easily check &amp;
-                      view your <a href="#">recent orders</a>, manage your
-                      <a href="#">shipping and billing addresses</a> and
-                      <a href="#">edit your password and account details.</a>
-                    </p>
+                    <p>Hello <strong><%= user.firstName %> <% if (user.lastName) { %> <%= user.lastName %> <% } %>!</strong> Here’s a quick overview of your account.</p>
+              
+                    <!-- Referral Code Section -->
+                    <div class="mt-4">
+                      <h6>Your Referral Code</h6>
+                      <button class="button" id="generateReferralCodeButton">Generate Referral Code</button>
+                      <button class="button" id="copyReferralCodeButton" style="display: none;">Copy Referral Code</button>
+                      <p id="referralCodeMessage">Click 'Generate Referral Code' to create your referral code.</p>
+                    </div>
+              
+                    <!-- Balance Section -->
+                    <div class="mt-4">
+                      <h6>Your Balance</h6>
+                      <p style="color: green;">₹<%= wallet.balance %></p>
+                    </div>
+              
+                    <!-- Referral Rewards Section -->
+                    <div class="mt-4">
+                      <h6>Your Referral Rewards</h6>
+                      <p>Rewards earned through referrals: ₹<%= user.referralRewards || 0 %></p>
+                    </div>
                   </div>
                 </div>
               </div>
-
               <!-- Orders -->
               <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                 <div class="card">
@@ -911,6 +915,35 @@
         zipcodeInput.style.borderColor = '';
         landmarkSuggestions.innerHTML = '';
       }
+    });
+  });
+</script>
+
+
+<script>
+  document.getElementById('generateReferralCodeButton').addEventListener('click', async function() {
+    try {
+      const response = await fetch('/generate-referral-code', { method: 'POST' });
+      const data = await response.json();
+      if (response.ok) {
+        document.getElementById('referralCodeMessage').textContent = 'Your referral code is now generated!';
+        document.getElementById('copyReferralCodeButton').style.display = 'inline';
+        document.getElementById('generateReferralCodeButton').style.display = 'none';
+        document.getElementById('copyReferralCodeButton').setAttribute('data-referral-code', data.referralCode);
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error('Error generating referral code:', error);
+    }
+  });
+
+  document.getElementById('copyReferralCodeButton').addEventListener('click', function() {
+    const referralCode = this.getAttribute('data-referral-code');
+    navigator.clipboard.writeText(referralCode).then(() => {
+      alert('Referral code copied to clipboard!');
+    }, (err) => {
+      console.error('Error copying text: ', err);
     });
   });
 </script>

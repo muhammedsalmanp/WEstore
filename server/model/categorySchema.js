@@ -15,6 +15,23 @@ const catogorySchema = new Schema({
         required: true,
         default: true,
     },
+    offerDiscountPersantage: {
+        type: Number,
+        min: 0,
+        default: 0
+    },
+    onOffer: {
+        type: Boolean,
+        default: false,
+    },
+    offerType: {
+        type: String,
+        enum: ['Summer', 'Winter', 'Holiday', 'Clearance', 'Black Friday','General'],
+        default: 'General'
+    },
+    description:{
+        type: String,
+    }
 },
 {
     timestamps: true

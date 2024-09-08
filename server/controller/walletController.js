@@ -208,6 +208,7 @@ module.exports={
             res.status(500).json({ success: false, message: 'Unexpected error occurred while processing the wallet payment.' });
         }
     },
+    
     addMoney :  async (req, res) => {
         const { paymentId, amount } = req.body;
         const userId = req.session.user

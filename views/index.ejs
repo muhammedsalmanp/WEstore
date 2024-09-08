@@ -139,6 +139,11 @@
                   <div class="product-cart-wrap mb-30">
                     <div class="product-img-action-wrap">
                       <div class="product-img product-img-zoom">
+                        <% if (product.onOffer) { %>
+                          <div class="product-badges product-badges-position product-badges-mrg">
+                            <span class="hot"><%- product.offerDiscountPersantage%>%off</span>
+                        </div>
+                        <% } %>
                         <a href="/shop/productDetails/<%- product._id %>">
                           <img src="/uploads/products-images/crp/<%- product.primaryImages[0] ? product.primaryImages[0].name : product.secondaryImages[0].name %>" alt="IMG-PRODUCT" />
                         </a>
@@ -170,11 +175,13 @@
                         <a href="/shop/productDetails/<%- product._id %>"><%= product.productName %></a>
                       </h2>
                       <div class="rating-result" title="90%">
-                        <span><span>90%</span></span>
+                        <span><span></span></span>
                       </div>
                       <div class="product-price">
                         <span>₹<%= product.price %>.00</span>
+                        <% if (product.onOffer) { %>
                         <span class="old-price">₹<%= product.oldPrice %>.00</span>
+                        <% } %>
                       </div>
                       <div class="product-action-1 show">
                         <% if (product.stock > 0) { %>
@@ -238,54 +245,31 @@
         </div>
       </div>
     </div>
-  </section>
-  
-  
+  </section> 
   <!--end of Categories -->
 
   <!-- banner-3 -->
   <section class="banners mb-15">
     <div class="container">
       <div class="row">
-        <div class="col-lg-4 col-md-6">
-          <div class="banner-img wow fadeIn animated">
-            <img src="frd/assets/imgs/banner/banner-1.png" alt="" />
-            <div class="banner-text">
-              <span>Smart Offer</span>
-              <h4>Save 20% on <br />Woman Bag</h4>
-              <a href="shop-grid-right.html"
-                >Shop Now <i class="fi-rs-arrow-right"></i
-              ></a>
+        <% offerCategories.forEach(function(category, index) { %>
+          <div class="col-lg-4 col-md-6">
+            <div class="banner-img wow fadeIn animated">
+              <img src="frd/assets/imgs/banner/banner-<%= index + 1 %>.png" alt="" />
+              <div class="banner-text">
+                <span><%= category.offerType %> Offer</span>
+                <h4>Save <%= category.offerDiscountPersantage %>% on <br /><%= category.name %></h4>
+                <a href="/allProducts?category=<%= category._id %>"
+                  >Shop Now <i class="fi-rs-arrow-right"></i
+                ></a>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-          <div class="banner-img wow fadeIn animated">
-            <img src="frd/assets/imgs/banner/banner-2.png" alt="" />
-            <div class="banner-text">
-              <span>Sale off</span>
-              <h4>Great Summer <br />Collection</h4>
-              <a href="shop-grid-right.html"
-                >Shop Now <i class="fi-rs-arrow-right"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 d-md-none d-lg-flex">
-          <div class="banner-img wow fadeIn animated mb-sm-0">
-            <img src="frd/assets/imgs/banner/banner-3.png" alt="" />
-            <div class="banner-text">
-              <span>New Arrivals</span>
-              <h4>Shop Today’s <br />Deals & Offers</h4>
-              <a href="shop-grid-right.html"
-                >Shop Now <i class="fi-rs-arrow-right"></i
-              ></a>
-            </div>
-          </div>
-        </div>
+        <% }); %>
       </div>
     </div>
   </section>
+  
    <!--end of banner-3 -->
    
    <!-- new Arrivals -->

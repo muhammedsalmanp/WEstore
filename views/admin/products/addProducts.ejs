@@ -74,16 +74,6 @@
                             </div>
                             <div class="col-lg-4">
                                 <div class="mb-4">
-                                    <label class="form-label">Old Price</label>
-                                    <input placeholder="₹" type="number" class="form-control" name="oldPrice" min="0"
-                                        oninput="checkInput(this)">
-                                    <div id="oldPrice_error" class="error-message" style="color: red; display: none;">
-                                        Old price cannot be negative.</div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4">
-                                <div class="mb-4">
                                     <label class="form-label">Display Size</label>
                                     <input placeholder="Display Size" type="number" class="form-control"
                                         name="displaySize" oninput="checkInput(this)">
@@ -523,15 +513,7 @@
             priceError.style.display = 'none';
         }
 
-        // Check Old Price
-        const oldPrice = document.querySelector('input[name="oldPrice"]');
-        const oldPriceError = document.getElementById('oldPrice_error');
-        if (oldPrice.value.trim() === '' || parseFloat(oldPrice.value) < 0) {
-            oldPriceError.style.display = 'block';
-            isValid = false;
-        } else {
-            oldPriceError.style.display = 'none';
-        }
+
 
         // Check Display Size
         const displaySize = document.querySelector('input[name="displaySize"]');

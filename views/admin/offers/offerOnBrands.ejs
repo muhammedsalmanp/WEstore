@@ -1,0 +1,105 @@
+<section class="content-main">
+    <ol class="breadcrumb">
+        <% breadcrumbs.forEach(function(crumb, index) { %>
+            <% if (index === breadcrumbs.length - 1) { %>
+                <li class="breadcrumb-item active"><%= crumb.name %></li>
+            <% } else { %>
+                <li class="breadcrumb-item"><a href="<%= crumb.url %>"><%= crumb.name %></a></li>
+            <% } %>
+        <% }); %>
+    </ol>
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Brands</h2>
+        </div>
+        <div>
+            <a href="/admin/offer/product" class="btn btn-primary btn-sm rounded">Product Offer </a>
+            <a href="/admin/offer/Category" class="btn btn-primary btn-sm rounded">Category Offer </a>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                        <th>#</th>
+                        <th>Logo</th>
+                        <th>Brand Name</th>
+                        <th>Discount (%)</th>
+                        <th>Offer Status</th>
+                        <th>Activate/Deactivate</th>
+                        <th>Actions</th>  
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (typeof brands !== "undefined" && brands.length > 0) { %>
+                            <% brands.forEach((brand, index) => { %>
+                                <tr>
+                                    <td class="align-middle text-center">
+                                        <%= (current - 1) * perPage + index + 1 %>
+                                    </td>
+                                    <td class="align-middle text-center"><img src="<%- brand.logo.path %>" alt="<%- brand.logo.name %>" style="height:50px;"></td>
+                                    <td class="align-middle"><b><%- brand.name %></b></td>
+                                    <td  class="align-middle" ><%= brand.offerDiscountPersantage%></td>
+                                    <td class="align-middle" >
+                                        <% if (brand.onOffer) { %>
+                                        <span class="badge bg-success">Active</span>
+                                        <% } else { %>
+                                        <span class="badge bg-danger">Not Active</span>
+                                        <% } %>
+                                    </td>
+                                    <td class="align-middle">
+                                        <% if (!brand.onOffer) { %>
+                                          <button onclick="toggleActive('<%- brand._id %>', '<%- brand.name%>', 'true')" class="btn btn-outline-success btn-sm">Activate</button>
+                                        <% } else { %>
+                                          <button onclick="toggleActive('<%- brand._id %>', '<%- brand.name %>', 'false')" class="btn btn-outline-danger btn-sm">Deactivate</button>
+                                        <% } %>
+                                    </td>
+                                    <td class="align-middle">
+                                        <button type="button" data-bs-toggle="modal" data-product-id="<%- brand._id %>" data-bs-target="#offerModal" class="btn btn-primary btn-sm"><i class="bi bi-pencil"></i> Add / Edit </button>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="5" class="text-center">No brands available.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <% if (brands.length > 0 && (nextPage || current == pages)) { %>
+        <nav aria-label="Dashboard pagination">
+            <ul class="pagination justify-content-center mt-5">
+                <% if (current == 1) { %>
+                    <li class="page-item disabled"><a href="#" class="page-link">First</a></li>
+                <% } else { %>
+                    <li class="page-item"><a href="/admin/offer/brands/?page=1" class="page-link">First</a></li>
+                <% } %>
+                <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+                <% if (i !== 1) { %>
+                    <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
+                <% } %>
+                <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+                    <% if (i == current) { %>
+                        <li class="page-item disabled"><a href="#" class="page-link"><%= i %></a></li>
+                    <% } else { %>
+                        <li class="page-item"><a href="/admin/offer/brands?page=<%= i %>" class="page-link"><%= i %></a></li>
+                    <% } %>
+                <% if (i == Number(current) + 4 && i < pages) { %>
+                    <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
+                <% } %>
+                <% } %>
+                <% if (current == pages) { %>
+                    <li class="page-item disabled"><a href="#" class="page-link">Last</a></li>
+                <% } else { %>
+                    <li class="page-item"><a href="/admin/offer/brands/?page=<%= pages %>" class="page-link">Last</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    <% } %>
+</section>
