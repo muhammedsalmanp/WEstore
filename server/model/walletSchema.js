@@ -24,7 +24,7 @@ const walletSchema = new Schema({
             },
             type: {
                 type: String,
-                enum: ['deposit', 'withdrawal', 'payment',"refund"],
+                enum: ['deposit', 'withdrawal', 'payment',"refund","bonus"],
                 required: true
             },
             status: {

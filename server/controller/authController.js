@@ -3,9 +3,28 @@ const adminLayout = './layouts/authLayout'
 
 const User = require("../model/userSchema");
 const OTP = require("../model/otpSchema");
+const Wallet = require("../model/walletSchema")
 
 const { sendOtpEmail } = require("../helper/userVerificationHelper");
 
+function generateRefferalCode(length) {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let referralCode = "";
+  for (let i = 0; i < length; i++) {
+    referralCode += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
+  }
+  return referralCode;
+}
+const generateTransactionId = () => {
+  const prefix = 'TXN';
+  const maxLength = 17;
+  const randomPartLength = maxLength - prefix.length;
+  const randomPart = Math.random().toString(36).substr(2, randomPartLength).toUpperCase(); 
+  return `${prefix}${randomPart}`;
+};
 module.exports={
   getUserLogin: (req, res) => {
     const local = {
@@ -94,7 +113,8 @@ module.exports={
   },
 
   uerRegister: async (req, res) => {
-    const { firstName, lastName, email, password, confirmPassword } = req.body;
+    try {
+    const { firstName, lastName, email, password, confirmPassword ,referral} = req.body;
 
     const existUser = await User.findOne({ email });
 
@@ -102,7 +122,6 @@ module.exports={
       req.flash("success", "Email already in use");
       return res.redirect("/login");
     }
-
     const hashpwd = await bcrypt.hash(password, 12);
     const user = await User.create({
       firstName,
@@ -110,9 +129,82 @@ module.exports={
       email,
       password: hashpwd,
     });
+     console.log();
+     
+    
+    if (referral) {
+      console.log("Stuck Here");
+      
+      const refferer = await User.findOne({referralCode:referral});
+      
+      if (refferer) {
+          console.log({ refferer: refferer, referralCode: referral });
+          
+        
+          let wallet = await Wallet.findOne({ userId: refferer._id });
+  
+          if (!wallet) {
+              wallet = await Wallet.create({
+                  userId: refferer._id,
+                  balance: 0.0,  
+                  transactions: []  
+              });
+          }
+          const referralBonus = 50;
 
-    try {
+          wallet.balance += referralBonus;
+ 
+          
+          
+          const transactionId = generateTransactionId();
+          console.log(transactionId);
+  
+          wallet.transactions.push({
+              transactionId: transactionId,
+              amount: referralBonus,
+              type: 'bonus',
+              status: 'completed', 
+              debit: 'credit', 
+              date: new Date(),
+              description: "Referral bonus"
+          });
+  
+          // Save the updated wallet
+          await wallet.save();
+  
+          console.log(`₹${referralBonus} added to ${refferer.firstName}'s wallet.`);
+      } 
+  }
+  
       const savedUser = await user.save();
+
+      let userWallet = await Wallet.findOne({ userId: savedUser._id });
+
+      if (!userWallet) {
+        userWallet = await Wallet.create({
+          userId: user._id,
+          balance: 0.0,
+          transactions: [],
+        });
+      }
+  
+      const newUserBonus = 100; 
+      userWallet.balance += newUserBonus;
+  
+      const newUserTransactionId = generateTransactionId();
+  
+      userWallet.transactions.push({
+        transactionId: newUserTransactionId,
+        amount: newUserBonus,
+        type: 'bonus',
+        status: 'completed',
+        debit: 'credit',
+        date: new Date(),
+        description: "New user bonus",
+      });
+  
+      await userWallet.save();
+
       if (!savedUser) {
         req.flash("error", "user not created!!!!");
         return res.redirect("/register");

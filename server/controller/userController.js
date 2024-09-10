@@ -13,7 +13,7 @@ const axios = require('axios');
 const mongoose = require("mongoose");
 
 
-function generateReferralCode() {
+function generateReferralCode(num) {
   return 'REF-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 }
 module.exports = {
@@ -23,37 +23,44 @@ module.exports = {
 
   getAccountDetails: async (req, res) => {
     try {
+     
       const user = await User.findById(req.session.user);
-      const wishlist = await Wishlist.findOne({ userId: req.session.user }).populate("products");
-      const cart = await Cart.findOne({ userId: req.session.user });
-      const userAddress = await UserAddress.findOne({ userId: req.session.user });
-      const orders = await Order.find({ userId: req.session.user })
-        .populate('shippingAddress') 
-        .populate('coupon')
-        .sort({createdAt:-1});
+      
       if (!user) {
         req.flash("error", "You need to log in!");
         return res.redirect("/login");
       }
-      const wallet = await Wallet.findOne({userId:req.session.user});
-      if (!wallet) {
-        
-        wallet = await Wallet.create({
-            userId: req.session.user,
-            balance: 0,
-            transactions: []
-        });
-    }
+
+      if (!user.referralCode) {
+        user.referralCode = generateReferralCode(); 
+        await user.save(); 
+      }
+
+      const successfullRefferals = user.successfullRefferals || []; 
+      const refferalRewards = user.refferalRewards || 0; 
+
+      const wishlist = await Wishlist.findOne({ userId: req.session.user }).populate("products");
+      const cart = await Cart.findOne({ userId: req.session.user });
+      const userAddress = await UserAddress.findOne({ userId: req.session.user });
+      const orders = await Order.find({ userId: req.session.user })
+        .populate('shippingAddress')
+        .populate('coupon')
+        .sort({ createdAt: -1 });
+  
       const cartCount = cart && cart.products ? cart.products.length : 0;
+
       res.render("user/profile", {
         user,
         wishlist,
         cart,
-        cartCount:cartCount,
+        cartCount,
         addresses: userAddress ? userAddress.addresses : [],
         orders,
-        wallet,
+        referralCode: user.referralCode,
+        successfullRefferals,
+        refferalRewards,
       });
+  
     } catch (error) {
       console.error("Error fetching account details:", error);
       req.flash("error", "An error occurred while fetching details.");

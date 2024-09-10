@@ -16,14 +16,14 @@ const userSchema = new Schema({
     },
     firstName: {
         type: String,
-        required: function() {
-            return !this.googleId && !this.facebookId; 
+        required: function () {
+            return !this.googleId && !this.facebookId;
         },
     },
     lastName: {
         type: String,
-        required: function() {
-            return !this.googleId && !this.facebookId; 
+        required: function () {
+            return !this.googleId && !this.facebookId;
         },
     },
     email: {
@@ -33,8 +33,8 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: function() {
-            return !this.googleId && !this.facebookId; 
+        required: function () {
+            return !this.googleId && !this.facebookId;
         },
     },
     isAdmin: {
@@ -45,17 +45,12 @@ const userSchema = new Schema({
         type: Boolean,
         default: false,
     },
-    joined_date: {
-        type: Date,
-        default: Date.now,
-        immutable: true,
-    },
     isVerified: {
         type: Boolean,
         default: false,
     },
     wishlist: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,  
         ref: "WishList",
     },
     cart: {
@@ -64,12 +59,24 @@ const userSchema = new Schema({
     },
     referralCode: {
         type: String,
-        default: null,
-      },
-      referralCodeGenerated: {
-        type: Boolean,
-        default: false,
-      },
+    },
+    successfullRefferals: [{
+        date: {
+            type: Date,
+            default: Date.now,
+        },
+        username: {
+            type: String,
+        },
+        status: {
+            type: String,
+        }
+    }],
+    refferalRewards: {
+        type: Number,
+        default: 0,
+        min: 0,
+    },
 }, {
     timestamps: true,
 });

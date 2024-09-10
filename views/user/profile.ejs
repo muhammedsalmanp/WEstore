@@ -65,29 +65,25 @@
                   </div>
                   <div class="card-body">
                     <p>Hello <strong><%= user.firstName %> <% if (user.lastName) { %> <%= user.lastName %> <% } %>!</strong> Here’s a quick overview of your account.</p>
-              
-                    <!-- Referral Code Section -->
-                    <div class="mt-4">
-                      <h6>Your Referral Code</h6>
-                      <button class="button" id="generateReferralCodeButton">Generate Referral Code</button>
-                      <button class="button" id="copyReferralCodeButton" style="display: none;">Copy Referral Code</button>
-                      <p id="referralCodeMessage">Click 'Generate Referral Code' to create your referral code.</p>
+                      <div class="row">
+                        <div class="col-md-12 mb-4">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="text-capitalize">Referral and earn </h3>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center mb-4">
+                        <p class="lead bg-success-light fw-semibold text-muted p-2">Your Referral Code: 
+                          <span class="text-dark fw-bold" id="referralCode"><%= referralCode || 'N/A' %></span>
+                        </p>
+                        <button type="button" data-clipboard-text="<%= referralCode %>" id="copyCode" class="btn btn-outline-dark">Copy Code</button>
+                      </div>
+        
+                      <p class="lead bg-success-light fw-semibold text-muted text-uppercase p-2">Referral and earn 50 in your wallet</p>
                     </div>
-              
-                    <!-- Balance Section -->
-                    <div class="mt-4">
-                      <h6>Your Balance</h6>
-                      <p style="color: green;">₹<%= wallet.balance %></p>
-                    </div>
-              
-                    <!-- Referral Rewards Section -->
-                    <div class="mt-4">
-                      <h6>Your Referral Rewards</h6>
-                      <p>Rewards earned through referrals: ₹<%= user.referralRewards || 0 %></p>
-                    </div>
-                  </div>
                 </div>
               </div>
+              
               <!-- Orders -->
               <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                 <div class="card">
@@ -945,5 +941,38 @@
     }, (err) => {
       console.error('Error copying text: ', err);
     });
+  });
+</script>
+
+<script defer>
+  const copyCode = document.getElementById("copyCode");
+  const copyLink = document.getElementById("copyLink");
+
+  copyCode.addEventListener("click", () => {
+      const copyCodeText = document.getElementById("referralCode").innerText;
+      navigator.clipboard.writeText(copyCodeText);
+
+      Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Code Copied",
+          showConfirmButton: false,
+          timer: 1000,
+      })
+  });
+
+  copyLink.addEventListener("click", () => {
+      const copyCodeText = document.getElementById("referralCode").innerText;
+      const link = `${window.location.origin}/register/?ref=${copyCodeText}`;
+
+      navigator.clipboard.writeText(link);
+
+      Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Link Copied",
+          showConfirmButton: false,
+          timer: 1000,
+      })
   });
 </script>

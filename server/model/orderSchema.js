@@ -1,7 +1,7 @@
 
 const mongoose = require('mongoose');
 
-const orderSchema = new mongoose.Schema({
+const orderSchema = new mongoose.Schema({  
     orderId: {
         type: String,
         unique: true,
@@ -27,7 +27,7 @@ const orderSchema = new mongoose.Schema({
         },
         totalprice: {
             type: Number,
-            default: 0
+            default: 0  
         },
         productprice: {
             type: Number,

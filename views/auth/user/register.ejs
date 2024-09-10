@@ -56,6 +56,13 @@
                   </div>
                   <small class="text-danger" id="confirmPasswordError"></small>
                 </div>
+                <!-- refferral input -->
+                 
+                <div class="form-outline mb-4">
+                  <label for="referral" class="form-label text-left">Refferal</label>
+                  <input name="referral" type="text" class="form-control" id="referral" placeholder='Referral Code'  value="<%- locals.referralCode ? locals.referralCode : '' %>">
+                  <small class="text-danger"></small>
+                </div>
                 <div class="flex-c-m">
                   <button type="submit" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">Register</button>
                 </div>
