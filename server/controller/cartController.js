@@ -1,9 +1,60 @@
+const deliveryCharges = {
+  'Andhra Pradesh': 150,
+  'Arunachal Pradesh': 250,
+  'Assam': 200,
+  'Bihar': 175,
+  'Chhattisgarh': 225,
+  'Goa': 100,
+  'Gujarat': 250,
+  'Haryana': 200,
+  'Himachal Pradesh': 300,
+  'Jharkhand': 175,
+  'Karnataka': 100,
+  'Kerala': 0,
+  'Madhya Pradesh': 250,
+  'Maharashtra': 225,
+  'Manipur': 275,
+  'Meghalaya': 250,
+  'Mizoram': 275,
+  'Nagaland': 275,
+  'Odisha': 200,
+  'Punjab': 225,
+  'Rajasthan': 275,
+  'Sikkim': 300,
+  'Tamil Nadu': 100,
+  'Telangana': 150,
+  'Tripura': 275,
+  'Uttar Pradesh': 200,
+  'Uttarakhand': 275,
+  'West Bengal': 225,
+  'Andaman and Nicobar Islands': 350,
+  'Chandigarh': 200,
+  'Dadra and Nagar Haveli and Daman and Diu': 275,
+  'Lakshadweep': 150,
+  'Delhi': 200,
+  'Puducherry': 100,
+  'Jammu and Kashmir': 300,
+  'Ladakh': 300
+};
+
 const Wishlist = require("../model/wishlistSchema");
 const User = require("../model/userSchema");
 const Cart = require("../model/cartSchema");
 const Product = require("../model/productSchema");
 const Coupon = require("../model/couponSchema");
+const UserAddress = require("../model/userAddressSchema");
+const Wallet = require("../model/walletSchema");
 
+function calculateDeliveryCharge(state) {
+  if (state === 'Kerala') {
+    return 'Free Delivery';
+  }
+  if (state === 'Based on your location') {
+    return "Based on your location"
+  }
+  const charge = deliveryCharges[state];
+  return charge !== undefined ? `₹${charge}` : 'Delivery charge not available';
+}
 
 module.exports = {
 
@@ -40,6 +91,7 @@ module.exports = {
     try {
         const { productId, quantity } = req.body;
         const userId = req.session.user;
+        
 
         if (!productId) {
             return res.status(400).json({ success: false, error: "Product ID is required." });
@@ -67,15 +119,15 @@ module.exports = {
                 return res.status(400).json({ success: false, error: "Product already in cart." });
             }
         }
-
+      
         // Get the category of the product and check if it has an offer
         const category = product.category;
         let productPrice = product.price;
         let categoryDiscountAmount =0 ;
         if (category && category.onOffer) {
             var categoryOffer = category.offerDiscountPersantage || 0;
-            productPrice = Math.round(product.price * (1 - categoryOffer / 100))
-           categoryDiscountAmount=Math.round(product.price * (categoryOffer / 100))
+            productPrice = (product.price * (1 - categoryOffer / 100)).toFixed(2)
+           categoryDiscountAmount=(product.price * (categoryOffer / 100)).toFixed(2)
         }
 
         // Add the product with the calculated price to the cart
@@ -86,7 +138,7 @@ module.exports = {
             totalprice:product.price,
             price: productPrice,
             categoryDiscount:categoryOffer,
-            categoryDiscountAmount:Math.round(categoryDiscountAmount),
+            categoryDiscountAmount:categoryDiscountAmount,
             offertype:category.offerType,
 
         });
@@ -102,13 +154,7 @@ module.exports = {
 
         cart.couponDiscount = 0;
         cart.coupon = null;
-        cart.shipingCharg = "Free Delivery";
-        const taxRate = 18; 
-        const taxAmount = (cart.totalPrice * (taxRate / 100)).toFixed(2);
-        cart.taxRate = taxRate;
-        cart.taxAmount = Math.round(taxAmount);
-        cart.offerAppliedTotalAmount = Math.round(cart.totalPrice + cart.taxAmount);
-        
+        cart.offerAppliedTotalAmount =cart.totalPrice.toFixed(2);
         await cart.save();
         console.log(cart);
         res.json({ success: true });
@@ -147,12 +193,7 @@ module.exports = {
       );
       cart.couponDiscount = 0;
       cart.coupon = null;
-      cart.shipingCharg= "Free Delivery"
-       const taxRate = 18; 
-       const taxAmount = (cart.totalPrice * (taxRate / 100)).toFixed(2);
-       cart.taxRate = taxRate;
-       cart.taxAmount = Math.round(taxAmount);
-       cart.offerAppliedTotalAmount = Math.round(cart.totalPrice + cart.taxAmount);
+      cart.offerAppliedTotalAmount = cart.totalPrice.toFixed(2);
       await cart.save();
       console.log(cart);
       
@@ -202,13 +243,7 @@ module.exports = {
 
       cart.couponDiscount = 0;
       cart.coupon = null;
-      cart.shipingCharg= "Free Delivery"
-
-       const taxRate = 18; 
-       const taxAmount = (cart.totalPrice * (taxRate / 100)).toFixed(2);
-       cart.taxRate = taxRate;
-       cart.taxAmount = Math.round(taxAmount);
-       cart.offerAppliedTotalAmount = Math.round(cart.totalPrice + cart.taxAmount);
+      cart.offerAppliedTotalAmount = cart.totalPrice.toFixed(2);
       await cart.save();
 
       res.json({ success: true, cart });
@@ -235,13 +270,7 @@ module.exports = {
       cart.totalProduct = 0;
       cart.couponDiscount = 0;
       cart.coupon = null;
-      cart.shipingCharg= "Free Delivery"
-       const taxRate = 18;
-       const taxAmount = (cart.totalPrice * (taxRate / 100)).toFixed(2);
-       cart.taxRate = taxRate;
-       cart.taxAmount = Math.round(taxAmount);
-
-       cart.offerAppliedTotalAmount = Math.round(cart.totalPrice + cart.taxAmount);
+      cart.offerAppliedTotalAmount =cart.totalPrice.toFixed(2);
       await cart.save();
       res.json({ success: true });
     } catch (error) { }
@@ -250,15 +279,39 @@ module.exports = {
   getCheckOutC: async (req, res) => {
     try {
       const userId = req.session.user;
+      const userAddressData = await UserAddress.findOne({ userId: userId });
+      const addresses = userAddressData ? userAddressData.addresses : [];
+      const cart = await Cart.findOne({ userId: userId }).populate('products._id').populate('coupon');
+      const appliedCouponCode = cart && cart.coupon ? cart.coupon.code : null;
+      let wishlist = await Wishlist.findOne({ userId: req.session.user }).populate('products');
+      const cartCount = cart && cart.products ? cart.products.length : 0;
+      console.log(cart);
+      let wallet = await Wallet.findOne({ userId: userId });
+      if (!wallet) {
+          wallet = await Wallet.create({
+              userId: userId,
+              balance: 0,
+              transactions: []
+          });
+      }     
+       
+    
       if (!userId) {
         return res.status(401).json({ error: 'User not authenticated' });
       }
-
-      const cart = await Cart.findOne({ userId: userId }).populate('products._id');
-
+  
       if (!cart || cart.products.length === 0) {
         return res.redirect('/cart?error=empty');
       }
+
+      const userAddress = await UserAddress.findOne({ userId: userId });
+      const defaultAddress = userAddress ? userAddress.addresses.find(addr => addr.isDefault) : null;
+  
+
+      const deliveryCharge = defaultAddress ? calculateDeliveryCharge(defaultAddress.state) : 'Delivery charge not available';
+      const shippingChargeAmount = deliveryCharge !== 'Free Delivery' ? parseInt(deliveryCharge.replace('₹', ''), 10) : 0;
+    
+
 
       let outOfStockRemoved = false;
       let quantityAdjusted = false;
@@ -266,8 +319,7 @@ module.exports = {
       let exceededProducts = [];
       let newTotalPrice = 0;
       let newTotalProduct = 0;
-
-      // Filter out out-of-stock products and adjust quantities
+  
       cart.products = cart.products.filter(product => {
         const item = product._id;
         if (item.stock === 0) {
@@ -284,25 +336,28 @@ module.exports = {
           quantityAdjusted = true;
         }
 
-        // Update totals for remaining products
         newTotalPrice += product.quantity * product.price;
         newTotalProduct += product.quantity;
-
+  
         return true;
       });
-
+  
       // Update cart totals
       cart.totalPrice = newTotalPrice;
       cart.totalProduct = newTotalProduct;
       cart.offerAppliedTotalAmount = cart.totalPrice - cart.couponDiscount;
+      cart.offerAppliedTotalAmount = cart.offerAppliedTotalAmount.toFixed(2);
       const taxRate = 18; 
-       const taxAmount = (cart.totalPrice * (taxRate / 100)).toFixed(2);
-       cart.taxRate = taxRate;
-       cart.taxAmount = Math.round(taxAmount);
-       cart.offerAppliedTotalAmount = Math.round(cart.offerAppliedTotalAmount + cart.taxAmount);
-
+      const taxAmount = (cart.totalPrice * (taxRate / 100)).toFixed(2);
+      cart.taxRate = taxRate;
+      cart.taxAmount = Math.abs(taxAmount);
+      cart.offerAppliedTotalAmount = (cart.totalPrice + cart.taxAmount).toFixed(2);
+      cart.shipingCharg=deliveryCharge;
+      cart.offerAppliedTotalAmount =  shippingChargeAmount + cart.offerAppliedTotalAmount;
       await cart.save();
-
+     console.log("shiping and tax are arredto cart :" ,cart);
+     
+      // Pass the information to the response
       if (outOfStockRemoved && quantityAdjusted) {
         return res.redirect('/cart?message=out_of_stock_quantity_adjusted');
       } else if (outOfStockRemoved) {
@@ -310,7 +365,16 @@ module.exports = {
       } else if (quantityAdjusted) {
         return res.redirect(`/cart?message=quantity_adjusted&exceeded=${JSON.stringify(exceededProducts)}`);
       } else {
-        return res.redirect('/checkOut');
+        res.render("shop/checkOut", {
+          user: req.session.user,
+          addresses: addresses,
+          cart: cart,
+          appliedCouponCode,
+          wishlist,
+          cartCount: cartCount,
+          wallet,
+          deliveryCharge:cart.shipingCharg
+      });
       }
     } catch (error) {
       console.error("Error fetching address or cart details:", error);

@@ -43,7 +43,11 @@ const orderSchema = new mongoose.Schema({
         },
         offertype:{
             type:String,
-        }
+        },
+        isCanceld: {
+            type: Boolean,
+            default: false
+        }  
     }],
     totalAmount: {
         type: Number,

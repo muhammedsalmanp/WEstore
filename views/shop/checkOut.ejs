@@ -62,10 +62,11 @@
                                                 <th colspan="2">SubTotal</th>
                                                 <td class="product-subtotal" data-label="SubTotal">₹<%= Math.ceil(cart.totalPrice).toFixed(2) %></td>
                                             </tr>
+                                            
                                             <tr>
                                                 <th colspan="2">Shipping</th>
                                                 <td class="shipping-charge" data-label="Shipping">
-                                                    <em><%= cart.shippingCharge ? cart.shippingCharge :"select you address"  %></em>
+                                                    <em><%= cart.shippingCharge%></em>
                                                 </td>
                                             </tr>
                                             <% if (cart.coupon && cart.coupon.code) { %>
@@ -85,7 +86,7 @@
                                                 <% } %>
                                             <% } %>
                                             <tr>
-                                                <th colspan="2">Total tax (18)</th>
+                                                <th colspan="2">Total tax (18%)</th>
                                                 <td class="" data-label="Total">
                                                     <span id="" class="font-xl text-brand fw-900">
                                                         ₹<%= Math.ceil(cart.taxAmount).toFixed(2) %>
@@ -100,6 +101,8 @@
                                                     </span>
                                                 </td>
                                             </tr>
+
+                                            
                                         <% } else { %>
                                             <tr>
                                                 <td colspan="3" data-label="No products in the cart.">No products in the cart.</td>
@@ -486,14 +489,12 @@
 <!-- coupon -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-
         const applyCouponBtn = document.getElementById("apply-coupon");
         if (applyCouponBtn) {
             applyCouponBtn.addEventListener("click", function () {
                 fetchAvailableCoupons();
             });
         }
-
 
         const removeCouponBtn = document.getElementById("remove-coupon");
         if (removeCouponBtn) {
@@ -511,7 +512,6 @@
                 }
             });
         }
-
 
         function fetchAvailableCoupons() {
             fetch("/coupons/available")
@@ -547,14 +547,12 @@
                             showConfirmButton: false,
                         });
 
-
                         document.querySelectorAll(".apply-btn").forEach((button) => {
                             button.addEventListener("click", function () {
                                 const code = this.getAttribute("data-code");
                                 applyCoupon(code);
                             });
                         });
-
 
                         document
                             .getElementById("close-coupons")
@@ -573,7 +571,6 @@
                 });
         }
 
-
         function applyCoupon(code) {
             fetch("/coupons/apply", {
                 method: "POST",
@@ -590,6 +587,8 @@
                             title: "Coupon Applied",
                             text: "The coupon has been successfully applied.",
                         }).then(() => {
+                            
+                            updateTotalAmount(data.newTotal);
                             location.reload();
                         });
                     } else {
@@ -626,6 +625,8 @@
                             title: "Coupon Removed",
                             text: "The coupon has been successfully removed.",
                         }).then(() => {
+                            // Update the total amount dynamically
+                            updateTotalAmount(data.newTotal);
                             location.reload();
                         });
                     } else {
@@ -645,8 +646,17 @@
                     });
                 });
         }
+
+        function updateTotalAmount(newTotal) {
+            // Update the total amount displayed on the page
+            const totalAmountElement = document.getElementById("totalAmount");
+            if (totalAmountElement) {
+                totalAmountElement.innerHTML = `₹${newTotal.toFixed(2)}`;
+            }
+        }
     });
 </script>
+
 
 <!-- address -->
 <script>
@@ -831,71 +841,177 @@
 
 <!-- couponappu list -->
 <script>
-    document
-    .getElementById("applyCouponBtn")
-    .addEventListener("click", function () {
-        fetch("/coupons/available")
-            .then((response) => response.json())
-            .then((coupons) => {
-                let couponList = '<ul id="couponsList" class="list-group">';
-                if (coupons.length > 0) {
-                    coupons.forEach(function (coupon) {
-                        couponList += `
-                            <li class="list-group-item">
-                                <strong>${coupon.code}</strong> - ${coupon.discountPercentage}% off, Min Purchase: ${coupon.minPurchaseAmount}
-                                <a href="#" class="btn btn-primary btn-sm apply-coupon-btn" data-coupon-code="${coupon.code}">Apply</a>
-                            </li>
-                        `;
-                    });
-                } else {
-                    couponList += '<li class="list-group-item">No available coupons</li>';
-                }
-                couponList += "</ul>";
-
-                // Add the input field for manual coupon entry
-                let couponInputHtml = `
-                    <div class="input-group mb-3">
-                        <input type="text" id="manualCouponCode" class="form-control" placeholder="Enter Coupon Code" aria-label="Coupon Code">
-                        <button class="btn btn-primary apply-manual-coupon-btn" type="button">Apply</button>
-                    </div>
-                `;
-
-                Swal.fire({
-                    title: "Available Coupons",
-                    html: couponInputHtml + couponList,
-                    showCloseButton: true,
-                    showCancelButton: false,
-                    focusConfirm: false,
-                    confirmButtonText: "Close",
-                });
-
-                // Handle click event for coupon application from the list
-                document.querySelectorAll(".apply-coupon-btn").forEach((button) => {
-                    button.addEventListener("click", function () {
-                        let couponCode = this.getAttribute("data-coupon-code");
-                        document.getElementById("coupon-code").value = couponCode;
-                        Swal.close();
-                    });
-                });
-
-                // Handle click event for manual coupon entry
-                document.querySelector(".apply-manual-coupon-btn").addEventListener("click", function () {
-                    let manualCouponCode = document.getElementById("manualCouponCode").value;
-                    if (manualCouponCode) {
-                        document.getElementById("coupon-code").value = manualCouponCode;
-                        Swal.close();
-                    } else {
-                        Swal.fire("Error", "Please enter a coupon code.", "error");
-                    }
-                });
-            })
-            .catch((error) => {
-                console.error("Error fetching coupons:", error);
-                Swal.fire("Error", "Could not load coupons. Please try again later.", "error");
+    document.addEventListener("DOMContentLoaded", function () {
+        const applyCouponBtn = document.getElementById("apply-coupon");
+        if (applyCouponBtn) {
+            applyCouponBtn.addEventListener("click", function () {
+                fetchAvailableCoupons();
             });
-    });
+        }
 
+        const removeCouponBtn = document.getElementById("remove-coupon");
+        if (removeCouponBtn) {
+            removeCouponBtn.addEventListener("click", function () {
+                const couponCode = document.getElementById("coupon-code").value;
+
+                if (couponCode) {
+                    removeCoupon(couponCode);
+                } else {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "No Coupon Code",
+                        text: "Please enter a coupon code to remove.",
+                    }).then(() => {
+                        location.reload(); // Reload the page if no coupon code is entered
+                    });
+                }
+            });
+        }
+
+        function fetchAvailableCoupons() {
+            fetch("/coupons/available")
+                .then((response) => response.json())
+                .then((coupons) => {
+                    if (coupons.length === 0) {
+                        Swal.fire({
+                            icon: "info",
+                            title: "No Coupons Available",
+                            text: "There are no available coupons at the moment.",
+                        }).then(() => {
+                            location.reload(); // Reload the page if no coupons are available
+                        });
+                    } else {
+                        let couponList = `
+                    <ul class="list-group custom-list-group">`;
+                        coupons.forEach((coupon) => {
+                            couponList += `
+                        <li class="list-group-item">
+                            <div class="coupon-text">
+                                <strong>${coupon.code}</strong> - ${coupon.discountPercentage}% off, Min Purchase: ${coupon.minPurchaseAmount}
+                            </div>
+                            <button class="btn btn-sm apply-btn" data-code="${coupon.code}" data-min-purchase="${coupon.minPurchaseAmount}">Apply</button>
+                        </li>`;
+                        });
+                        couponList += "</ul>";
+
+                        Swal.fire({
+                            title: "Available Coupons",
+                            html:
+                                couponList +
+                                '<button class="btn btn-secondary mt-3" id="close-coupons">Close</button>',
+                            showCloseButton: false,
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                        });
+
+                        document.querySelectorAll(".apply-btn").forEach((button) => {
+                            button.addEventListener("click", function () {
+                                const code = this.getAttribute("data-code");
+                                applyCoupon(code);
+                            });
+                        });
+
+                        document
+                            .getElementById("close-coupons")
+                            .addEventListener("click", function () {
+                                Swal.close();
+                            });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching coupons:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "There was an error fetching the available coupons.",
+                    }).then(() => {
+                        location.reload(); // Reload the page on error
+                    });
+                });
+        }
+
+        function applyCoupon(code) {
+            fetch("/coupons/apply", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ couponCode: code }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Coupon Applied",
+                            text: "The coupon has been successfully applied.",
+                        }).then(() => {
+                            location.reload(); // Reload the page after successful coupon application
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: data.message,
+                        }).then(() => {
+                            location.reload(); // Reload the page on error
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error applying coupon:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "There was an error applying the coupon.",
+                    }).then(() => {
+                        location.reload(); // Reload the page on error
+                    });
+                });
+        }
+
+        function removeCoupon(code) {
+            fetch("/coupons/remove", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ couponCode: code }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Coupon Removed",
+                            text: "The coupon has been successfully removed.",
+                        }).then(() => {
+                            location.reload(); // Reload the page after successful coupon removal
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: data.message,
+                        }).then(() => {
+                            location.reload(); // Reload the page on error
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error removing coupon:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "There was an error removing the coupon.",
+                    }).then(() => {
+                        location.reload(); // Reload the page on error
+                    });
+                });
+        }
+    });
 </script>
+
 
 <script>
     document.querySelector("#payment-form").addEventListener("submit", async function (e) {
@@ -1210,50 +1326,114 @@ function showPaymentFailedDialog(orderId) {
 </script>
 
 
- <!-- calculate the delivary charge -->
+<!-- Calculate the delivery charge -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-        function onlyOneCheckbox(checkbox) {
-            const addressId = checkbox.value;
-            if (!addressId) return;
-
-            // Make a request to update the cart and fetch new shipping charges
+        // Function to update the delivery charge based on the selected address
+        function updateDeliveryCharge(addressId) {
             fetch(`/getShippingCharges?addressId=${addressId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Update shipping charges
-                        const shippingChargeElement = document.querySelector('.shipping-charge');
-                        if (shippingChargeElement) {
-                            shippingChargeElement.innerHTML = `<em>${data.newDeliveryCharge}</em>`;
-                        }
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update shipping charges in the DOM
+                    const shippingChargeElement = document.querySelector('.shipping-charge');
+                    const totalAmountElement = document.querySelector('#totalAmount');
 
-                        // Update total amount
-                        const totalAmountElement = document.querySelector('#totalAmount');
-                        if (totalAmountElement) {
-                            totalAmountElement.innerHTML = `₹${data.newTotal.toFixed(2)}`;
-                        }
-                    } else {
-                        console.error('Failed to update shipping charges and total');
+                    if (shippingChargeElement) {
+                        shippingChargeElement.innerHTML = `<em>${data.newDeliveryCharge}</em>`;
                     }
-                })
-                .catch(error => console.error('Error:', error));
+
+                    if (totalAmountElement) {
+                        totalAmountElement.innerHTML = `₹${data.newTotal.toFixed(2)}`;
+                    }
+                } else {
+                    console.error('Failed to update shipping charges and total');
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
 
-        // Attach the function to all checkboxes
+        // Function to fetch and display the initial delivery charge and check for applied coupons
+        function fetchInitialDeliveryCharge() {
+            fetch('/getInitialDeliveryCharge', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the initial shipping charge and total amount in the DOM
+                    const shippingChargeElement = document.querySelector('.shipping-charge');
+                    const totalAmountElement = document.querySelector('#totalAmount');
+                    const couponElement = document.querySelector('#appliedCoupon'); // Element to show the applied coupon (optional)
+
+                    // Update shipping charge
+                    if (shippingChargeElement) {
+                        shippingChargeElement.innerHTML = `<em>${data.initialCharge}</em>`;
+                    }
+
+                    // Update total amount
+                    if (totalAmountElement) {
+                        totalAmountElement.innerHTML = `₹${data.newTotal.toFixed(2)}`;
+                    }
+
+                    // Check if a coupon is applied and update the DOM accordingly
+                    if (data.coupon && data.coupon.code) {
+                        if (couponElement) {
+                            couponElement.innerHTML = `<strong>Applied Coupon:</strong> ${data.coupon.code} - ${data.coupon.discount}% Off`;
+                        }
+
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Coupon Applied',
+                            text: `Coupon "${data.coupon.code}" is already applied with a discount of ${data.coupon.discount}%.`,
+                        });
+                    } else {
+                        if (couponElement) {
+                            couponElement.innerHTML = ''; // Clear if no coupon is applied
+                        }
+                    }
+
+                } else {
+                    console.error('Failed to fetch initial delivery charge');
+                }
+            })
+            .catch(error => console.error('Error fetching initial delivery charge:', error));
+        }
+
+        // Call the function when the page loads
+        fetchInitialDeliveryCharge();
+
+        // Handle the change in the selected address (checkbox selection)
+        function handleAddressChange(checkbox) {
+            const addressId = checkbox.value;
+            if (!addressId) return;
+
+            // Fetch the new delivery charge and reload the page after updating the address
+            updateDeliveryCharge(addressId);
+            setTimeout(() => {
+                location.reload(); // Reload the page after updating the delivery charge
+            }, 1000); // Add a delay to ensure the delivery charge is updated before reloading
+        }
+
+        // Attach event listeners to address selection checkboxes
         document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', function () {
-                onlyOneCheckbox(this);
+                handleAddressChange(this);
             });
         });
     });
 </script>
+
+
 
 
 

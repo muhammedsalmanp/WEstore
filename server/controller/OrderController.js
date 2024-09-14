@@ -462,8 +462,25 @@ module.exports = {
             const wallet= await Wallet.findOne({userId:userId});
 
             const product = order.products.find(p => p._id._id.toString() === productId);
-
+            
+            console.log("=========================================befor canlsaltion=======================================");
             console.log('Found Product:', product);
+            console.log("==========================================start===================================================");
+            console.log("total discount ammount :",order.couponDiscount);
+            console.log("total tax amount : ",order.taxAmount);
+            let productsCount = order.products.length;
+            console.log("how mauch product in your cart :",productsCount);
+            let productDiscount = Math.abs(order.couponDiscount/ productsCount);
+            console.log("totoal coupon discount ammount : ",productDiscount);
+            let productTax = Math.abs(order.taxAmount / productsCount);
+            console.log("total tax amount : ",productTax);
+            let oferanddisc = product.price +productTax
+            let productPrice =Math.abs(oferanddisc - productDiscount);
+            console.log("product price for refund of a single one  : ",productPrice);
+            let totoalPrice =  productPrice * product.quantity;
+            console.log("totoal pice to redund : ",totoalPrice);
+            console.log("============================================end=================================================="); 
+            
 
             if (!product) {
                 return res.status(404).json({ message: 'Product not found in this order' });
@@ -482,26 +499,21 @@ module.exports = {
                 await updatedProduct.save();
             }
 
-            order.totalAmount -= product.price * product.quantity;
-            let applicableCouponDiscount = 0;
+        
 
-            if (order.coupon) {
-                if (order.totalAmount >= order.coupon.minPurchaseAmount) {
-                    applicableCouponDiscount = (order.totalAmount * order.coupon.discountPercentage) / 100;
-                } else {
-                    order.couponMessage = 'You can no longer use the coupon because the order total is below the minimum purchase amount required.';
-                }
-            }
-
-            order.offerAppliedTotalAmount = order.totalAmount - applicableCouponDiscount;
-
+            order.totalAmount -= totoalPrice;
+            order.couponDiscount-=productDiscount;
+            order.taxAmount -=productTax; 
+            order.offerAppliedTotalAmount -= totoalPrice;
+            
             const allProductsCanceled = order.products.every(p => p.isCanceld);
             if (allProductsCanceled) {
                 order.status = 'Cancelled';
                 order.paymentStatus='Refunded'
             }
              
-            const refundamount = product.price*product.quantity;
+            const refundamount = totoalPrice;
+
             const transactionId = `TXN-${Date.now()}`;
            if (order.paymentMethod !=="COD"){
               wallet.balance = wallet.balance + refundamount;
@@ -513,9 +525,12 @@ module.exports = {
                 debit:"credit"
               })
            }
+
+
            await wallet.save();
             await order.save();
-
+            console.log("=========================================after canlsaltion=======================================");
+            console.log('Found Product:', order);
             res.json({
                 message: 'Product cancelled successfully',
                 order
@@ -659,7 +674,6 @@ module.exports = {
             // Extract the product details
             const product = order.products[productIndex];
     
-            // Calculate the new order amount and apply coupon if necessary
             let offerAppliedTotalAmount = product.price * product.quantity;
             let couponDiscount = 0;
     

@@ -466,7 +466,7 @@
                         <p>Quantity: <%= product.quantity %></p>
                         <% if (product.categoryDiscount && product.categoryDiscount > 0) { %>
                             <p>Offer :  <%= product.offertype %> Offer only for the category  </p>
-                            <span>Discounted : <%= product.categoryDiscount %> % Off ( ₹<%= product.categoryDiscountAmount %>)</span>
+                            <span>Discounted : <%= product.categoryDiscount %> % Off ( ₹<%= product.categoryDiscountAmount.toFixed(2) %>)</span>
                         <% } %>
                         <% if (status==='Delivered' ) { %>
                             <p>Delivery Date: <%= product.deliveryDate %></p>
@@ -481,8 +481,6 @@
                         <% if (status==='Delivered' ) { %>
                             <% if (!order.return) { %>
                                 <button id="return-button-<%= product.productId %>"class="return-button">Return</button>
-                            <% } else { %>
-                                <button id="return-button-<%= product.productId %>" class="return-button">Cancel Return</button>
                             <% } %>
                         <% } else { %>
                             <input type="hidden"id="delivered-date-<%= product.productId %>" value="<%= order.expectedDeliveryDate %>">
@@ -506,7 +504,7 @@
     <div id="offer-details" class="offer-details">
         <p>Total Price: ₹<%= order.totalAmount.toFixed(2)%></p>
         <P>Shipping charge :<%= order.shipingCharg ?order.shipingCharg:"Free shipping" %></P>
-        <P>Total tax (18%)  :<%= order.taxAmount ?order.taxAmount:"Free Tax" %></P> 
+        <P>Total tax (18%)  :<%= order.taxAmount ?order.taxAmount.toFixed(2):"Free Tax" %></P> 
         <p>Coupon: <%= order.coupon && order.coupon.code ? order.coupon.code:'No Coupon Applied' %></p>
         <% if (order.coupon && order.coupon.code) { %>
         <p>Discount:
@@ -520,7 +518,7 @@
         </p>
         <p>Discounted Price: ₹<%=(order.totalAmount - order.offerAppliedTotalAmount).toFixed(2)  %></p>
         <% } %>
-        <p>Total Amount you have to pay : ₹<%=order.offerAppliedTotalAmount%></p>
+        <p>Total Amount you have to pay : ₹<%=order.offerAppliedTotalAmount.toFixed(2) %></p>
     </div>
     <!-- Order Details -->
     <div id="order-details" class="order-details">

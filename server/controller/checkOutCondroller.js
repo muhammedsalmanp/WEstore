@@ -45,7 +45,7 @@ const Order = require("../model/orderSchema");
 const Product = require("../model/productSchema");
 const Wishlist = require("../model/wishlistSchema");
 const Wallet = require("../model/walletSchema");
-
+const Coupon = require ('../controller/CouponCondroller')
 const crypto = require("crypto");
 const razorpayInstance = require("../config/razorPay");
 const { updateCart } = require("./cartController");
@@ -75,6 +75,7 @@ module.exports = {
         const appliedCouponCode = cart && cart.coupon ? cart.coupon.code : null;
         let wishlist = await Wishlist.findOne({ userId: req.session.user }).populate('products');
         const cartCount = cart && cart.products ? cart.products.length : 0;
+        console.log(cart);
         let wallet = await Wallet.findOne({ userId: userId });
         if (!wallet) {
             wallet = await Wallet.create({
@@ -83,8 +84,8 @@ module.exports = {
                 transactions: []
             });
         }     
-        console.log(cart);
           
+
         res.render("shop/checkOut", {
             user: req.session.user,
             addresses: addresses,
@@ -119,20 +120,21 @@ module.exports = {
       const state = selectedAddress.state;
       const newDeliveryCharge = calculateDeliveryCharge(state);
 
-      // Fetch and update the cart
       const cart = await Cart.findOne({ userId: userId });
       if (cart) {
         const oldDeliveryCharge = cart.shipingCharg || 'Free Delivery';
         const oldChargeAmount = oldDeliveryCharge !== 'Free Delivery' ? parseInt(oldDeliveryCharge.replace('₹', ''), 10) : 0;
         const newChargeAmount = newDeliveryCharge !== 'Free Delivery' ? parseInt(newDeliveryCharge.replace('₹', ''), 10) : 0;
-
-        cart.offerAppliedTotalAmount = Math.round(cart.totalPrice + cart.taxAmount);
-        console.log(cart);
+        console.log("befor chage the addres ",cart);
         cart.offerAppliedTotalAmount = Math.max(0, cart.offerAppliedTotalAmount - oldChargeAmount + newChargeAmount);
         cart.shipingCharg = newDeliveryCharge;
+        if(cart.coupon){
+          cart.couponDiscount = 0;
+          cart.coupon = null;
+        }
 
         await cart.save();
-         console.log(cart);
+         console.log("after chage the addres",cart);
          
         res.json({
           success: true,
@@ -147,7 +149,45 @@ module.exports = {
       res.status(500).json({ message: 'Server error' });
     }
   },
+  getInitialDeliveryCharge: async (req, res) => {
+    try {
+      const userId = req.session.user;
+      if (!userId) {
+        return res.status(400).json({ success: false, message: 'User ID is required' });
+      }
+      const cart = await Cart.findOne({ userId: userId });
+      if (!cart) {
+        return res.status(404).json({ success: false, message: 'Cart not found' });
+      }
 
+      let shippingCharge = cart.shipingCharg
+      let totalAmount = cart.offerAppliedTotalAmount;
+      let appliedCoupon=null
+      if(cart.coupon){
+        appliedCoupon = cart.couponDiscount;
+        totalAmount = cart.offerAppliedTotalAmount-cart.couponDiscount;
+      }
+    
+      
+
+  
+      res.json({
+        success: true,
+        initialCharge: shippingCharge,
+        newTotal: totalAmount,
+        coupon: appliedCoupon
+          ? {
+              code: appliedCoupon.code,
+              discount: appliedCoupon.discountPercentage,
+            }
+          : null,
+      });
+    } catch (error) {
+      console.error('Error fetching initial delivery charge:', error);
+      res.status(500).json({ success: false, message: 'Server error' });
+    }
+  },
+  
   placeOrder: async (req, res) => {
     try {
       const { paymentoptions, address } = req.body;

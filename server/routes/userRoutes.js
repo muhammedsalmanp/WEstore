@@ -55,6 +55,7 @@ router.post("/checkOut/address/:addressId/edit", userController.checkOuteditAddr
 router.delete("/checkOut/address/:addressId/delete", userController.checkOutdeleteAddress)
 router.post("/checkOut/set-default-address/:addressId", userController.checkOutsetDefault)
 router.get("/getShippingCharges",checkOutCondroller.getShippingCharges);
+router.get("/getInitialDeliveryCharge",checkOutCondroller.getInitialDeliveryCharge);
 
 router.post("/user/verify-orderpayment",checkOutCondroller.verifyPayment)
 
@@ -68,6 +69,7 @@ router.post('/return-product', orderController.returnProduct);
 router.post("/order/create",orderController.reOrder)
 
 router.get("/user/invoice/generate/:orderId",orderController.invoice);
+
 //wallet
 
 router.get("/wallet",walletCotroller.getwallet);
