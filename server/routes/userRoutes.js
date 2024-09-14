@@ -7,7 +7,7 @@ const { checkBlockedUser, isAuthenticated } = require('../middleware/authMiddlew
 const { isLoggedOut } = require('../middleware/logoutMiddileware');
 const checkOutCondroller = require("../controller/checkOutCondroller");
 const couponController = require("../controller/CouponCondroller");
-const orderController = require("../controller/orderController");
+const orderController = require("../controller/OrderController");
 const walletCotroller = require("../controller/walletController");
 
 
