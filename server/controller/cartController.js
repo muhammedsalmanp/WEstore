@@ -126,8 +126,8 @@ module.exports = {
         let categoryDiscountAmount =0 ;
         if (category && category.onOffer) {
             var categoryOffer = category.offerDiscountPersantage || 0;
-            productPrice = (product.price * (1 - categoryOffer / 100)).toFixed(2)
-           categoryDiscountAmount=(product.price * (categoryOffer / 100)).toFixed(2)
+            productPrice = product.price * (1 - categoryOffer / 100)
+           categoryDiscountAmount=product.price * (categoryOffer / 100)
         }
 
         // Add the product with the calculated price to the cart
@@ -154,7 +154,7 @@ module.exports = {
 
         cart.couponDiscount = 0;
         cart.coupon = null;
-        cart.offerAppliedTotalAmount =cart.totalPrice.toFixed(2);
+        cart.offerAppliedTotalAmount =cart.totalPrice;
         await cart.save();
         console.log(cart);
         res.json({ success: true });
@@ -193,7 +193,7 @@ module.exports = {
       );
       cart.couponDiscount = 0;
       cart.coupon = null;
-      cart.offerAppliedTotalAmount = cart.totalPrice.toFixed(2);
+      cart.offerAppliedTotalAmount = cart.totalPrice;
       await cart.save();
       console.log(cart);
       
@@ -243,7 +243,7 @@ module.exports = {
 
       cart.couponDiscount = 0;
       cart.coupon = null;
-      cart.offerAppliedTotalAmount = cart.totalPrice.toFixed(2);
+      cart.offerAppliedTotalAmount = cart.totalPrice;
       await cart.save();
 
       res.json({ success: true, cart });
@@ -270,7 +270,7 @@ module.exports = {
       cart.totalProduct = 0;
       cart.couponDiscount = 0;
       cart.coupon = null;
-      cart.offerAppliedTotalAmount =cart.totalPrice.toFixed(2);
+      cart.offerAppliedTotalAmount =cart.totalPrice;
       await cart.save();
       res.json({ success: true });
     } catch (error) { }
@@ -346,12 +346,12 @@ module.exports = {
       cart.totalPrice = newTotalPrice;
       cart.totalProduct = newTotalProduct;
       cart.offerAppliedTotalAmount = cart.totalPrice - cart.couponDiscount;
-      cart.offerAppliedTotalAmount = cart.offerAppliedTotalAmount.toFixed(2);
+      cart.offerAppliedTotalAmount = cart.offerAppliedTotalAmount;
       const taxRate = 18; 
-      const taxAmount = (cart.totalPrice * (taxRate / 100)).toFixed(2);
+      const taxAmount = cart.totalPrice * (taxRate / 100);
       cart.taxRate = taxRate;
       cart.taxAmount = Math.abs(taxAmount);
-      cart.offerAppliedTotalAmount = (cart.totalPrice + cart.taxAmount).toFixed(2);
+      cart.offerAppliedTotalAmount = cart.totalPrice + cart.taxAmount;
       cart.shipingCharg=deliveryCharge;
       cart.offerAppliedTotalAmount =  shippingChargeAmount + cart.offerAppliedTotalAmount;
       await cart.save();
