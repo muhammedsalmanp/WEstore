@@ -285,17 +285,16 @@ module.exports = {
       const appliedCouponCode = cart && cart.coupon ? cart.coupon.code : null;
       let wishlist = await Wishlist.findOne({ userId: req.session.user }).populate('products');
       const cartCount = cart && cart.products ? cart.products.length : 0;
-      console.log(cart);
+  
       let wallet = await Wallet.findOne({ userId: userId });
       if (!wallet) {
-          wallet = await Wallet.create({
-              userId: userId,
-              balance: 0,
-              transactions: []
-          });
-      }     
-       
-    
+        wallet = await Wallet.create({
+          userId: userId,
+          balance: 0,
+          transactions: []
+        });
+      }
+  
       if (!userId) {
         return res.status(401).json({ error: 'User not authenticated' });
       }
@@ -303,16 +302,13 @@ module.exports = {
       if (!cart || cart.products.length === 0) {
         return res.redirect('/cart?error=empty');
       }
-
+  
       const userAddress = await UserAddress.findOne({ userId: userId });
       const defaultAddress = userAddress ? userAddress.addresses.find(addr => addr.isDefault) : null;
   
-
-      const deliveryCharge = defaultAddress ? calculateDeliveryCharge(defaultAddress.state) : 'Delivery charge not available';
+      const deliveryCharge = defaultAddress ? calculateDeliveryCharge(defaultAddress.state) : 'Free Delivery';
       const shippingChargeAmount = deliveryCharge !== 'Free Delivery' ? parseInt(deliveryCharge.replace('₹', ''), 10) : 0;
-    
-
-
+  
       let outOfStockRemoved = false;
       let quantityAdjusted = false;
       let stockExceeded = false;
@@ -320,6 +316,7 @@ module.exports = {
       let newTotalPrice = 0;
       let newTotalProduct = 0;
   
+      // Filter products and adjust quantities
       cart.products = cart.products.filter(product => {
         const item = product._id;
         if (item.stock === 0) {
@@ -335,29 +332,31 @@ module.exports = {
           product.quantity = item.stock;
           quantityAdjusted = true;
         }
-
+  
         newTotalPrice += product.quantity * product.price;
         newTotalProduct += product.quantity;
   
         return true;
       });
   
+      // Ensure all values are numbers
+      const totalPrice = newTotalPrice || 0;
+      const couponDiscount = cart.couponDiscount || 0;
+      const taxRate = 18;
+      const taxAmount = totalPrice * (taxRate / 100) || 0;
+  
       // Update cart totals
-      cart.totalPrice = newTotalPrice;
+      cart.totalPrice = totalPrice;
       cart.totalProduct = newTotalProduct;
-      cart.offerAppliedTotalAmount = cart.totalPrice - cart.couponDiscount;
-      cart.offerAppliedTotalAmount = cart.offerAppliedTotalAmount;
-      const taxRate = 18; 
-      const taxAmount = cart.totalPrice * (taxRate / 100);
       cart.taxRate = taxRate;
       cart.taxAmount = Math.abs(taxAmount);
-      cart.offerAppliedTotalAmount = cart.totalPrice + cart.taxAmount;
-      cart.shipingCharg=deliveryCharge;
-      cart.offerAppliedTotalAmount =  shippingChargeAmount + cart.offerAppliedTotalAmount;
+  
+      // Calculate the offerAppliedTotalAmount properly
+      cart.offerAppliedTotalAmount = totalPrice - couponDiscount + taxAmount + shippingChargeAmount;
+  
       await cart.save();
-     console.log("shiping and tax are arredto cart :" ,cart);
-     
-      // Pass the information to the response
+  
+      // Handle out-of-stock or quantity adjustment redirects
       if (outOfStockRemoved && quantityAdjusted) {
         return res.redirect('/cart?message=out_of_stock_quantity_adjusted');
       } else if (outOfStockRemoved) {
@@ -373,13 +372,14 @@ module.exports = {
           wishlist,
           cartCount: cartCount,
           wallet,
-          deliveryCharge:cart.shipingCharg
-      });
+          deliveryCharge: cart.shipingCharg
+        });
       }
     } catch (error) {
       console.error("Error fetching address or cart details:", error);
       return res.redirect('/cart?error=server');
     }
   }
+  
 
 }
