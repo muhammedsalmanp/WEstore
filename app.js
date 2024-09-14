@@ -59,16 +59,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware to set the current route
+
 app.use((req, res, next) => {
   res.locals.currentRoute = req.path;
   next();
 });
 
 
-
-
-// nocache for disabling browser caching
 app.use(nocache());
 
 

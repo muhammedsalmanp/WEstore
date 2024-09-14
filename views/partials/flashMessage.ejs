@@ -14,14 +14,14 @@
 </style>
 
 <div class="container">
-  <% if (success.length > 0) { %>
+  <% if (typeof success !== 'undefined' && success.length > 0) { %>
   <div class="alert alert-success alert-dismissible fade show my-3 custom-alert" role="alert">
     <strong class="text-capitalize"><%- success %>!</strong>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     <div class="progress-bar" style="background-color: #198754;"></div>
   </div>
   <% } %>
-  <% if (error.length > 0) { %>
+  <% if (typeof error !== 'undefined' && error.length > 0) { %>
   <div class="alert alert-warning alert-dismissible fade show my-3 custom-alert" role="alert">
     <strong class="text-capitalize"><%- error %></strong>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -29,6 +29,7 @@
   </div>
   <% } %>
 </div>
+
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {

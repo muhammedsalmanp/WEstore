@@ -64,7 +64,7 @@ module.exports = {
         wishlist,
         cartCount: cartCount,
         brands: brands,
-        offerCategories, // Pass the offer categories to the view
+        offerCategories,
       });
     } catch (error) {
       console.log("from userController", error);
