@@ -8,7 +8,7 @@ require('dotenv').config();
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: `http://localhost:${process.env.APP_PORT}/auth/google/callback`
+    callbackURL: `https://localhost:${process.env.APP_PORT}/auth/google/callback`
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let user = await User.findOne({ googleId: profile.id });
@@ -47,7 +47,7 @@ passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_CLIENT_ID,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
     callbackURL: `http://localhost:${process.env.APP_PORT}/auth/facebook/callback`,
-    profileFields: ['id', 'emails', 'name'] // This ensures you get email and name
+    profileFields: ['id', 'emails', 'name'] 
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let user = await User.findOne({ facebookId: profile.id });
