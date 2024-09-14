@@ -425,7 +425,7 @@ module.exports = {
                 offertype:product.offertype,
                 categoryDiscountAmount:product.categoryDiscountAmount,
             }));            
-            res.render('shop/orderPage', {
+            res.render('shop/orderpage', {
                 user: req.session.user,
                 userDetils: user,
                 order: order,
