@@ -225,5 +225,5 @@ module.exports = {
           req.flash("error", "Server error");
           return res.status(500).json({ success: false, message: 'Server error' });
       }
-    },
+    }, 
 }

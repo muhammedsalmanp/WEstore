@@ -150,6 +150,8 @@ module.exports = {
         }
       }
     }
+    const paidOrders = await Order.find({ paymentStatus: 'Paid' });
+    const totalRevenue = paidOrders.reduce((sum, order) => sum + order.offerAppliedTotalAmount, 0);
 
     const topSellingProducts = Object.values(productSalesMap).sort((a, b) => b.totalQuantity - a.totalQuantity).slice(0, 10);
     const topSellingCategories = Object.values(categorySalesMap).sort((a, b) => b.totalQuantity - a.totalQuantity).slice(0, 10);
@@ -168,6 +170,7 @@ module.exports = {
       topSellingBrands,
       layout: adminLayout,
       CatCount,
+      totalRevenue,
       cordCount,
     });
   },

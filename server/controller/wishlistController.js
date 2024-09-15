@@ -42,34 +42,34 @@ module.exports ={
   addToWishlist: async (req, res) => {
     const userId = req.session.user;
     const productId = req.body.productId;
-
-    try { 
-      if(!userId){
-       req.flash("error","you need login!!")
-       return res.redirect("/login")
+  
+    try {
+      // Check if user is logged in
+      if (!userId) {
+        return res.status(401).json({ success: false, message: "You need to log in to add items to your wishlist." });
       }
+  
       let wishlist = await Wishlist.findOne({ userId });
-
+  
       if (!wishlist) {
         wishlist = new Wishlist({ userId: userId, products: [] });
       }
-
+  
       if (!wishlist.products.includes(productId)) {
         wishlist.products.push(productId);
         await wishlist.save();
       }
-
-      res.json({ success: true });
+  
+      res.json({ success: true, message: "Product added to your wishlist." });
     } catch (error) {
       console.error("Error adding to wishlist:", error);
-      res
-        .status(500)
-        .json({
-          success: false,
-          error: "An error occurred while adding the product to the wishlist.",
-        });
+      res.status(500).json({
+        success: false,
+        error: "An error occurred while adding the product to the wishlist."
+      });
     }
   },
+  
   
   removeFromWishlist: async (req, res) => {
     const userId = req.session.user;

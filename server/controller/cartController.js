@@ -91,7 +91,11 @@ module.exports = {
     try {
         const { productId, quantity } = req.body;
         const userId = req.session.user;
-        
+
+        // Check if the user is logged in
+        if (!userId) {
+            return res.status(401).json({ success: false, error: "You need to be logged in to add items to the cart." });
+        }
 
         if (!productId) {
             return res.status(400).json({ success: false, error: "Product ID is required." });
@@ -119,28 +123,25 @@ module.exports = {
                 return res.status(400).json({ success: false, error: "Product already in cart." });
             }
         }
-      
-        // Get the category of the product and check if it has an offer
+
         const category = product.category;
         let productPrice = product.price;
-        let categoryDiscountAmount =0 ;
+        let categoryDiscountAmount = 0;
         if (category && category.onOffer) {
             var categoryOffer = category.offerDiscountPersantage || 0;
-            productPrice = product.price * (1 - categoryOffer / 100)
-           categoryDiscountAmount=product.price * (categoryOffer / 100)
+            productPrice = product.price * (1 - categoryOffer / 100);
+            categoryDiscountAmount = product.price * (categoryOffer / 100);
         }
 
-        // Add the product with the calculated price to the cart
         cart.products.push({
             _id: product._id,
             quantity: parseInt(quantity),
-            productprice:product.price,
-            totalprice:product.price,
+            productprice: product.price,
+            totalprice: product.price,
             price: productPrice,
-            categoryDiscount:categoryOffer,
-            categoryDiscountAmount:categoryDiscountAmount,
-            offertype:category.offerType,
-
+            categoryDiscount: categoryOffer,
+            categoryDiscountAmount: categoryDiscountAmount,
+            offertype: category.offerType,
         });
 
         cart.totalProduct = cart.products.reduce(
@@ -154,7 +155,7 @@ module.exports = {
 
         cart.couponDiscount = 0;
         cart.coupon = null;
-        cart.offerAppliedTotalAmount =cart.totalPrice;
+        cart.offerAppliedTotalAmount = cart.totalPrice;
         await cart.save();
         console.log(cart);
         res.json({ success: true });
@@ -163,6 +164,7 @@ module.exports = {
         res.status(500).json({ success: false, error: "An error occurred while adding the product to the cart." });
     }
   },
+
 
   updateCart: async (req, res) => {
     const { productId, quantity } = req.body;
