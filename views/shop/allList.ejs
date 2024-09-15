@@ -141,8 +141,7 @@
                                 </a>
                                 <% } %>
                   </div>
-
-                  <% if (product.onOffer==="true") { %>
+                  <% if (product.onOffer) { %>
                     <div class="product-badges product-badges-position product-badges-mrg">
                       <span class="hot"><%- product.offerDiscountPersantage%> %off</span>
                   </div>
@@ -168,7 +167,7 @@
                   </div>
                   <div class="product-price">
                     <span>₹<%= Math.ceil(product.price) %>.00</span>
-                    <% if (product.onOffer==="true") { %>
+                    <% if (product.onOffer) { %>
                       <span class="old-price">₹<%= product.oldPrice %>.00</span>
                       <% } %>
                   </div>
@@ -368,4 +367,5 @@
     </div>
   </div>
 </section>
+
 

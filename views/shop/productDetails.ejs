@@ -91,7 +91,7 @@
                                             <div class="clearfix product-price-cover">
                                                 <div class="product-price primary-color float-left">
                                                     <ins><span class="text-brand"><%= product.price %>.00</span></ins>
-                                                    <% if (product.onOffer==="true") { %>
+                                                    <% if (product.onOffer) { %>
                                                         <span class="old-price">₹<%= product.oldPrice %>.00</span>
                                                         <span class="save-price font-md color3 ml-15"><%- product.offerDiscountPersantage%>% Off
                                                         </span>
