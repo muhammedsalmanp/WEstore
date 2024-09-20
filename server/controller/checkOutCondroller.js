@@ -127,12 +127,8 @@ module.exports = {
         const newChargeAmount = newDeliveryCharge !== 'Free Delivery' ? parseInt(newDeliveryCharge.replace('₹', ''), 10) : 0;
         console.log("befor chage the addres ",cart);
         cart.offerAppliedTotalAmount = Math.max(0, cart.offerAppliedTotalAmount - oldChargeAmount + newChargeAmount);
+        
         cart.shipingCharg = newDeliveryCharge;
-        if(cart.coupon){
-          cart.couponDiscount = 0;
-          cart.coupon = null;
-        }
-
         await cart.save();
          console.log("after chage the addres",cart);
          
@@ -144,6 +140,8 @@ module.exports = {
       } else {
         res.status(404).json({ message: 'Cart not found' });
       }
+      console.log("from ship calculater : ",cart);
+      
     } catch (error) {
       console.error('Error updating cart and shipping charges:', error);
       res.status(500).json({ message: 'Server error' });
@@ -162,15 +160,14 @@ module.exports = {
 
       let shippingCharge = cart.shipingCharg
       let totalAmount = cart.offerAppliedTotalAmount;
-      let appliedCoupon=null
-      if(cart.coupon){
-        appliedCoupon = cart.couponDiscount;
-        totalAmount = cart.offerAppliedTotalAmount-cart.couponDiscount;
-      }
+      totalAmount = totalAmount-cart.couponDiscount;
+
     
+      await cart.save();
       
 
-  
+      console.log("from conformation :",cart);
+      
       res.json({
         success: true,
         initialCharge: shippingCharge,

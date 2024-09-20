@@ -13,4 +13,13 @@ module.exports={
             next();
         }
     },
+     //admin login
+  isuserLoggedIn: (req, res, next) => {
+    if (req.session && req.session.admin) {
+      next()
+    } else {
+      req.flash('error', 'Not Authorized')
+      res.redirect('/admin/login');
+    }
+  }
 }

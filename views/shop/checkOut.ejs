@@ -66,7 +66,7 @@
                                             <tr>
                                                 <th colspan="2">Shipping</th>
                                                 <td class="shipping-charge" data-label="Shipping">
-                                                    <em><%= cart.shippingCharge%></em>
+                                                    <em><%= cart.shippingCharge ?cart.shippingCharge:"clik again on your addres" %></em>
                                                 </td>
                                             </tr>
                                             <% if (cart.coupon && cart.coupon.code) { %>
@@ -587,7 +587,6 @@
                             title: "Coupon Applied",
                             text: "The coupon has been successfully applied.",
                         }).then(() => {
-                            
                             updateTotalAmount(data.newTotal);
                             location.reload();
                         });
@@ -946,7 +945,7 @@
                             title: "Coupon Applied",
                             text: "The coupon has been successfully applied.",
                         }).then(() => {
-                            location.reload(); // Reload the page after successful coupon application
+                            location.reload(); 
                         });
                     } else {
                         Swal.fire({
@@ -954,7 +953,7 @@
                             title: "Error",
                             text: data.message,
                         }).then(() => {
-                            location.reload(); // Reload the page on error
+                            location.reload(); 
                         });
                     }
                 })
@@ -1417,11 +1416,8 @@ function showPaymentFailedDialog(orderId) {
             const addressId = checkbox.value;
             if (!addressId) return;
 
-            // Fetch the new delivery charge and reload the page after updating the address
+            // Fetch the new delivery charge without reloading the page
             updateDeliveryCharge(addressId);
-            setTimeout(() => {
-                location.reload(); // Reload the page after updating the delivery charge
-            }, 1000); // Add a delay to ensure the delivery charge is updated before reloading
         }
 
         // Attach event listeners to address selection checkboxes
