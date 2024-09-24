@@ -120,7 +120,13 @@
                             <td><%= order.paymentMethod %></td>
                             <td>
                                 <% order.products.forEach(product => { %>
-                                    <div><%= product._id.productName %> (Qty: <%= product.quantity %>)</div>
+                                    <div>
+                                        <% if (product._id && product._id.productName) { %>
+                                            <%= product._id.productName %> (Qty: <%= product.quantity %>)
+                                        <% } else { %>
+                                            noname (Qty: <%= product.quantity %>)
+                                        <% } %>
+                                    </div>
                                 <% }) %>
                             </td>
                             <td><%= order.totalAmount %></td>
