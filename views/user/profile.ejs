@@ -111,7 +111,7 @@
                               <td> <%= order.createdAt.toLocaleDateString() %></td>
                               <td> <%= order.status %></td>
                               <td><%= order.paymentMethod %></td>
-                              <td>₹<%= order.totalAmount %> for <%= order.products.length %> item<%=
+                              <td>₹<%= order.offerAppliedTotalAmount %> for <%= order.products.length %> item<%=
                                       order.products.length> 1 ? 's' : '' %></td>
                               <td>
                                 <a href="/order/details/<%= order.orderId %>" class="btn-small d-block"> Oder
